@@ -7,6 +7,90 @@ const gef = io.of("/gef");
 
 server.listen(3000);
 
+var initialized = false;
+
+function initClient(numGroups) {
+  // libcVersion / something else to help me init the number of groups with names of each for the network
+  // Initialize network
+}
+
+var jsonStub = {
+  version: "0.1",
+  groups: [
+    {
+      name: "tcache",
+      chunks: [
+        {
+          address: "0x00",
+          size: "0x20",
+          leftSize: "0x4",
+          prev: "0x00"
+        },
+        {
+          address: "0x100",
+          size: "0x20",
+          leftSize: "0x8",
+          prev: "0x00"
+        }
+      ]
+    },
+    {
+      name: "free",
+      chunks: [
+        {
+          address: "0x20",
+          size: "0x80",
+          leftSize: "0x00",
+          prev: "0x00"
+        },
+        {
+          address: "0x800",
+          size: "0x800",
+          leftSize: "0x80",
+          prev: "0x00"
+        }
+      ]
+    }
+  ]
+};
+
+function jsonToClient(jsonObject) {
+  // Loop through lists
+  for (let i = 0; i < jsonObject.groups.length; i++) {
+    let name = jsonObject.groups[i].name;
+    // TODO: add name and color to key? red (3): in use, green (4): free
+
+    let prevAddress;
+    // Loop through chunks
+    for (let j = 0; j < jsonObject.groups[i].chunks.length; j++) {
+      let label = "Address: " + jsonObject.groups[i].chunks[j].address + "\n";
+      label += "Size: " + jsonObject.groups[i].chunks[j].size + "\n";
+      label += "Left Size: " + jsonObject.groups[i].chunks[j].leftSize + "\n";
+      label += "Previous: " + jsonObject.groups[i].chunks[j].prev + "\n";
+      console.log(label);
+      if(initialized === false) {
+        console.log("Not initialized yet");
+        return false;
+      }
+      web.emit("add-node", {
+        id: jsonObject.groups[i].chunks[j].address,
+        group: name,
+        label: label
+      });
+
+      // Connect edges if not first chunk
+      if(j !== 0) {
+        web.emit("connect-nodes", {
+          from: prev_address,
+          to: jsonObject.groups[i].chunks[j].address
+        });
+      }
+
+      prev_address = jsonObject.groups[i].chunks[j].address;
+    }
+  }
+}
+
 app.get("/", function(req, res) {
   res.sendFile(path.join(__dirname, "/index.html"));
 });
@@ -14,68 +98,16 @@ app.get("/index.js", function(req, res) {
   res.sendFile(path.join(__dirname, "/index.js"));
 });
 
-/* web-side events */
+// Calls to client
+// Calls json to client with 'initial' heap structure
 web.on("connection", function(socket) {
   web.emit("client-hello", {
     connection: "success"
   });
-
-  web.emit("add-node", {
-    id: "dummy1",
-    group: "dummy1",
-    label: "dummy1"
-  });
-
-  /*web.emit("update-node", {
-    id: "dummy",
-    group: "dummy1",
-    label: "updated_value\nwoo!"
-  });
-  */
-
-  web.emit("add-node", {
-    id: "dummy2",
-    group: "dummy2",
-    label: "dummy2"
-  });
-
-  web.emit("add-node", {
-    id: "dummy3",
-    group: "dummy3",
-    label: "dummy3"
-  });
-
-  web.emit("add-node", {
-    id: "dummy4",
-    group: "dummy4",
-    label: "dummy4"
-  });
-
-  web.emit("connect-nodes", {
-    from: "dummy1",
-    to: "dummy2",
-  });
-  web.emit("connect-nodes", {
-    from: "dummy2",
-    to: "dummy3",
-  });
-  web.emit("connect-nodes", {
-    from: "dummy3",
-    to: "dummy4",
-  });
-
-  web.emit("remove-node", {
-    id: "dummy2",
-  });
-
-  /*web.emit("disconnect-nodes", {
-    from: "dummy",
-    to: "dummy2",
-  });
-  */
-
+  console.log("setting initialized to true");
+  initialized = true;
+  jsonToClient(jsonStub);
 });
-
 
 /* gef-side events */
 gef.on("connection", function(socket) {

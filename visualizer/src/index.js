@@ -15,8 +15,8 @@ const options = {
   layout: {
     hierarchical: {
       enabled: true,
-      levelSeparation: 300,
-      direction: "LR"
+      levelSeparation: 100,
+      direction: "UD"
     }
   },
   nodes: {
@@ -24,9 +24,73 @@ const options = {
     font: {
       face: "monospace",
       align: "left"
+    },
+    physics: false
+  },
+  edges: {
+    physics: false
+  },
+  groups: {
+    free: {
+      color: "#109618" // green
+    },
+    inUse: {
+      color: "#C5000B" // red
+    },
+    largeBins: {
+      color: "#FFFF00" // yellow
+    },
+    tcache: {
+      color: "#2B7CE9" // blue
+    },
+    fastBins: {
+      color: "#FF9900" // orange
     }
   }
 };
+
+var legend = [
+  {
+    id: "legend0",
+    label: "Free",
+    group: "free",
+    fixed: true,
+  },
+  {
+    id: "legend1",
+    label: "In Use",
+    group: "inUse",
+    fixed: true,
+  },
+  {
+    id: "legend2",
+    label: "Large Bins",
+    group: "largeBins",
+    fixed: true,
+  },
+  {
+    id: "legend3",
+    label: "TCache",
+    group: "tcache",
+    fixed: true,
+  },
+  {
+    id: "legend4",
+    label: "Fast Bins",
+    group: "fastBins",
+    fixed: true,
+  }
+];
+
+function addLegend() {
+  var lastId;
+
+  for (let i = 0; i < legend.length; i++) {
+    nodes.add(legend[i]);
+    if (i !== 0) connectNodes(lastId, legend[i].id, true);
+    lastId = legend[i].id;
+  }
+}
 
 function initNetwork() {
   // Init network to net_container_0
@@ -43,14 +107,16 @@ function initNetwork() {
 
   // Create new network with container, data, and options
   network = new vis.Network(container, data, options);
+
+  addLegend();
 }
 
 function addNode(newId, newGroup, newLabel) {
   nodes.add({
     id: newId,
     group: newGroup,
-    label: newLabel,
-    color: "#FFCFCF"
+    label: newLabel
+    /*color: "#FFCFCF"*/
   });
   nodeIds.push(newId);
 }
@@ -67,17 +133,17 @@ function removeNode(id) {
   nodes.remove({ id: id });
 
   // Find and remove id from nodeIds
-  for(let i = 0; i < nodeIds.length; i++){
-    if(nodeIds[i] === id) {
+  for (let i = 0; i < nodeIds.length; i++) {
+    if (nodeIds[i] === id) {
       nodeIds.splice(i, 1);
       break;
     }
   }
 
   // Remove all edges to and from node
-  for(let i = 0; i < edgeIds.length; i++){
+  for (let i = 0; i < edgeIds.length; i++) {
     let edge = edges.get(edgeIds[i]);
-    if (edge.to === id || edge.from === id){
+    if (edge.to === id || edge.from === id) {
       // Remove from edgeIds
       edgeIds.splice(i, 1);
       // Remove from edges
@@ -94,8 +160,18 @@ function updateNetwork() {
   network.stabilize();
 }
 
-function connectNodes(from, to) {
-  edges.add({ id: from + to, from: from, to: to });
+function connectNodes(from, to, legend) {
+  if (legend === true) {
+    console.log("legend", from, to);
+    edges.add({
+      id: from + to,
+      from: from,
+      to: to,
+      color: { inherit: false, color: "#FFFFFF" }
+    });
+  } else {
+    edges.add({ id: from + to, from: from, to: to });
+  }
 }
 
 function disconnectNodes(from, to) {
@@ -123,7 +199,7 @@ socket.on("remove-node", function(data) {
 });
 
 socket.on("connect-nodes", function(data) {
-  connectNodes(data.from, data.to);
+  connectNodes(data.from, data.to, false);
   updateNetwork();
 });
 
