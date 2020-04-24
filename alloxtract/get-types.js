@@ -3,72 +3,17 @@ const git = require('isomorphic-git')
 const http = require('isomorphic-git/http/node')
 const fs = require('fs')
 const cliProgress = require('cli-progress')
-const nearley = require('nearley')
-const grammar = require('./cjs/grammar.js')
-const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar))
+const shell = require('shelljs')
+const alloxtract = require('alloxtract')
+const process = require('process')
 
 const dir = path.join(__dirname, 'glibc')
-async function getRepo () {
+
+function getRepo () {
   if (!fs.existsSync(dir)) {
-    console.log('Cloning glibc repo. This will take a while...')
-    /* We don't have glibc source, need to get it */
-    const multibar = new cliProgress.MultiBar({
-      clearOnComplete: false,
-      hideCursor: true
-    }, cliProgress.Presets.legacy)
-    var bars = {}
-    await git.clone({
-      fs,
-      http,
-      dir,
-      corsProxy: 'https://cors.isomorphic-git.org',
-      url: 'https://github.com/bminor/glibc.git',
-      onProgress: event => {
-        if (!(event.phase in bars)) {
-          bars[event.phase] = multibar.create(event.total ? event.total : 0, 0)
-          bars[event.phase].format = '> ' + event.phase + ' [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}'
-        }
-        if (event.total) {
-          bars[event.phase].setTotal(event.total)
-        } else {
-          bars[event.phase].setTotal(event.loaded)
-        }
-        bars[event.phase].update(event.loaded, { filename: event.phase })
-      }
-    }).then(() => {
-      multibar.stop()
-      console.log()
-      console.log('Retrieved glibc source...')
-    })
+    shell.exec('git clone https://github.com/bminor/glibc.git')
+    console.log('Obtained glibc source...')
   }
-  /* We have glibc source, do a fetch to make sure we have updates */
-  const multibar = new cliProgress.MultiBar({
-    clearOnComplete: false,
-    hideCursor: true
-  }, cliProgress.Presets.legacy)
-  bars = {}
-  await git.fetch({
-    fs,
-    http,
-    dir,
-    corsProxy: 'https://cors.isomorphic-git.org',
-    onProgress: event => {
-      if (!(event.phase in bars)) {
-        bars[event.phase] = multibar.create(event.total ? event.total : 0, 0)
-        bars[event.phase].format = '> ' + event.phase + ' [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}'
-      }
-      if (event.total) {
-        bars[event.phase].setTotal(event.total)
-      } else {
-        bars[event.phase].setTotal(event.loaded)
-      }
-      bars[event.phase].update(event.loaded, { filename: event.phase })
-    }
-  }).then(() => {
-    multibar.stop()
-    console.log()
-    console.log('Finished fetch...')
-  })
 }
 
 async function getReleases () {
@@ -132,6 +77,7 @@ function buildDef (mallocDir) {
       jsonDefs[def] = mallocC.substring(pos, findMatchIndex(mallocC, startStruct + match.length - 1) + 1)
     }
   })
+  jsonDefs['malloc'] = mallocC
   return jsonDefs
 }
 
@@ -159,16 +105,20 @@ async function getVersionMallocSource (release) {
       fs.mkdirSync(path.join(versionsDir, extractVersionNumber(release)))
     }
     for (var def in versionDef) {
-      // fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.type'), parser.feed(versionDef[def]))
-      console.log(parser.feed(versionDef[def]))
+      /*TODO:  Feed the parser our struct and output JSON from it */
+      if (def !== 'malloc') {
+        var jsonDef = generateJson(versionDef[def], versionDef['malloc']);
+        console.log('Generated response', jsonDef)
+      }
+      fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.c'), versionDef[def])
     }
     console.log('Got definitions for glibc ', release)
   })
 }
 
-getRepo().catch(e => { console.error(e) })
-  .then(getReleases().catch(e => { console.error(e) }).then((releases) => {
-    releases.forEach((release) => {
-      getVersionMallocSource(release)
-    })
-  }))
+getRepo()
+getReleases().catch(e => { console.error(e) }).then((releases) => {
+  releases.forEach((release) => {
+    getVersionMallocSource(release)
+  })
+})
