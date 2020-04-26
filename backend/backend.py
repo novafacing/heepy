@@ -15,17 +15,36 @@ if len(sys.argv) < 2:
     sys.exit()
 
 gdbmi = GdbController()
-response = gdbmi.write('-file-exec-file ' + sys.argv[1])
+response = gdbmi.write('-file-exec-and-symbols ' + sys.argv[1])
+response = gdbmi.write('start')
+
+# Break after each heap changing thing happens
+response = gdbmi.write('-break-insert malloc')
+bp_num = response[0]['payload']['bkpt']['number']
+response = gdbmi.write('-break-commands {} "fin"'.format(bp_num))
+
+response = gdbmi.write('-break-insert free')
+bp_num = response[0]['payload']['bkpt']['number']
+response = gdbmi.write('-break-commands {} "fin"'.format(bp_num))
+
+response = gdbmi.write('-break-insert calloc')
+bp_num = response[0]['payload']['bkpt']['number']
+response = gdbmi.write('-break-commands {} "fin"'.format(bp_num))
+
+response = gdbmi.write('-break-insert realloc')
+bp_num = response[0]['payload']['bkpt']['number']
+response = gdbmi.write('-break-commands {} "fin"'.format(bp_num))
+
+# TODO: Handle heap writes
 
 @sio.event
 def read_from_address(data):
     print("ABOUT TO READ FROM {} BYTES FROM {}".format(data["size"], data["address"]))
-    print(data)
 
     result = gdbmi.write("-data-read-memory-bytes " + str(data["address"]) + " " + str(data["size"]))
     value = result[0]["payload"]["memory"][0]["contents"]
 
-    print("Read {} from address".format(result))
+    print("Read {} from address".format(value))
 
     return {
         "address": data["address"],
@@ -46,29 +65,23 @@ def address_of_symbol(data):
     }
 
 @sio.event
-def continue_execution(data):
+def continue_execution():
     print("Continuing execution")
-    gdbmi.write("continue")
+    response = gdbmi.write("-exec-continue")
+    if response[-1]['message'] == 'stopped' and response[-1]['payload'].get('reason', None) == 'exited-normally':
+        print("Program exited normally")
+        sys.exit()
+
+    # The only time the probram breaks is when the heap is modified
+    update_heap_info()
 
 def update_heap_info():
     """
     Update info when breakpoint reached
     """
-    sio.emit('heap-changed')
+    print("Updating heap info")
+    sio.emit('heap_changed')
 
-"""
-class MallocFinishBreakpoint(gdb.FinishBreakpoint):
-    "'"
-    Updates heap state so that it can be redrawn.
-    "'"
-    def stop(self):
-        update_heap_info()
-        return False # Continue Execution
 
-class MallocHookBreakpoint(gdb.Breakpoint):
-    def stop(self):
-        MallocFinishBreakpoint()
-        return True # Pause execution
-"""
 
 sio.connect('http://localhost:5000')
