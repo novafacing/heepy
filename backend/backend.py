@@ -36,6 +36,23 @@ bp_num = response[0]['payload']['bkpt']['number']
 response = gdbmi.write('-break-commands {} "fin"'.format(bp_num))
 
 # TODO: Handle heap writes
+@sio.event
+def sizeof(data):
+    print("sizeof: ", data["var"])
+    result = gdbmi.write('-data-evaluate-expression "sizeof(' + data["var"] + ')"')
+
+    return {
+        "result": result[0]['payload']['value']
+    }
+
+@sio.event
+def evaluate_expression(data):
+    print("evaluating: ", data["expression"])
+    result = gdbmi.write('-data-evaluate-expression "' + data["expression"] + '"')
+
+    return {
+        "result": result[0]['payload']['value']
+    }
 
 @sio.event
 def read_from_address(data):

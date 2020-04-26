@@ -13,10 +13,12 @@ def symbol_addr_callback(data):
     print("Got symbol address {}".format(data))
     sio.emit("read_from_address", {"address": data["result"], "size": 8}, callback=read_from_address_callback)
 
+def sizeof_callback(data):
+    print("Got sizeof result {}".format(data['result']))
+
 @sio.event
 def connect(sid, environ):
     print("Connected: {}".format(sid))
-    #sio.emit("address_of_symbol", {"symbol_name": "main_arena"}, callback=symbol_addr_callback)
     sio.emit("continue_execution")
 
 @sio.event
