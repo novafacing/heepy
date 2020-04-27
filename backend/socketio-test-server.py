@@ -22,8 +22,8 @@ def connect(sid, environ):
     sio.emit("continue_execution")
 
 @sio.event
-def heap_changed(sid):
-    print("Heap changed!")
+def heap_changed(sid, data):
+    print("Heap changed! @ {}".format(data['called-function']))
     sio.emit("address_of_symbol", {"symbol_name": "main_arena"}, callback=symbol_addr_callback)
 
 eventlet.wsgi.server(eventlet.listen(('127.0.0.1', 5000)), app)

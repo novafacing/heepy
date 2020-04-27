@@ -21,11 +21,11 @@ response = gdbmi.write('start')
 # Break after each heap changing thing happens
 response = gdbmi.write('-break-insert malloc')
 bp_num = response[0]['payload']['bkpt']['number']
-response = gdbmi.write('-break-commands {} "fin"'.format(bp_num))
+response = gdbmi.write('-break-commands {} "print/ud $rdi" "fin"'.format(bp_num))
 
 response = gdbmi.write('-break-insert free')
 bp_num = response[0]['payload']['bkpt']['number']
-response = gdbmi.write('-break-commands {} "fin"'.format(bp_num))
+response = gdbmi.write('-break-commands {} "print/ud $rdi" "fin"'.format(bp_num))
 
 response = gdbmi.write('-break-insert calloc')
 bp_num = response[0]['payload']['bkpt']['number']
@@ -56,9 +56,9 @@ def evaluate_expression(data):
 
 @sio.event
 def read_from_address(data):
-    print("ABOUT TO READ FROM {} BYTES FROM {}".format(data["size"], data["address"]))
+    print("ABOUT TO READ FROM {} BYTES FROM {}".format(data["size"], hex(data["address"])))
 
-    result = gdbmi.write("-data-read-memory-bytes " + str(data["address"]) + " " + str(data["size"]))
+    result = gdbmi.write("-data-read-memory-bytes " + str(hex(data["address"])) + " " + str(data["size"]))
     value = result[0]["payload"]["memory"][0]["contents"]
 
     print("Read {} from address".format(value))
@@ -73,8 +73,8 @@ def address_of_symbol(data):
     # main_arena
     print("address_of_symbol: ", data["symbol_name"])
     result = gdbmi.write("-data-evaluate-expression &" + data["symbol_name"])
+    # This is hex b/c it's a symbol. weird...
     value = int(result[0]['payload']['value'].split(' ')[0][2:], 16)
-    print(value)
 
     return {
         "symbol_name": data["symbol_name"],
@@ -89,15 +89,53 @@ def continue_execution():
         print("Program exited normally")
         sys.exit()
 
-    # The only time the probram breaks is when the heap is modified
-    update_heap_info()
+    print(response)
+    data = {
+        'called-function': None,
+        'rax-after-call': None,
+        'rdi-before-call': None,
+    }
 
-def update_heap_info():
+    try:
+        if response[2]['payload']['at'] == '<malloc>':
+            print("We're at the end of a malloc!")
+            result = gdbmi.write("-data-evaluate-expression $rax")
+            rax = int(result[0]['payload']['value'])
+
+            data['called-function'] = 'malloc'
+            data['rax-after-call'] = rax
+
+            rdi = int(response[6]['payload'].split(' ')[-1][:-2])
+            data['rdi-before-call'] = rdi
+
+            print(hex(rdi))
+            print(hex(rax))
+        if response[2]['payload']['at'] == '<free>':
+            print("We're at the end of a free!")
+            result = gdbmi.write("-data-evaluate-expression $rax")
+            rax = int(result[0]['payload']['value'])
+
+            data['called-function'] = 'malloc'
+            data['rax-after-call'] = rax
+
+            rdi = int(response[6]['payload'].split(' ')[-1][:-2])
+            data['rdi-before-call'] = rdi
+
+            print(hex(rdi))
+            print(hex(rax))
+    except IndexError:
+        pass
+
+
+    # The only time the probram breaks is when the heap is modified
+    update_heap_info(data)
+
+def update_heap_info(data):
     """
     Update info when breakpoint reached
     """
     print("Updating heap info")
-    sio.emit('heap_changed')
+    sio.emit('heap_changed', data)
 
 
 
