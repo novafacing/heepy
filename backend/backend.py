@@ -89,7 +89,7 @@ def continue_execution():
         print("Program exited normally")
         sys.exit()
 
-    print(response)
+    #print(response)
     data = {
         'called-function': None,
         'rax-after-call': None,
@@ -147,7 +147,7 @@ def continue_execution():
 
             data['called-function'] = 'free'
             data['rax-after-call'] = rax
-            print(response)
+            #print(response)
 
             rdi = int(response[6]['payload'].split(' ')[-1][:-2])
             data['rdi-before-call'] = rdi
