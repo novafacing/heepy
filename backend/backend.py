@@ -115,7 +115,7 @@ def continue_execution():
             result = gdbmi.write("-data-evaluate-expression $rax")
             rax = int(result[0]['payload']['value'])
 
-            data['called-function'] = 'malloc'
+            data['called-function'] = 'free'
             data['rax-after-call'] = rax
 
             rdi = int(response[6]['payload'].split(' ')[-1][:-2])
