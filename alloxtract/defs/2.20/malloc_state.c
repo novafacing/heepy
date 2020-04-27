@@ -30,4 +30,4 @@ struct malloc_state
   /* Memory allocated from the system in this arena.  */
   INTERNAL_SIZE_T system_mem;
   INTERNAL_SIZE_T max_system_mem;
-}
+};

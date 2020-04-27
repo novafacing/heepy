@@ -33,4 +33,4 @@ struct malloc_par
      aren't used to prefill the cache.  */
   size_t tcache_unsorted_limit;
 #endif
-}
+};

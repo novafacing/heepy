@@ -4,7 +4,7 @@ const http = require('isomorphic-git/http/node')
 const fs = require('fs')
 const cliProgress = require('cli-progress')
 const shell = require('shelljs')
-const alloxtract = require('alloxtract')
+const alloxtract = require('./alloxtract')
 const process = require('process')
 
 const dir = path.join(__dirname, 'glibc')
@@ -74,7 +74,7 @@ function buildDef (mallocDir) {
     }
     if (pos !== -1 && startStruct !== -1) {
       // jsonDefs[def] = mallocC.substring(pos, findMatchIndex(mallocC, startStruct))
-      jsonDefs[def] = mallocC.substring(pos, findMatchIndex(mallocC, startStruct + match.length - 1) + 1)
+      jsonDefs[def] = mallocC.substring(pos, findMatchIndex(mallocC, startStruct + match.length - 1) + 1) + ';'
     }
   })
   jsonDefs['malloc'] = mallocC
@@ -104,15 +104,17 @@ async function getVersionMallocSource (release) {
     if (!fs.existsSync(path.join(versionsDir, extractVersionNumber(release)))) {
       fs.mkdirSync(path.join(versionsDir, extractVersionNumber(release)))
     }
+    console.log('Getting glibc definitions for ', release)
+    fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), 'malloc' + '.c'), versionDef['malloc'])
     for (var def in versionDef) {
       /*TODO:  Feed the parser our struct and output JSON from it */
-      if (def !== 'malloc') {
-        var jsonDef = generateJson(versionDef[def], versionDef['malloc']);
-        console.log('Generated response', jsonDef)
-      }
       fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.c'), versionDef[def])
+      if (def !== 'malloc') {
+        var structJson = alloxtract.generateJson(versionDef[def], versionDef['malloc']);
+        var jsonDef = JSON.stringify(structJson, null, 2);
+        fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.c.json'), jsonDef);
+      }
     }
-    console.log('Got definitions for glibc ', release)
   })
 }
 

@@ -1,0 +1,403 @@
+{
+  "type": "translation_unit",
+  "external_declaration": {
+    "type": "external_declaration",
+    "declaration": {
+      "type": "declaration",
+      "declaration_specifiers": {
+        "type": "declaration_specifiers",
+        "type_specifier": {
+          "type": "type_specifier",
+          "struct_or_union_specifier": {
+            "type": "struct_or_union_specifier",
+            "struct_or_union": {
+              "type": "struct_or_union",
+              "struct_or_union": "struct"
+            },
+            "identifier": "malloc_par",
+            "struct_declaration_list": [
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "type_specifier": "unsigned"
+                  },
+                  "specifier_qualifier_list": {
+                    "type": "specifier_qualifier_list",
+                    "type_specifier": {
+                      "type": "type_specifier",
+                      "type_specifier": "long"
+                    }
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "trim_threshold"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "typedef_name": "INTERNAL_SIZE_T"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "top_pad"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "typedef_name": "INTERNAL_SIZE_T"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "mmap_threshold"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "typedef_name": "INTERNAL_SIZE_T"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "arena_test"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "typedef_name": "INTERNAL_SIZE_T"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "arena_max"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "type_specifier": "int"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "n_mmaps"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "type_specifier": "int"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "n_mmaps_max"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "type_specifier": "int"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "max_n_mmaps"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "type_specifier": "int"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "no_dyn_threshold"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "typedef_name": "INTERNAL_SIZE_T"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "mmapped_mem"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "typedef_name": "INTERNAL_SIZE_T"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "max_mmapped_mem"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "type_specifier": "char"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "pointer": {
+                        "type": "pointer"
+                      },
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "sbrk_base"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "typedef_name": "size_t"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "tcache_bins"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "typedef_name": "size_t"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "tcache_max_bytes"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "typedef_name": "size_t"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "tcache_count"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": {
+                  "type": "specifier_qualifier_list",
+                  "type_specifier": {
+                    "type": "type_specifier",
+                    "typedef_name": "size_t"
+                  }
+                },
+                "struct_declarator_list": {
+                  "type": "struct_declarator_list",
+                  "struct_declarator": {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "tcache_unsorted_limit"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

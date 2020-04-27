@@ -8,8 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "jison -I -n structTypes -o parsers/struct-types.js grammars/struct-types.jison && jison -I -n c11 -o parsers/c11.js grammars/c11.jison && jison -I -n typedefs -o parsers/typedefs.js grammars/typedefs.jison",
-    "build-dbg": "jison -x -I -n structTypes -o parsers/struct-types.js grammars/struct-types.jison && jison -x -I -n c11 -o parsers/c11.js grammars/c11.jison && jison -x -I -n typedefs -o parsers/typedefs.js grammars/typedefs.jison"
+    "build": "jison -I -o parsers/struct-types.js grammars/struct-types.jison && jison -I -o parsers/c11.js grammars/c11.jison && jison -I -o parsers/typedefs.js grammars/typedefs.jison && jison -I -o parsers/defines.js grammars/defines.jison",
+    "build-dbg": "jison -x -I -n structTypes -o parsers/struct-types.js grammars/struct-types.jison && jison -x -I -n c11 -o parsers/c11.js grammars/c11.jison && jison -x -I -n typedefs -o parsers/typedefs.js grammars/typedefs.jison && jison -x -I -o parsers/defines.js grammars/defines.jison"
   },
   "author": "Rowan Hart",
   "license": "MIT",

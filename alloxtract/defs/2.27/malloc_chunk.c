@@ -9,4 +9,4 @@ struct malloc_chunk {
   /* Only used for large blocks: pointer to next larger size.  */
   struct malloc_chunk* fd_nextsize; /* double links -- used only if free. */
   struct malloc_chunk* bk_nextsize;
-}
+};

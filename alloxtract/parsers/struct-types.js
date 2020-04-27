@@ -564,7 +564,7 @@ var parser = {
     //   export *all* tables: ............. false
     //   module type: ..................... commonjs
     //   parser engine type: .............. lalr
-    //   output main() in the module: ..... false
+    //   output main() in the module: ..... true
     //   has user-specified main(): ....... false
     //   has user-specified require()/import modules for main():
     //   .................................. false
@@ -3650,42 +3650,4 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     return structTypes.parse.apply(structTypes, arguments);
   };
   
-
-
-var fs = require('fs');
-var path = require('path');
-
-
-exports.main = function (args) {
-    // When the parser comes with its own `main` function, then use that one:
-    if (typeof exports.parser.main === 'function') {
-      return exports.parser.main(args);
-    }
-
-    if (!args[1]) {
-        console.log('Usage:', path.basename(args[0]) + ' FILE');
-        process.exit(1);
-    }
-    var source = fs.readFileSync(path.normalize(args[1]), 'utf8');
-    var dst = exports.parser.parse(source);
-    console.log('parser output:\n\n', {
-        type: typeof dst,
-        value: dst
-    });
-    try {
-        console.log("\n\nor as JSON:\n", JSON.stringify(dst, null, 2));
-    } catch (e) { /* ignore crashes; output MAY not be serializable! We are a generic bit of code, after all... */ }
-    var rv = 0;
-    if (typeof dst === 'number' || typeof dst === 'boolean') {
-        rv = dst;
-    }
-    return dst;
-};
-
-// IFF this is the main module executed by NodeJS,
-// then run 'main()' immediately:
-if (typeof module !== 'undefined' && require.main === module) {
-  exports.main(process.argv.slice(1));
-}
-
 }

@@ -22,4 +22,4 @@ struct malloc_par
 
   /* First address handed out by MORECORE/sbrk.  */
   char *sbrk_base;
-}
+};
