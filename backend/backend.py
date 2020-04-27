@@ -29,11 +29,11 @@ response = gdbmi.write('-break-commands {} "print/ud $rdi" "fin"'.format(bp_num)
 
 response = gdbmi.write('-break-insert calloc')
 bp_num = response[0]['payload']['bkpt']['number']
-response = gdbmi.write('-break-commands {} "fin"'.format(bp_num))
+response = gdbmi.write('-break-commands {} "print/ud $rdi" "print/ud $rsi" "fin"'.format(bp_num))
 
 response = gdbmi.write('-break-insert realloc')
 bp_num = response[0]['payload']['bkpt']['number']
-response = gdbmi.write('-break-commands {} "fin"'.format(bp_num))
+response = gdbmi.write('-break-commands {} "print/ud $rdi" "print/ud $rsi" "fin"'.format(bp_num))
 
 # TODO: Handle heap writes
 @sio.event
@@ -122,6 +122,39 @@ def continue_execution():
             data['rdi-before-call'] = rdi
 
             print(hex(rdi))
+            print(hex(rax))
+        if response[2]['payload']['at'] == '<realloc>':
+            print("We're at the end of a realloc!")
+            result = gdbmi.write("-data-evaluate-expression $rax")
+            rax = int(result[0]['payload']['value'])
+
+            data['called-function'] = 'realloc'
+            data['rax-after-call'] = rax
+
+            rdi = int(response[6]['payload'].split(' ')[-1][:-2])
+            data['rdi-before-call'] = rdi
+            rsi = int(response[7]['payload'].split(' ')[-1][:-2])
+            data['rsi-before-call'] = rsi
+
+            print(hex(rdi))
+            print(hex(rsi))
+            print(hex(rax))
+        if response[2]['payload']['at'] == '<calloc>':
+            print("We're at the end of a calloc!")
+            result = gdbmi.write("-data-evaluate-expression $rax")
+            rax = int(result[0]['payload']['value'])
+
+            data['called-function'] = 'free'
+            data['rax-after-call'] = rax
+            print(response)
+
+            rdi = int(response[6]['payload'].split(' ')[-1][:-2])
+            data['rdi-before-call'] = rdi
+            rsi = int(response[7]['payload'].split(' ')[-1][:-2])
+            data['rsi-before-call'] = rsi
+
+            print(hex(rdi))
+            print(hex(rsi))
             print(hex(rax))
     except IndexError:
         pass
