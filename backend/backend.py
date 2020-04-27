@@ -94,6 +94,7 @@ def continue_execution():
         'called-function': None,
         'rax-after-call': None,
         'rdi-before-call': None,
+        'rsi-before-call': None,
     }
 
     try:
