@@ -6,6 +6,7 @@ var network;
 var nodes;
 var edges;
 
+// Both unsorted
 var nodeIds = [];
 var edgeIds = [];
 
@@ -49,49 +50,6 @@ const options = {
   }
 };
 
-var legend = [
-  {
-    id: "legend0",
-    label: "Free",
-    group: "free",
-    fixed: true,
-  },
-  {
-    id: "legend1",
-    label: "In Use",
-    group: "inUse",
-    fixed: true,
-  },
-  {
-    id: "legend2",
-    label: "Large Bins",
-    group: "largeBins",
-    fixed: true,
-  },
-  {
-    id: "legend3",
-    label: "TCache",
-    group: "tcache",
-    fixed: true,
-  },
-  {
-    id: "legend4",
-    label: "Fast Bins",
-    group: "fastBins",
-    fixed: true,
-  }
-];
-
-function addLegend() {
-  var lastId;
-
-  for (let i = 0; i < legend.length; i++) {
-    nodes.add(legend[i]);
-    if (i !== 0) connectNodes(lastId, legend[i].id, true);
-    lastId = legend[i].id;
-  }
-}
-
 function initNetwork() {
   // Init network to net_container_0
   var container = document.getElementById("networkContainer");
@@ -107,8 +65,6 @@ function initNetwork() {
 
   // Create new network with container, data, and options
   network = new vis.Network(container, data, options);
-
-  addLegend();
 }
 
 function addNode(newId, newGroup, newLabel) {
