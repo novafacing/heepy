@@ -12,7 +12,18 @@ external_declaration ->
     | declaration
 
 function_definition ->
-    declaration_specifier:* _ declarator _ declaration:* _ compound_statement
+    declaration_specifiers declarator declaration_list compound_statement
+    | declaration_specifiers declarator compound_statement
+    | declarator declaration_list compound_statement
+    | declarator compound_statement
+
+declaration_specifiers ->
+    storage_class_specifier
+    | storage_class_specifier declaration_specifiers
+    | type_specifier
+    | type_specifier declaration_specifiers
+    | type_qualifier
+    | type_qualifier declaration_specifiers
 
 declaration_specifier ->
     storage_class_specifier
@@ -20,11 +31,11 @@ declaration_specifier ->
     | type_qualifier
 
 storage_class_specifier ->
-    %tk_auto
-    | %tk_register
-    | %tk_static
+    %tk_typedef
     | %tk_extern
-    | %tk_typedef
+    | %tk_static
+    | %tk_auto
+    | %tk_register
 
 type_specifier ->
     %tk_void
@@ -38,19 +49,30 @@ type_specifier ->
     | %tk_unsigned
     | struct_or_union_specifier
     | enum_specifier
-    | typedef_name
+    | type_name
 
 struct_or_union_specifier ->
-    struct_or_union _ %tk_identifier _ "{" _ struct_declaration:+ _ "}"
-    | struct_or_union _ "{" _ struct_declaration:+ _ "}"
+    struct_or_union _ %tk_identifier _ "{" _ struct_declaration_list _ "}" 
+    | struct_or_union _ "{" _ struct_declaration_list _ "}"
     | struct_or_union _ %tk_identifier
 
 struct_or_union ->
     %tk_struct
     | %tk_union
 
+struct_declaration_list ->
+    struct_declaration
+    | struct_declaration_list struct_declaration
+
 struct_declaration ->
-    specifier_qualifier:* _ struct_declarator_list _ ";"
+    specifier_qualifier_list _ struct_declarator_list _ ";"
+
+specifier_qualifier_list ->
+    type_specifier specifier_qualifier_list
+    | type_specifier
+    | type_qualifier specifier_qualifier_list
+    | type_qualifier
+    
 
 specifier_qualifier ->
     type_specifier
@@ -87,10 +109,6 @@ constant_expression ->
 
 conditional_expression ->
     logical_or_expression
-    | logical_or_expression _ "?" _ expression _ ":" _ conditional_expression
-
-logical_or_expression ->
-    logical_and_expression
     | logical_or_expression _ "?" _ expression _ ":" _ conditional_expression
 
 logical_or_expression ->
@@ -139,7 +157,7 @@ multiplicative_expression ->
     cast_expression
     | multiplicative_expression _ "*" _ cast_expression
     | multiplicative_expression _ "/" _ cast_expression
-    | multiplicative_expression _ "%tk_" _ cast_expression
+    | multiplicative_expression _ "%" _ cast_expression
 
 cast_expression ->
     unary_expression
@@ -157,15 +175,20 @@ unary_expression ->
 postfix_expression ->
     primary_expression
     | postfix_expression _ "[" _ expression _ "]"
-    | postfix_expression _ "(" _ assignment_expression:* _ ")"
+    | postfix_expression _ "(" _ ")"
+    | postfix_expression _ "(" _ argument_expression_list _ ")"
     | postfix_expression _ "." _ %tk_identifier
     | postfix_expression _ %tk_ptr_op _ %tk_identifier
     | postfix_expression _ %tk_inc_op
     | postfix_expression _ %tk_dec_op
 
+argument_expression_list ->
+    assignment_expression
+    | argument_expression_list _ ',' _ assignment_expression
+
 primary_expression ->
     %tk_identifier
-    | constant
+    | %tk_constant
     | %tk_string_literal
     | "(" _ expression _ ")"
 
@@ -247,7 +270,12 @@ typedef_name ->
     %tk_identifier
 
 declaration ->
-    declaration_specifier:+ _ init_declarator:* _ ";"
+    declaration_specifiers _ ';'
+    | declaration_specifiers _ init_declarator_list _ ';'
+
+init_declarator_list ->
+    init_declarator
+    | init_declarator_list _ ',' _ init_declarator
 
 init_declarator ->
     declarator
@@ -300,3 +328,4 @@ jump_statement ->
 _ ->
     %tk_ws:?
     | null
+    | _ %tk_p_comment _
