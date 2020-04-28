@@ -235,11 +235,11 @@ function mallocState () {
       count: 1
     },
     flags: {
-      size: ptrSize,
+      size: ptrSize / 2,
       count: 1
     },
     have_fastchunks: {
-      size: ptrSize,
+      size: ptrSize / 2,
       count: 1
     },
     fastbinsY: {
