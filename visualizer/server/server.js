@@ -1,9 +1,11 @@
 var app = require("express")();
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
-const path = require("path");
+var fs = require('fs');
+var path = require('path');
 const web = io.of("/web");
 const gef = io.of("/gef");
+var state = {};
 
 server.listen(3000);
 
@@ -101,17 +103,94 @@ app.get("/index.js", function(req, res) {
 // Calls to client
 // Calls json to client with 'initial' heap structure
 web.on("connection", function(socket) {
+  console.log('Got connection from web');
   web.emit("client-hello", {
     connection: "success"
   });
-  console.log("setting initialized to true");
-  initialized = true;
-  jsonToClient(jsonStub);
+});
+
+gef.on("connect", function(socket) {
+  console.log('Got connection from gef');
+  gef.emit("continue_execution");
+  state = {};
+});
+
+var onevent = gef.onevent;
+gef.onevent = function (packet) {
+    var args = packet.data || [];
+    onevent.call (this, packet);    // original call
+    packet.data = ["*"].concat(args);
+    onevent.call(this, packet);      // additional call to catch-all
+};
+gef.on("*",function(event,data) {
+    console.log(event);
+    console.log(data);
+});
+
+
+function getVersionNumber () {
+  /* call the version number emit */
+  return new Promise(resolve => {
+    gef.emit('libc_version', '', (data) => {
+      resolve(data.result);
+    });
+  });
+}
+
+function getAllocSize (retAddr) {
+  /* Where retAddr is the addr returned from malloc */
+  var ptrSize = 8;
+  return new Promise(resolve => {
+    gef.emit('read_from_address', { size: ptrSize, addr: retAddr - ptrSize }, (data) => {
+    /* Callback for addr read  */
+      resolve(data);
+    });
+  });
+}
+
+function getContentsAt (addr, size) {
+  return new Promise(resolve => {
+    gef.emit('read_from_address', { size: size, addr: addr }, (data) => {
+      resolve(data.result);
+    });
+  });
+}
+
+function malloc (st, data) {
+  console.log('Got malloc');
+  var ptrSize = 8;
+  var retAddr = data['rax-after-call'];
+  getAllocSize.then(allocSize => {
+    console.log(getContentsAt(retAddr - (2 * ptrSize), allocSize));
+  });
+}
+
+function calloc (st, data) {
+}
+function realloc (st, data) {
+}
+function free (st, data) {
+}
+
+gef.on("heap_changed", (data) => {
+  switch(data['called-function']) {
+    case 'malloc':
+      malloc(state, data);
+      break;
+    case 'calloc':
+      calloc(state, data);
+      break;
+    case 'realloc':
+      realloc(state, data);
+      break;
+    case 'free':
+      free(state, data);
+      break;
+  };
+
+   
 });
 
 /* gef-side events */
-gef.on("connection", function(socket) {
-  gef.emit("client-hello", {
-    connection: "success"
-  });
-});
+
+

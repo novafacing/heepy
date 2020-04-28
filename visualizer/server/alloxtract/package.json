@@ -1,0 +1,24 @@
+{
+  "name": "alloxtract",
+  "version": "1.0.0",
+  "description": "Extract glibc malloc structs to JSON",
+  "main": "alloxtract.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "jison -I -o parsers/struct-types.js grammars/struct-types.jison && jison -I -o parsers/c11.js grammars/c11.jison && jison -I -o parsers/typedefs.js grammars/typedefs.jison && jison -I -o parsers/defines.js grammars/defines.jison",
+    "build-dbg": "jison -x -I -n structTypes -o parsers/struct-types.js grammars/struct-types.jison && jison -x -I -n c11 -o parsers/c11.js grammars/c11.jison && jison -x -I -n typedefs -o parsers/typedefs.js grammars/typedefs.jison && jison -x -I -o parsers/defines.js grammars/defines.jison"
+  },
+  "author": "Rowan Hart",
+  "license": "MIT",
+  "devDependencies": {
+    "cli-progress": "^3.8.0",
+    "isomorphic-git": "^1.3.2",
+    "jison-gho": "^0.6.1-216"
+  },
+  "dependencies": {
+    "shelljs": "^0.8.3"
+  }
+}

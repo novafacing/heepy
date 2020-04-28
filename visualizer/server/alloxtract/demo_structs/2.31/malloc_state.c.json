@@ -1,0 +1,51 @@
+{
+    size: 2200,
+    configuration: {
+        mutex: {
+            size: 8
+        },
+        flags: {
+            size: 8
+        },
+        have_fastchunks: {
+            size: 8
+        },
+        fastbinsY: {
+            size: 8,
+            group: 'fastbins',
+            array: 10
+        },
+        top: {
+            size: 8
+        },
+        last_remainder: {
+            size: 8
+        },
+        bins: {
+            size: 8,
+            group: 'bins',
+            array: 254
+        },
+        binmap: {
+            size: 8,
+            group: 'binmap',
+            array: 4
+        },
+        next: {
+            size: 8
+        },
+        next_free: {
+            size: 8
+        },
+        attached_threads: {
+            size: 8
+        },
+        system_mem: {
+            size: 8
+        },
+        max_system_mem: {
+            size: 8
+        }
+    }
+}
+
