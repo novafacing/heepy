@@ -4,8 +4,11 @@ import pygdbmi
 import socketio
 import time
 import sys
+import random
+import subprocess
 
 sio = socketio.Client()
+
 
 # recieves 'read-from-address' (addr, n_bytes)
 # recieves 'address-of-symbol' (symbol_name)
@@ -20,7 +23,12 @@ gdbmi = GdbController()
 # TODO: Come up with a better way to determine a TTY. Currently just sleeping in a new window lol
 # Open a terminal. Run `tty`, then change the tty below V
 # Then run `sleep 100000` in that terminal.
-response = gdbmi.write('tty /dev/pts/3')
+num = str(random.randint(100000, 1000000))
+p = subprocess.Popen(['xterm', '-e', 'sleep {}'.format(num)])
+time.sleep(1)
+tty = '/dev/' + str(subprocess.check_output("ps ax | grep 'sleep {}' | grep -v xterm | grep -v grep".format(num), shell=True).split()[1], 'utf8')
+
+response = gdbmi.write('tty {}'.format(tty))
 
 response = gdbmi.write('-file-exec-and-symbols ' + sys.argv[1])
 response = gdbmi.write('start')
@@ -91,7 +99,6 @@ def address_of_symbol(data):
     print("address_of_symbol: ", data["symbol_name"])
     result = gdbmi.write("-data-evaluate-expression &" + data["symbol_name"])
     # This is hex b/c it's a symbol. weird...
-    print(result)
     value = int(result[0]['payload']['value'].split(' ')[0][2:], 16)
 
     return {
@@ -104,7 +111,16 @@ def continue_execution():
     print("Continuing execution")
     response = gdbmi.write("-exec-continue")
     if response[-1]['message'] == 'stopped' and response[-1]['payload'].get('reason', None) == 'exited-normally':
-        print("Program exited normally")
+        print("Program exited normally; waiting for input")
+        input()
+        p.kill()
+        sio.disconnect()
+        sys.exit()
+    if response[-1]['message'] == 'error' and response[-1]['payload'].get('msg', None) == 'The program is not being run.':
+        print("Program exited; waiting for input")
+        input()
+        p.kill()
+        sio.disconnect()
         sys.exit()
 
     while response[-1]['message'] == 'running':
@@ -120,75 +136,76 @@ def continue_execution():
         'rsi-before-call': None,
     }
 
-    bp_at = 0
+    bp_at = None
 
     for i, line in enumerate(response):
         if line['message'] == 'breakpoint-modified':
             bp_at = i
             break;
 
-    try:
-        if response[bp_at]['payload']['at'] == '<malloc>':
-            print("We're at the end of a malloc!")
-            result = gdbmi.write("-data-evaluate-expression $rax")
-            rax = int(result[0]['payload']['value'])
+    if bp_at is not None:
+        try:
+            if response[bp_at]['payload']['at'] == '<malloc>':
+                print("We're at the end of a malloc!")
+                result = gdbmi.write("-data-evaluate-expression $rax")
+                rax = int(result[0]['payload']['value'])
 
-            data['called-function'] = 'malloc'
-            data['rax-after-call'] = rax
+                data['called-function'] = 'malloc'
+                data['rax-after-call'] = rax
 
-            rdi = int(response[bp_at+4]['payload'].split(' ')[-1][:-2])
-            data['rdi-before-call'] = rdi
+                rdi = int(response[bp_at+4]['payload'].split(' ')[-1][:-2])
+                data['rdi-before-call'] = rdi
 
-            print(hex(rdi))
-            print(hex(rax))
-        if response[bp_at]['payload']['at'] == '<free>':
-            print("We're at the end of a free!")
-            result = gdbmi.write("-data-evaluate-expression $rax")
-            rax = int(result[0]['payload']['value'])
+                print(hex(rdi))
+                print(hex(rax))
+            if response[bp_at]['payload']['at'] == '<free>':
+                print("We're at the end of a free!")
+                result = gdbmi.write("-data-evaluate-expression $rax")
+                rax = int(result[0]['payload']['value'])
 
-            data['called-function'] = 'free'
-            data['rax-after-call'] = rax
+                data['called-function'] = 'free'
+                data['rax-after-call'] = rax
 
-            rdi = int(response[bp_at+4]['payload'].split(' ')[-1][:-2])
-            data['rdi-before-call'] = rdi
+                rdi = int(response[bp_at+4]['payload'].split(' ')[-1][:-2])
+                data['rdi-before-call'] = rdi
 
-            print(hex(rdi))
-            print(hex(rax))
-        if response[bp_at]['payload']['at'] == '<realloc>':
-            print("We're at the end of a realloc!")
-            result = gdbmi.write("-data-evaluate-expression $rax")
-            rax = int(result[0]['payload']['value'])
+                print(hex(rdi))
+                print(hex(rax))
+            if response[bp_at]['payload']['at'] == '<realloc>':
+                print("We're at the end of a realloc!")
+                result = gdbmi.write("-data-evaluate-expression $rax")
+                rax = int(result[0]['payload']['value'])
 
-            data['called-function'] = 'realloc'
-            data['rax-after-call'] = rax
+                data['called-function'] = 'realloc'
+                data['rax-after-call'] = rax
 
-            rdi = int(response[bp_at+4]['payload'].split(' ')[-1][:-2])
-            data['rdi-before-call'] = rdi
-            rsi = int(response[bp_at+5]['payload'].split(' ')[-1][:-2])
-            data['rsi-before-call'] = rsi
+                rdi = int(response[bp_at+4]['payload'].split(' ')[-1][:-2])
+                data['rdi-before-call'] = rdi
+                rsi = int(response[bp_at+5]['payload'].split(' ')[-1][:-2])
+                data['rsi-before-call'] = rsi
 
-            print(hex(rdi))
-            print(hex(rsi))
-            print(hex(rax))
-        if response[bp_at]['payload']['at'] == '<calloc>':
-            print("We're at the end of a calloc!")
-            result = gdbmi.write("-data-evaluate-expression $rax")
-            rax = int(result[0]['payload']['value'])
+                print(hex(rdi))
+                print(hex(rsi))
+                print(hex(rax))
+            if response[bp_at]['payload']['at'] == '<calloc>':
+                print("We're at the end of a calloc!")
+                result = gdbmi.write("-data-evaluate-expression $rax")
+                rax = int(result[0]['payload']['value'])
 
-            data['called-function'] = 'calloc'
-            data['rax-after-call'] = rax
-            #print(response)
+                data['called-function'] = 'calloc'
+                data['rax-after-call'] = rax
+                #print(response)
 
-            rdi = int(response[bp_at+4]['payload'].split(' ')[-1][:-2])
-            data['rdi-before-call'] = rdi
-            rsi = int(response[bp_at+5]['payload'].split(' ')[-1][:-2])
-            data['rsi-before-call'] = rsi
+                rdi = int(response[bp_at+4]['payload'].split(' ')[-1][:-2])
+                data['rdi-before-call'] = rdi
+                rsi = int(response[bp_at+5]['payload'].split(' ')[-1][:-2])
+                data['rsi-before-call'] = rsi
 
-            print(hex(rdi))
-            print(hex(rsi))
-            print(hex(rax))
-    except IndexError:
-        pass
+                print(hex(rdi))
+                print(hex(rsi))
+                print(hex(rax))
+        except IndexError:
+            pass
 
 
     # The only time the probram breaks is when the heap is modified
@@ -205,3 +222,4 @@ def update_heap_info(data):
 
 
 sio.connect('http://localhost:5000')
+
