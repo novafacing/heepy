@@ -17,7 +17,7 @@ const options = {
     hierarchical: {
       enabled: true,
       levelSeparation: 100,
-      direction: "UD"
+      direction: "LR"
     }
   },
   nodes: {
@@ -117,18 +117,8 @@ function updateNetwork() {
   network.stabilize();
 }
 
-function connectNodes(from, to, legend) {
-  if (legend === true) {
-    console.log("legend", from, to);
-    edges.add({
-      id: from + to,
-      from: from,
-      to: to,
-      color: { inherit: false, color: "#FFFFFF" }
-    });
-  } else {
-    edges.add({ id: from + to, from: from, to: to });
-  }
+function connectNodes(from, to) {
+  edges.add({ id: from + to, from: from, to: to });
 }
 
 function disconnectNodes(from, to) {
@@ -169,7 +159,7 @@ socket.on("remove-node", function(data) {
 });
 
 socket.on("connect-nodes", function(data) {
-  connectNodes(data.from, data.to, false);
+  connectNodes(data.from, data.to);
   updateNetwork();
 });
 
