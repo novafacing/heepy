@@ -26,10 +26,12 @@ const options = {
       face: "monospace",
       align: "left"
     },
-    physics: false
   },
-  edges: {
-    physics: false
+  physics: {
+    enabled: true,
+    hierarchicalRepulsion: {
+      nodeDistance: 300
+    }
   },
   groups: {
     free: {

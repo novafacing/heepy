@@ -104,13 +104,13 @@ function addNodeToClient(node) {
   }
   // TODO remove after testing
   console.log(
-    "id: ",
+    "addNodeToClient() id:",
     typeof node.id,
     node.id,
-    " group: ",
+    "group:",
     typeof node.group,
     node.group,
-    " label: ",
+    "label:",
     typeof node.label,
     node.label
   );
