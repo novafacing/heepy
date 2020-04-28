@@ -1,11 +1,14 @@
 var app = require("express")();
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
+var middleware = require('socketio-wildcard')();
 var fs = require('fs');
 var path = require('path');
+io.use(middleware);
 const web = io.of("/web");
 const gef = io.of("/gef");
 var state = {};
+var glibcVersion = -1;
 
 server.listen(3000);
 
@@ -110,38 +113,53 @@ web.on("connection", function(socket) {
 });
 
 gef.on("connect", function(socket) {
+  socket.on('*', function (data) {
+    console.log('Got unknown callback with data ', data);
+  });
+  socket.on("heap_changed", (data) => {
+    console.log('Got heap change event with data ', data);
+    switch(data['called-function']) {
+      case 'malloc':
+        malloc(socket, state, data);
+        break;
+      case 'calloc':
+        calloc(socket, state, data);
+        break;
+      case 'realloc':
+        realloc(socket, state, data);
+        break;
+      case 'free':
+        free(socket, state, data);
+        break;
+    };
+  });
   console.log('Got connection from gef');
-  gef.emit("continue_execution");
+  glibcVersion = getVersionNumber(socket).then((data) => {
+    socket.emit("continue_execution");
+    return data;
+  });
   state = {};
 });
 
-var onevent = gef.onevent;
-gef.onevent = function (packet) {
-    var args = packet.data || [];
-    onevent.call (this, packet);    // original call
-    packet.data = ["*"].concat(args);
-    onevent.call(this, packet);      // additional call to catch-all
-};
-gef.on("*",function(event,data) {
-    console.log(event);
-    console.log(data);
-});
-
-
-function getVersionNumber () {
+function getVersionNumber (socket) {
   /* call the version number emit */
-  return new Promise(resolve => {
-    gef.emit('libc_version', '', (data) => {
-      resolve(data.result);
-    });
+  return new Promise((resolve, reject) => {
+    if (!socket) {
+      reject('No connection.');
+    } else {
+      socket.emit('libc_version', (data) => {
+        console.log('GOT DATA BACK ', data);
+        resolve(data);
+      });
+    }
   });
 }
 
-function getAllocSize (retAddr) {
+function getAllocSize (sk, retAddr) {
   /* Where retAddr is the addr returned from malloc */
   var ptrSize = 8;
   return new Promise(resolve => {
-    gef.emit('read_from_address', { size: ptrSize, addr: retAddr - ptrSize }, (data) => {
+    sk.emit('read_from_address', { size: ptrSize, address: retAddr - ptrSize }, (data) => {
     /* Callback for addr read  */
       resolve(data);
     });
@@ -150,46 +168,28 @@ function getAllocSize (retAddr) {
 
 function getContentsAt (addr, size) {
   return new Promise(resolve => {
-    gef.emit('read_from_address', { size: size, addr: addr }, (data) => {
+    gef.emit('read_from_address', { size: size, address: addr }, (data) => {
       resolve(data.result);
     });
   });
 }
 
-function malloc (st, data) {
+function malloc (sk, st, data) {
   console.log('Got malloc');
   var ptrSize = 8;
   var retAddr = data['rax-after-call'];
-  getAllocSize.then(allocSize => {
-    console.log(getContentsAt(retAddr - (2 * ptrSize), allocSize));
+  getAllocSize(sk).then((allocSize) => {
+    getContentsAt(retAddr - (2 * ptrSize), allocSize).then((contents) => console.log(contents));
   });
 }
 
-function calloc (st, data) {
+function calloc (sk, st, data) {
 }
-function realloc (st, data) {
+function realloc (sk, st, data) {
 }
-function free (st, data) {
+function free (sk, st, data) {
 }
 
-gef.on("heap_changed", (data) => {
-  switch(data['called-function']) {
-    case 'malloc':
-      malloc(state, data);
-      break;
-    case 'calloc':
-      calloc(state, data);
-      break;
-    case 'realloc':
-      realloc(state, data);
-      break;
-    case 'free':
-      free(state, data);
-      break;
-  };
-
-   
-});
 
 /* gef-side events */
 
