@@ -14,11 +14,37 @@
       height: 80vh;
       width: 80vw;
     }
+    .legend-element {
+      display: inline-block;
+      padding: 1vw;
+    }
+    #free {
+      background-color: #109618;
+    }
+    #inUse {
+      background-color: #C5000B;
+    }
+    #largeBins {
+      background-color: #FFFF00;
+    }
+    #tcache {
+      background-color: #2B7CE9;
+    }
+    #fastBins {
+      background-color: #FF9900;
+    }
   </style>
   </head>
   <body>
     <div>
       <h1>Heepy</h1>
+      <div id="legend">
+        <div class="legend-element" id="free">Free</div>
+        <div class="legend-element" id="inUse">In Use</div>
+        <div class="legend-element" id="largeBins">Large Bins</div>
+        <div class="legend-element" id="tcache">TCache</div>
+        <div class="legend-element" id="fastBins">Fast Bins</div>
+      </div>
       <div id="networkContainer"></div>
     </div>
     <script src="index.js"></script>

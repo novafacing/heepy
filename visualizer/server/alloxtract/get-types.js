@@ -85,6 +85,28 @@ function extractVersionNumber (release) {
   return release.split('/')[1]
 }
 
+function sliceObject(obj, key) {
+  var value;
+    Object.keys(object).some(function(k) {
+        if (k === key) {
+            value = object[k];
+            return true;
+        }
+        if (object[k] && typeof object[k] === 'object') {
+            value = findVal(object[k], key);
+            return value !== undefined;
+        }
+    });
+    return value;
+}
+
+function flattenMallocStruct(structure, defines) {
+  var sdl = sliceObject(structure, 'struct_declaration_list');
+  var flatStruct = {};
+  for (var decl in sdl) {
+  }
+}
+
 async function getVersionMallocSource (release) {
   /* Check out release branch */
   await git.checkout({
@@ -111,8 +133,12 @@ async function getVersionMallocSource (release) {
       fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.c'), versionDef[def])
       if (def !== 'malloc') {
         var structJson = alloxtract.generateJson(versionDef[def], versionDef['malloc']);
-        var jsonDef = JSON.stringify(structJson, null, 2);
+        var jsonDef = JSON.stringify(structJson.struct, null, 2);
+        var defines = JSON.stringify(structJson.defs, null, 2);
         fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.c.json'), jsonDef);
+        fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.defines.json'), defines);
+        //var hrStructure = flattenMallocStruct(jsonDef, defines);
+
       }
     }
   })

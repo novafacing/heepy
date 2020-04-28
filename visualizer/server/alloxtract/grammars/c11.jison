@@ -672,10 +672,7 @@ argument_expression_list
 
 unary_expression /* TODO: Add sizeof/alignof */
 	: postfix_expression {
-        $$ = {
-            type: 'unary_expression',
-            'postfix_expression': $1
-        };
+        $$ = $1;
     }
 	| INC_OP unary_expression {
         $$ = {
@@ -757,10 +754,7 @@ unary_operator
 
 cast_expression
 	: unary_expression {
-        $$ = {
-            type: 'cast_expression',
-            'unary_expression': $1
-        };
+        $$ = $1;
     }
 	| '(' type_name ')' cast_expression {
         $$ = {
@@ -773,15 +767,14 @@ cast_expression
 
 multiplicative_expression /* TODO: Add * / % */
 	: cast_expression {
-        $$ = {
-            type: 'multiplicative_expression',
-            'cast_expression': $1
-        };
+        $$ = $1;
     }
 	| multiplicative_expression '*' cast_expression {
         $$ = {
             type: 'multiplicative_expression',
             'multiplicative_expression': $1,
+            multiply: true,
+            mod: false,
             'cast_expression': $3
         };
     }
@@ -789,6 +782,8 @@ multiplicative_expression /* TODO: Add * / % */
         $$ = {
             type: 'multiplicative_expression',
             'multiplicative_expression': $1,
+            multiply: false,
+            mod: false,
             'cast_expression': $3
         };
     }
@@ -796,6 +791,8 @@ multiplicative_expression /* TODO: Add * / % */
         $$ = {
             type: 'multiplicative_expression',
             'multiplicative_expression': $1,
+            multiply: false,
+            mod: true,
             'cast_expression': $3
         };
     }
@@ -803,15 +800,13 @@ multiplicative_expression /* TODO: Add * / % */
 
 additive_expression /* TODO: Add +- */
 	: multiplicative_expression {
-        $$ = {
-            type: 'additive_expression',
-            'multiplicative_expression': $1
-        };
+        $$ = $1;
     }
 	| additive_expression '+' multiplicative_expression {
         $$ = {
             type: 'additive_expression',
             'additive_expression': $1,
+            add: true,
             'multiplicative_expression': $3
         };
     }
@@ -819,6 +814,7 @@ additive_expression /* TODO: Add +- */
         $$ = {
             type: 'additive_expression',
             'additive_expression': $1,
+            add: false,
             'multiplicative_expression': $3
         };
     }
@@ -826,15 +822,13 @@ additive_expression /* TODO: Add +- */
 
 shift_expression /* TODO: Add << >> */
 	: additive_expression {
-        $$ = {
-            type: 'shift_expression',
-            'additive_expression': $1
-        };
+        $$ = $1;
     }
 	| shift_expression LEFT_OP additive_expression {
         $$ = {
             type: 'shift_expression',
             'shift_expression': $1,
+            left: true,
             'additive_expression': $3
         };
     }
@@ -842,6 +836,7 @@ shift_expression /* TODO: Add << >> */
         $$ = {
             type: 'shift_expression',
             'shift_expression': $1,
+            left: false,
             'additive_expression': $3
         };
     }
@@ -849,15 +844,14 @@ shift_expression /* TODO: Add << >> */
 
 relational_expression /* TODO: Add lt/gt/lge/geq */
 	: shift_expression {
-        $$ = {
-            type: 'relational_expression',
-            'shift_expression': $1
-        };
+        $$ = $1;
     }
 	| relational_expression '<' shift_expression {
         $$ = {
             type: 'relational_expression',
             'relational_expression': $1,
+            less: true,
+            equal: false,
             'shift_expression': $3
         };
     }
@@ -865,6 +859,8 @@ relational_expression /* TODO: Add lt/gt/lge/geq */
         $$ = {
             type: 'relational_expression',
             'relational_expression': $1,
+            less: false,
+            equal: false,
             'shift_expression': $3
         };
     }
@@ -872,6 +868,8 @@ relational_expression /* TODO: Add lt/gt/lge/geq */
         $$ = {
             type: 'relational_expression',
             'relational_expression': $1,
+            less: true,
+            equal: true,
             'shift_expression': $3
         };
     }
@@ -879,6 +877,8 @@ relational_expression /* TODO: Add lt/gt/lge/geq */
         $$ = {
             type: 'relational_expression',
             'relational_expression': $1,
+            less: false,
+            equal: true,
             'shift_expression': $3
         };
     }
@@ -886,10 +886,7 @@ relational_expression /* TODO: Add lt/gt/lge/geq */
 
 equality_expression
 	: relational_expression {
-        $$ = {
-            type: 'equality_expression',
-            'relational_expression': $1
-        };
+        $$ = $1;
     }
 	| equality_expression EQ_OP relational_expression {
         $$ = {
@@ -909,10 +906,7 @@ equality_expression
 
 and_expression
 	: equality_expression {
-        $$ = {
-            type: 'and_expression',
-            'equality_expression': $1
-        };
+        $$ = $1;
     }
 	| and_expression '&' equality_expression {
         $$ = {
@@ -925,10 +919,7 @@ and_expression
 
 exclusive_or_expression
 	: and_expression {
-        $$ = {
-            type: 'exclusive_or_expression',
-            'and_expression': $1
-        };
+        $$ = $1;
     }
 	| exclusive_or_expression '^' and_expression {
         $$ = {
@@ -941,10 +932,7 @@ exclusive_or_expression
 
 inclusive_or_expression
 	: exclusive_or_expression {
-        $$ = {
-            type: 'inclusive_or_expression',
-            'exclusive_or_expression': $1
-        };
+        $$ = $1;
     }
 	| inclusive_or_expression '|' exclusive_or_expression {
         $$ = {
@@ -957,10 +945,7 @@ inclusive_or_expression
 
 logical_and_expression
 	: inclusive_or_expression {
-        $$ = {
-            type: 'logical_and_expression',
-            'inclusive_or_expression': $1
-        };
+        $$ = $1;
     }
 	| logical_and_expression AND_OP inclusive_or_expression {
         $$ = {
@@ -973,10 +958,7 @@ logical_and_expression
 
 logical_or_expression
 	: logical_and_expression {
-        $$ = {
-            type: 'logical_or_expression',
-            'logical_and_expression': $1
-        };
+        $$ = $1;
     }
 	| logical_or_expression OR_OP logical_and_expression {
         $$ = {
@@ -989,10 +971,7 @@ logical_or_expression
 
 conditional_expression
 	: logical_or_expression {
-        $$ = {
-            type: 'conditional_expression',
-            'logical_or_expression': $1
-        };
+        $$ = $1;
     }
 	| logical_or_expression '?' expression ':' conditional_expression {
         $$ = {
@@ -1006,10 +985,7 @@ conditional_expression
 
 assignment_expression
 	: conditional_expression {
-        $$ = {
-            type: 'assignment_expression',
-            'conditional_expression': $1
-        };
+        $$ = $1;
     }
 	| unary_expression assignment_operator assignment_expression {
         $$ = {
@@ -1092,10 +1068,7 @@ assignment_operator
 
 expression
 	: assignment_expression {
-        $$ = {
-            type: 'expression',
-            'assignment_expression': $1
-        }
+        $$ = $1;
     }
 	| expression ',' assignment_expression {
         $$ = {
@@ -1439,7 +1412,7 @@ struct_declaration_list
     }
 	| struct_declaration_list struct_declaration {
         $$ = $1;
-        $$.push($2);
+        $$.unshift($2);
     }
 	;
 
@@ -1502,17 +1475,12 @@ specifier_qualifier_list
 
 struct_declarator_list
 	: struct_declarator {
-        $$ = {
-            type: 'struct_declarator_list',
-            'struct_declarator': $1
-        };
+        $$ = new Array();
+        $$.push($1);
     }
 	| struct_declarator_list ',' struct_declarator {
-        $$ = {
-            type: 'struct_declarator_list',
-            'struct_declarator_list': $1,
-            'struct_declarator': $3
-        };
+        $$ = $1;
+        $$.push($3);
     }
 	;
 

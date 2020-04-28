@@ -1,0 +1,41 @@
+{
+    size: 48,
+    configuration: {
+        mchunk_prev_size: {
+            size: 8,
+            pointer: false,
+            array: false,
+            data: false
+        },
+        mchunk_size: {
+            size: 8,
+            pointer: false,
+            array: false,
+            data: false
+        },
+        fd: {
+            size: 8,
+            pointer: true,
+            array: false,
+            data: true
+        },
+        bk: {
+            size: 8,
+            pointer: true,
+            array: false,
+            data: false
+        },
+        fd_nextsize: {
+            size: 8,
+            pointer: true,
+            array: false,
+            data: false
+        },
+        bk_nextsize: {
+            size: 8,
+            pointer: true,
+            array: false,
+            data: false
+        }
+    }
+}

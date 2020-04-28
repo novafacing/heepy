@@ -378,7 +378,7 @@
 
         
     
-            var c11 = (function () {
+            var structtypeparse = (function () {
 
 
 // See also:
@@ -564,7 +564,7 @@ var parser = {
     //   export *all* tables: ............. false
     //   module type: ..................... commonjs
     //   parser engine type: .............. lalr
-    //   output main() in the module: ..... true
+    //   output main() in the module: ..... false
     //   has user-specified main(): ....... false
     //   has user-specified require()/import modules for main():
     //   .................................. false
@@ -607,285 +607,223 @@ options: {
   errorRecoveryTokenDiscardCount: 3
 },
 symbols_: {
-  "!": 17,
+  "!": 16,
   "$accept": 0,
   "$end": 1,
-  "%": 19,
+  "%": 18,
   "&": 12,
-  "(": 3,
-  ")": 4,
-  "*": 13,
-  "+": 14,
-  ",": 5,
-  "-": 15,
-  ".": 9,
-  "/": 18,
-  ":": 6,
-  ";": 26,
-  "<": 20,
+  "(": 7,
+  ")": 8,
+  "*": 11,
+  "+": 13,
+  ",": 6,
+  "-": 14,
+  "/": 17,
+  ":": 24,
+  ";": 5,
+  "<": 19,
   "=": 25,
-  ">": 21,
-  "?": 24,
-  "ADD_ASSIGN": 51,
-  "ALIGNAS": 86,
-  "ALIGNOF": 39,
-  "AND_ASSIGN": 55,
-  "AND_OP": 46,
-  "ATOMIC": 80,
-  "AUTO": 62,
-  "BOOL": 73,
-  "BREAK": 98,
-  "CASE": 89,
-  "CHAR": 65,
-  "COMPLEX": 74,
-  "CONST": 81,
-  "CONTINUE": 97,
-  "DEC_OP": 37,
-  "DEFAULT": 34,
-  "DIV_ASSIGN": 49,
-  "DO": 94,
-  "DOUBLE": 70,
-  "ELLIPSIS": 87,
-  "ELSE": 91,
-  "ENUM": 79,
-  "ENUMERATION_CONSTANT": 30,
+  ">": 20,
+  "?": 23,
+  "ADD_ASSIGN": 58,
+  "ALIGNAS": 41,
+  "ALIGNOF": 46,
+  "AND_ASSIGN": 62,
+  "AND_OP": 53,
+  "ATOMIC": 77,
+  "AUTO": 37,
+  "BOOL": 74,
+  "CHAR": 66,
+  "COMPLEX": 75,
+  "CONST": 80,
+  "DEC_OP": 44,
+  "DIV_ASSIGN": 56,
+  "DOUBLE": 71,
+  "ELLIPSIS": 34,
+  "ENUM": 78,
   "EOF": 1,
-  "EQ_OP": 44,
-  "EXTERN": 59,
-  "FLOAT": 69,
-  "FOR": 95,
-  "FUNC_NAME": 32,
-  "F_CONSTANT": 29,
-  "GENERIC": 33,
-  "GE_OP": 43,
-  "GOTO": 96,
-  "IDENTIFIER": 27,
-  "IF": 90,
-  "IMAGINARY": 75,
-  "INC_OP": 36,
-  "INLINE": 84,
-  "INT": 67,
-  "I_CONSTANT": 28,
-  "LEFT_ASSIGN": 53,
-  "LEFT_OP": 40,
-  "LE_OP": 42,
-  "LONG": 68,
-  "MOD_ASSIGN": 50,
-  "MUL_ASSIGN": 48,
-  "NE_OP": 45,
-  "NORETURN": 85,
-  "OR_ASSIGN": 57,
-  "OR_OP": 47,
-  "PTR_OP": 35,
-  "REGISTER": 63,
-  "RESTRICT": 82,
-  "RETURN": 99,
-  "RIGHT_ASSIGN": 54,
-  "RIGHT_OP": 41,
-  "SHORT": 66,
-  "SIGNED": 71,
-  "SIZEOF": 38,
-  "STATIC": 60,
-  "STATIC_ASSERT": 88,
-  "STRING_LITERAL": 31,
-  "STRUCT": 77,
-  "SUB_ASSIGN": 52,
-  "SWITCH": 92,
-  "THREAD_LOCAL": 61,
-  "TYPEDEF": 58,
-  "TYPEDEF_NAME": 76,
-  "UNION": 78,
-  "UNSIGNED": 72,
-  "VOID": 64,
-  "VOLATILE": 83,
-  "WHILE": 93,
-  "XOR_ASSIGN": 56,
-  "[": 7,
-  "]": 8,
-  "^": 22,
-  "abstract_declarator": 156,
-  "additive_expression": 113,
-  "alignment_specifier": 146,
-  "and_expression": 117,
-  "argument_expression_list": 108,
-  "assignment_expression": 123,
-  "assignment_operator": 124,
-  "atomic_type_specifier": 143,
-  "block_item": 168,
-  "block_item_list": 167,
-  "cast_expression": 111,
-  "compound_statement": 166,
-  "conditional_expression": 122,
-  "constant": 101,
-  "constant_expression": 126,
-  "declaration": 127,
-  "declaration_list": 176,
-  "declaration_specifiers": 128,
-  "declarator": 147,
-  "designation": 160,
-  "designator": 162,
-  "designator_list": 161,
-  "direct_abstract_declarator": 157,
-  "direct_declarator": 148,
-  "enum_specifier": 140,
-  "enumeration_constant": 102,
-  "enumerator": 142,
-  "enumerator_list": 141,
-  "equality_expression": 116,
+  "EQ_OP": 51,
+  "EXTERN": 35,
+  "FLOAT": 70,
+  "GE_OP": 50,
+  "IDENTIFIER": 26,
+  "IMAGINARY": 76,
+  "INC_OP": 43,
+  "INLINE": 39,
+  "INT": 68,
+  "LEFT_ASSIGN": 60,
+  "LEFT_OP": 47,
+  "LE_OP": 49,
+  "LONG": 69,
+  "MOD_ASSIGN": 57,
+  "MUL_ASSIGN": 55,
+  "NE_OP": 52,
+  "NORETURN": 40,
+  "OR_ASSIGN": 64,
+  "OR_OP": 54,
+  "REGISTER": 38,
+  "RESTRICT": 81,
+  "RIGHT_ASSIGN": 61,
+  "RIGHT_OP": 48,
+  "SHORT": 67,
+  "SIGNED": 72,
+  "SIZEOF": 45,
+  "STATIC": 33,
+  "STATIC_ASSERT": 31,
+  "STRING_LITERAL": 32,
+  "STRUCT": 27,
+  "SUB_ASSIGN": 59,
+  "THREAD_LOCAL": 36,
+  "TYPEDEF": 29,
+  "TYPEDEF_NAME": 83,
+  "UNION": 28,
+  "UNSIGNED": 73,
+  "VOID": 65,
+  "VOLATILE": 82,
+  "XOR_ASSIGN": 63,
+  "[": 9,
+  "]": 10,
+  "^": 21,
+  "abstract_declarator": 102,
+  "additive_expression": 109,
+  "alignment_specifier": 99,
+  "and_expression": 113,
+  "assignment_expression": 119,
+  "assignment_operator": 120,
+  "atomic_type_specifier": 124,
+  "cast_expression": 107,
+  "conditional_expression": 118,
+  "constant_expression": 122,
+  "declaration_specifiers": 96,
+  "declarator": 100,
+  "direct_abstract_declarator": 103,
+  "direct_declarator": 91,
+  "enum_specifier": 125,
+  "enumeration_constant": 79,
+  "enumerator": 127,
+  "enumerator_list": 126,
+  "equality_expression": 112,
   "error": 2,
-  "exclusive_or_expression": 118,
-  "expression": 125,
-  "expression_statement": 169,
-  "external_declaration": 174,
-  "function_definition": 175,
-  "function_specifier": 145,
-  "generic_assoc_list": 105,
-  "generic_association": 106,
-  "generic_selection": 104,
-  "identifier_list": 154,
-  "inclusive_or_expression": 119,
-  "init_declarator": 130,
-  "init_declarator_list": 129,
-  "initializer": 158,
-  "initializer_list": 159,
-  "iteration_statement": 171,
-  "jump_statement": 172,
-  "labeled_statement": 165,
-  "logical_and_expression": 120,
-  "logical_or_expression": 121,
-  "multiplicative_expression": 112,
-  "parameter_declaration": 153,
-  "parameter_list": 152,
-  "parameter_type_list": 151,
-  "pointer": 149,
-  "postfix_expression": 107,
-  "primary_expression": 100,
-  "relational_expression": 115,
-  "selection_statement": 170,
-  "shift_expression": 114,
-  "specifier_qualifier_list": 137,
-  "statement": 164,
-  "static_assert_declaration": 163,
-  "storage_class_specifier": 131,
-  "string": 103,
-  "struct_declaration": 136,
-  "struct_declaration_list": 135,
-  "struct_declarator": 139,
-  "struct_declarator_list": 138,
-  "struct_or_union": 134,
-  "struct_or_union_specifier": 133,
-  "translation_unit": 173,
-  "type_name": 155,
-  "type_qualifier": 144,
-  "type_qualifier_list": 150,
-  "type_specifier": 132,
-  "unary_expression": 109,
-  "unary_operator": 110,
-  "{": 10,
-  "|": 23,
-  "}": 11,
-  "~": 16
+  "exclusive_or_expression": 114,
+  "expression": 121,
+  "function_specifier": 98,
+  "identifier_list": 104,
+  "inclusive_or_expression": 115,
+  "logical_and_expression": 116,
+  "logical_or_expression": 117,
+  "multiplicative_expression": 108,
+  "parameter_declaration": 95,
+  "parameter_list": 94,
+  "parameter_type_list": 93,
+  "pointer": 101,
+  "postfix_expression": 42,
+  "relational_expression": 111,
+  "shift_expression": 110,
+  "specifier_qualifier_list": 89,
+  "static_assert_declaration": 90,
+  "storage_class_specifier": 97,
+  "struct_declaration": 87,
+  "struct_declaration_list": 86,
+  "struct_declarator": 30,
+  "struct_declarator_list": 88,
+  "struct_or_union": 85,
+  "struct_or_union_specifier": 84,
+  "type_name": 129,
+  "type_qualifier": 128,
+  "type_qualifier_list": 92,
+  "type_specifier": 123,
+  "typedef_name": 130,
+  "unary_expression": 105,
+  "unary_operator": 106,
+  "{": 3,
+  "|": 22,
+  "}": 4,
+  "~": 15
 },
 terminals_: {
   1: "EOF",
   2: "error",
-  3: "(",
-  4: ")",
-  5: ",",
-  6: ":",
-  7: "[",
-  8: "]",
-  9: ".",
-  10: "{",
-  11: "}",
+  3: "{",
+  4: "}",
+  5: ";",
+  6: ",",
+  7: "(",
+  8: ")",
+  9: "[",
+  10: "]",
+  11: "*",
   12: "&",
-  13: "*",
-  14: "+",
-  15: "-",
-  16: "~",
-  17: "!",
-  18: "/",
-  19: "%",
-  20: "<",
-  21: ">",
-  22: "^",
-  23: "|",
-  24: "?",
+  13: "+",
+  14: "-",
+  15: "~",
+  16: "!",
+  17: "/",
+  18: "%",
+  19: "<",
+  20: ">",
+  21: "^",
+  22: "|",
+  23: "?",
+  24: ":",
   25: "=",
-  26: ";",
-  27: "IDENTIFIER",
-  28: "I_CONSTANT",
-  29: "F_CONSTANT",
-  30: "ENUMERATION_CONSTANT",
-  31: "STRING_LITERAL",
-  32: "FUNC_NAME",
-  33: "GENERIC",
-  34: "DEFAULT",
-  35: "PTR_OP",
-  36: "INC_OP",
-  37: "DEC_OP",
-  38: "SIZEOF",
-  39: "ALIGNOF",
-  40: "LEFT_OP",
-  41: "RIGHT_OP",
-  42: "LE_OP",
-  43: "GE_OP",
-  44: "EQ_OP",
-  45: "NE_OP",
-  46: "AND_OP",
-  47: "OR_OP",
-  48: "MUL_ASSIGN",
-  49: "DIV_ASSIGN",
-  50: "MOD_ASSIGN",
-  51: "ADD_ASSIGN",
-  52: "SUB_ASSIGN",
-  53: "LEFT_ASSIGN",
-  54: "RIGHT_ASSIGN",
-  55: "AND_ASSIGN",
-  56: "XOR_ASSIGN",
-  57: "OR_ASSIGN",
-  58: "TYPEDEF",
-  59: "EXTERN",
-  60: "STATIC",
-  61: "THREAD_LOCAL",
-  62: "AUTO",
-  63: "REGISTER",
-  64: "VOID",
-  65: "CHAR",
-  66: "SHORT",
-  67: "INT",
-  68: "LONG",
-  69: "FLOAT",
-  70: "DOUBLE",
-  71: "SIGNED",
-  72: "UNSIGNED",
-  73: "BOOL",
-  74: "COMPLEX",
-  75: "IMAGINARY",
-  76: "TYPEDEF_NAME",
-  77: "STRUCT",
-  78: "UNION",
-  79: "ENUM",
-  80: "ATOMIC",
-  81: "CONST",
-  82: "RESTRICT",
-  83: "VOLATILE",
-  84: "INLINE",
-  85: "NORETURN",
-  86: "ALIGNAS",
-  87: "ELLIPSIS",
-  88: "STATIC_ASSERT",
-  89: "CASE",
-  90: "IF",
-  91: "ELSE",
-  92: "SWITCH",
-  93: "WHILE",
-  94: "DO",
-  95: "FOR",
-  96: "GOTO",
-  97: "CONTINUE",
-  98: "BREAK",
-  99: "RETURN"
+  26: "IDENTIFIER",
+  27: "STRUCT",
+  28: "UNION",
+  29: "TYPEDEF",
+  30: "struct_declarator",
+  31: "STATIC_ASSERT",
+  32: "STRING_LITERAL",
+  33: "STATIC",
+  34: "ELLIPSIS",
+  35: "EXTERN",
+  36: "THREAD_LOCAL",
+  37: "AUTO",
+  38: "REGISTER",
+  39: "INLINE",
+  40: "NORETURN",
+  41: "ALIGNAS",
+  42: "postfix_expression",
+  43: "INC_OP",
+  44: "DEC_OP",
+  45: "SIZEOF",
+  46: "ALIGNOF",
+  47: "LEFT_OP",
+  48: "RIGHT_OP",
+  49: "LE_OP",
+  50: "GE_OP",
+  51: "EQ_OP",
+  52: "NE_OP",
+  53: "AND_OP",
+  54: "OR_OP",
+  55: "MUL_ASSIGN",
+  56: "DIV_ASSIGN",
+  57: "MOD_ASSIGN",
+  58: "ADD_ASSIGN",
+  59: "SUB_ASSIGN",
+  60: "LEFT_ASSIGN",
+  61: "RIGHT_ASSIGN",
+  62: "AND_ASSIGN",
+  63: "XOR_ASSIGN",
+  64: "OR_ASSIGN",
+  65: "VOID",
+  66: "CHAR",
+  67: "SHORT",
+  68: "INT",
+  69: "LONG",
+  70: "FLOAT",
+  71: "DOUBLE",
+  72: "SIGNED",
+  73: "UNSIGNED",
+  74: "BOOL",
+  75: "COMPLEX",
+  76: "IMAGINARY",
+  77: "ATOMIC",
+  78: "ENUM",
+  79: "enumeration_constant",
+  80: "CONST",
+  81: "RESTRICT",
+  82: "VOLATILE",
+  83: "TYPEDEF_NAME"
 },
 TERROR: 2,
     EOF: 1,
@@ -992,299 +930,198 @@ TERROR: 2,
 productions_: bp({
   pop: u([
   s,
-  [100, 5],
+  [84, 3],
   s,
-  [101, 3],
-  102,
-  103,
-  103,
-  104,
-  105,
-  105,
-  106,
-  106,
+  [85, 3],
+  86,
+  86,
   s,
-  [107, 10],
-  108,
-  108,
+  [87, 4],
+  88,
+  88,
   s,
-  [109, 7],
+  [89, 8],
+  90,
   s,
-  [110, 6],
-  111,
-  111,
+  [91, 14],
+  92,
+  92,
+  93,
+  93,
+  94,
+  94,
   s,
-  [112, 4],
+  [95, 3],
   s,
-  [113, 3],
+  [96, 10],
   s,
-  [114, 3],
+  [97, 6],
+  98,
+  98,
+  99,
+  99,
+  100,
+  100,
   s,
-  [115, 5],
+  [101, 4],
   s,
-  [116, 3],
+  [102, 3],
+  s,
+  [103, 21],
+  s,
+  [104, 3],
+  s,
+  [105, 7],
+  s,
+  [106, 6],
+  107,
+  107,
+  s,
+  [108, 4],
+  s,
+  [109, 3],
+  s,
+  [110, 3],
+  s,
+  [111, 5],
+  s,
+  [112, 3],
+  113,
+  113,
+  114,
+  114,
+  115,
+  115,
+  116,
+  116,
   117,
   117,
   118,
   118,
   119,
   119,
-  120,
-  120,
-  121,
-  121,
-  122,
-  122,
-  123,
-  123,
   s,
-  [124, 11],
-  125,
-  125,
+  [120, 11],
+  121,
+  121,
+  122,
+  s,
+  [123, 16],
+  124,
+  s,
+  [125, 5],
   126,
+  126,
+  127,
+  127,
   s,
-  [127, 3],
-  s,
-  [128, 10],
+  [128, 4],
   129,
   129,
-  130,
-  130,
-  s,
-  [131, 6],
-  s,
-  [132, 16],
-  s,
-  [133, 5],
-  134,
-  134,
-  135,
-  135,
-  s,
-  [136, 4],
-  s,
-  [137, 4],
-  138,
-  138,
-  s,
-  [139, 3],
-  s,
-  [140, 5],
-  141,
-  141,
-  142,
-  142,
-  143,
-  s,
-  [144, 4],
-  145,
-  145,
-  146,
-  146,
-  147,
-  147,
-  s,
-  [148, 14],
-  s,
-  [149, 4],
-  150,
-  150,
-  151,
-  151,
-  152,
-  152,
-  s,
-  [153, 3],
-  s,
-  [154, 3],
-  155,
-  155,
-  s,
-  [156, 3],
-  s,
-  [157, 21],
-  s,
-  [158, 3],
-  s,
-  [159, 4],
-  160,
-  161,
-  161,
-  162,
-  162,
-  163,
-  s,
-  [164, 6],
-  s,
-  [165, 3],
-  166,
-  166,
-  167,
-  167,
-  168,
-  168,
-  169,
-  169,
-  s,
-  [170, 3],
-  s,
-  [171, 6],
-  s,
-  [172, 5],
-  173,
-  173,
-  174,
-  174,
-  175,
-  175,
-  176,
-  176
+  130
 ]),
   rule: u([
-  s,
-  [1, 3],
-  3,
-  s,
-  [1, 7],
-  6,
-  1,
-  s,
-  [3, 3],
-  1,
   4,
-  3,
-  4,
-  3,
-  3,
+  5,
+  2,
+  1,
+  1,
+  2,
+  1,
   2,
   2,
-  6,
+  3,
+  c,
+  [6, 3],
+  3,
+  c,
+  [9, 3],
+  c,
+  [13, 4],
+  1,
   7,
-  c,
-  [24, 3],
-  s,
-  [2, 4],
-  4,
-  4,
-  s,
-  [1, 7],
-  4,
-  c,
-  [31, 5],
-  c,
-  [3, 8],
-  c,
-  [8, 7],
-  c,
-  [37, 3],
-  c,
-  [4, 6],
-  5,
-  c,
-  [71, 9],
-  s,
-  [1, 5],
-  c,
-  [60, 3],
-  c,
-  [3, 3],
   1,
-  2,
-  c,
-  [4, 7],
-  c,
-  [44, 4],
-  s,
-  [1, 22],
-  4,
-  5,
-  5,
-  2,
-  c,
-  [32, 3],
-  c,
-  [107, 3],
-  c,
-  [111, 4],
-  c,
-  [43, 5],
-  c,
-  [10, 3],
-  c,
-  [22, 3],
-  6,
-  2,
-  c,
-  [53, 4],
-  c,
-  [125, 7],
-  4,
-  4,
-  c,
-  [68, 5],
+  3,
+  3,
   4,
   6,
-  c,
-  [24, 3],
+  5,
+  5,
+  6,
   5,
   s,
   [4, 3],
+  3,
+  4,
+  1,
   c,
-  [164, 3],
+  [30, 3],
   c,
-  [54, 4],
+  [29, 3],
   c,
-  [42, 3],
+  [30, 8],
   c,
-  [47, 3],
+  [4, 4],
+  s,
+  [1, 8],
+  4,
+  4,
   c,
-  [52, 5],
+  [55, 4],
   c,
-  [59, 8],
+  [18, 5],
+  3,
+  2,
+  3,
   5,
   4,
   5,
+  4,
+  s,
+  [3, 3],
   c,
-  [192, 3],
+  [59, 5],
   c,
-  [42, 6],
-  c,
-  [54, 3],
+  [26, 3],
   c,
   [10, 3],
-  3,
+  c,
+  [84, 5],
+  s,
+  [2, 3],
+  4,
   4,
   c,
-  [27, 3],
-  s,
-  [4, 4, -1],
-  2,
+  [49, 8],
+  c,
+  [91, 3],
   3,
-  2,
-  7,
   c,
-  [158, 7],
+  [4, 3],
   c,
-  [15, 3],
+  [3, 6],
   c,
-  [159, 4],
+  [8, 7],
+  1,
   c,
-  [66, 3],
-  7,
+  [4, 8],
+  5,
+  c,
+  [4, 3],
   s,
-  [5, 3],
-  7,
-  6,
-  7,
-  6,
-  7,
+  [1, 11],
   c,
-  [67, 3],
+  [13, 13],
   c,
-  [20, 6],
-  4,
+  [112, 7],
   c,
-  [6, 3]
+  [91, 3],
+  c,
+  [115, 3],
+  c,
+  [26, 6],
+  c,
+  [118, 3]
 ])
 }),
 performAction: function parser__PerformAction(yystate /* action[1] */, yysp, yyvstack) {
@@ -1300,7 +1137,7 @@ performAction: function parser__PerformAction(yystate /* action[1] */, yysp, yyv
 
           switch (yystate) {
 case 0:
-    /*! Production::    $accept : translation_unit $end */
+    /*! Production::    $accept : struct_or_union_specifier $end */
 
     // default action (generated by JISON mode classic/merge :: 1,VT,VA,-,-,-,-,-,-):
     this.$ = yyvstack[yysp - 1];
@@ -1308,4526 +1145,2305 @@ case 0:
     break;
 
 case 1:
-    /*! Production::    primary_expression : IDENTIFIER */
-
-    this.$ = {
-        type: 'primary_expression',
-        identifier: yyvstack[yysp]
-    };
-    break;
-
-case 2:
-    /*! Production::    primary_expression : constant */
-
-    this.$ = {
-        type: 'primary_expression',
-        constant: yyvstack[yysp]
-    };
-    break;
-
-case 3:
-    /*! Production::    primary_expression : string */
-
-    this.$ = {
-        type: 'primary_expression',
-        string: yyvstack[yysp]
-    };
-    break;
-
-case 4:
-    /*! Production::    primary_expression : "(" expression ")" */
-
-    this.$ = {
-        type: 'primary_expression',
-        expression: yyvstack[yysp - 1]
-    };
-    break;
-
-case 5:
-    /*! Production::    primary_expression : generic_selection */
-
-    this.$ = {
-        type: 'primary_expression',
-        'generic_selection': yyvstack[yysp]
-    };
-    break;
-
-case 6:
-    /*! Production::    constant : I_CONSTANT */
-
-    this.$ = {
-        type: 'constant',
-        'i_constant': yyvstack[yysp]
-    };
-    break;
-
-case 7:
-    /*! Production::    constant : F_CONSTANT */
-
-    this.$ = {
-        type: 'constant',
-        'f_constant': yyvstack[yysp]
-    };
-    break;
-
-case 8:
-    /*! Production::    constant : ENUMERATION_CONSTANT */
-
-    this.$ = {
-        type: 'constant',
-        'enumeration_constant': yyvstack[yysp]
-    };
-    break;
-
-case 9:
-    /*! Production::    enumeration_constant : IDENTIFIER */
-
-    this.$ = {
-        type: 'enumeration_constant',
-        identifier: yyvstack[yysp]
-    };
-    break;
-
-case 10:
-    /*! Production::    string : STRING_LITERAL */
-
-    this.$ = {
-        type: 'string',
-        'string_literal': yyvstack[yysp]
-    };
-    break;
-
-case 11:
-    /*! Production::    string : FUNC_NAME */
-
-    this.$ = {
-        type: 'string',
-        'func_name': yyvstack[yysp]
-    };
-    break;
-
-case 12:
-    /*! Production::    generic_selection : GENERIC "(" assignment_expression "," generic_assoc_list ")" */
-
-    this.$ = {
-        type: 'generic_selection',
-        'assignment_expression': yyvstack[yysp - 3],
-        'generic_assoc_list': yyvstack[yysp - 1]
-    };
-    break;
-
-case 13:
-    /*! Production::    generic_assoc_list : generic_association */
-
-    this.$ = {
-        type: 'generic_assoc_list',
-        'generic_association': yyvstack[yysp]
-    };
-    break;
-
-case 14:
-    /*! Production::    generic_assoc_list : generic_assoc_list "," generic_association */
-
-    this.$ = {
-        type: 'generic_assoc_list',
-        'generic_assoc_list': yyvstack[yysp - 2],
-        'generic_association': yyvstack[yysp]
-    };
-    break;
-
-case 15:
-    /*! Production::    generic_association : type_name ":" assignment_expression */
-
-    this.$ = {
-        type: 'generic_association',
-        'type_name': yyvstack[yysp - 2],
-        'assignment_expression': yyvstack[yysp]
-    };
-    break;
-
-case 16:
-    /*! Production::    generic_association : DEFAULT ":" assignment_expression */
-
-    this.$ = {
-        type: 'generic_association',
-        'assignment_expression': yyvstack[yysp]
-    };
-    break;
-
-case 17:
-    /*! Production::    postfix_expression : primary_expression */
-
-    this.$ = {
-        type: 'postfix_expression',
-        'primary_expression': yyvstack[yysp]
-    };
-    break;
-
-case 18:
-    /*! Production::    postfix_expression : postfix_expression "[" expression "]" */
-
-    this.$ = {
-        type: 'postfix_expression',
-        'postfix_expression': yyvstack[yysp - 3],
-        expression: yyvstack[yysp - 1]
-    };
-    break;
-
-case 19:
-    /*! Production::    postfix_expression : postfix_expression "(" ")" */
-
-    this.$ = {
-        type: 'postfix_expression',
-        'postfix_expression': yyvstack[yysp - 2]
-    };
-    break;
-
-case 20:
-    /*! Production::    postfix_expression : postfix_expression "(" argument_expression_list ")" */
-
-    this.$ = {
-        type: 'postfix_expression',
-        'postfix_expression': yyvstack[yysp - 3],
-        'argument_expression_list': yyvstack[yysp - 1]
-    };
-    break;
-
-case 21:
-    /*! Production::    postfix_expression : postfix_expression "." IDENTIFIER */
-case 22:
-    /*! Production::    postfix_expression : postfix_expression PTR_OP IDENTIFIER */
-
-    this.$ = {
-        type: 'postfix_expression',
-        'postfix_expression': yyvstack[yysp - 2],
-        identifier: yyvstack[yysp]
-    };
-    break;
-
-case 23:
-    /*! Production::    postfix_expression : postfix_expression INC_OP */
-case 24:
-    /*! Production::    postfix_expression : postfix_expression DEC_OP */
-
-    this.$ = {
-        type: 'postfix_expression',
-    
-    };
-    break;
-
-case 25:
-    /*! Production::    postfix_expression : "(" type_name ")" "{" initializer_list "}" */
-
-    this.$ = {
-        type: 'postfix_expression',
-        'type_name': yyvstack[yysp - 4],
-        'initializer_list': yyvstack[yysp - 1]
-    };
-    break;
-
-case 26:
-    /*! Production::    postfix_expression : "(" type_name ")" "{" initializer_list "," "}" */
-
-    this.$ = {
-        type: 'postfix_expression',
-        'type_name': yyvstack[yysp - 5],
-        'initializer_list': yyvstack[yysp - 2]
-    
-    };
-    break;
-
-case 27:
-    /*! Production::    argument_expression_list : assignment_expression */
-
-    this.$ = {
-        type: 'argument_expression_list',
-        'assignment_expression': yyvstack[yysp]
-    };
-    break;
-
-case 28:
-    /*! Production::    argument_expression_list : argument_expression_list "," assignment_expression */
-
-    this.$ = {
-        type: 'argument_expression_list',
-        'argument_expression_list': yyvstack[yysp - 2],
-        'assignment_expression': yyvstack[yysp]
-    };
-    break;
-
-case 29:
-    /*! Production::    unary_expression : postfix_expression */
-
-    this.$ = {
-        type: 'unary_expression',
-        'postfix_expression': yyvstack[yysp]
-    };
-    break;
-
-case 30:
-    /*! Production::    unary_expression : INC_OP unary_expression */
-case 31:
-    /*! Production::    unary_expression : DEC_OP unary_expression */
-case 33:
-    /*! Production::    unary_expression : SIZEOF unary_expression */
-
-    this.$ = {
-        type: 'unary_expression',
-        'unary_expression': yyvstack[yysp]
-    };
-    break;
-
-case 32:
-    /*! Production::    unary_expression : unary_operator cast_expression */
-
-    this.$ = {
-        type: 'unary_expression',
-        'unary_operator': yyvstack[yysp - 1],
-        'cast_expression': yyvstack[yysp]
-    };
-    break;
-
-case 34:
-    /*! Production::    unary_expression : SIZEOF "(" type_name ")" */
-case 35:
-    /*! Production::    unary_expression : ALIGNOF "(" type_name ")" */
-
-    this.$ = {
-        type: 'unary_expression',
-        'type_name': yyvstack[yysp - 1]
-    };
-    break;
-
-case 36:
-    /*! Production::    unary_operator : "&" */
-case 37:
-    /*! Production::    unary_operator : "*" */
-case 38:
-    /*! Production::    unary_operator : "+" */
-case 39:
-    /*! Production::    unary_operator : "-" */
-case 40:
-    /*! Production::    unary_operator : "~" */
-case 41:
-    /*! Production::    unary_operator : "!" */
-
-    this.$ = {
-        type: 'unary_operator',
-        'unary_operator': yyvstack[yysp]
-    };
-    break;
-
-case 42:
-    /*! Production::    cast_expression : unary_expression */
-
-    this.$ = {
-        type: 'cast_expression',
-        'unary_expression': yyvstack[yysp]
-    };
-    break;
-
-case 43:
-    /*! Production::    cast_expression : "(" type_name ")" cast_expression */
-
-    this.$ = {
-        type: 'cast_expression',
-        'type_name': yyvstack[yysp - 2],
-        'cast_expression': yyvstack[yysp]
-    };
-    break;
-
-case 44:
-    /*! Production::    multiplicative_expression : cast_expression */
-
-    this.$ = {
-        type: 'multiplicative_expression',
-        'cast_expression': yyvstack[yysp]
-    };
-    break;
-
-case 45:
-    /*! Production::    multiplicative_expression : multiplicative_expression "*" cast_expression */
-case 46:
-    /*! Production::    multiplicative_expression : multiplicative_expression "/" cast_expression */
-case 47:
-    /*! Production::    multiplicative_expression : multiplicative_expression "%" cast_expression */
-
-    this.$ = {
-        type: 'multiplicative_expression',
-        'multiplicative_expression': yyvstack[yysp - 2],
-        'cast_expression': yyvstack[yysp]
-    };
-    break;
-
-case 48:
-    /*! Production::    additive_expression : multiplicative_expression */
-
-    this.$ = {
-        type: 'additive_expression',
-        'multiplicative_expression': yyvstack[yysp]
-    };
-    break;
-
-case 49:
-    /*! Production::    additive_expression : additive_expression "+" multiplicative_expression */
-case 50:
-    /*! Production::    additive_expression : additive_expression "-" multiplicative_expression */
-
-    this.$ = {
-        type: 'additive_expression',
-        'additive_expression': yyvstack[yysp - 2],
-        'multiplicative_expression': yyvstack[yysp]
-    };
-    break;
-
-case 51:
-    /*! Production::    shift_expression : additive_expression */
-
-    this.$ = {
-        type: 'shift_expression',
-        'additive_expression': yyvstack[yysp]
-    };
-    break;
-
-case 52:
-    /*! Production::    shift_expression : shift_expression LEFT_OP additive_expression */
-case 53:
-    /*! Production::    shift_expression : shift_expression RIGHT_OP additive_expression */
-
-    this.$ = {
-        type: 'shift_expression',
-        'shift_expression': yyvstack[yysp - 2],
-        'additive_expression': yyvstack[yysp]
-    };
-    break;
-
-case 54:
-    /*! Production::    relational_expression : shift_expression */
-
-    this.$ = {
-        type: 'relational_expression',
-        'shift_expression': yyvstack[yysp]
-    };
-    break;
-
-case 55:
-    /*! Production::    relational_expression : relational_expression "<" shift_expression */
-case 56:
-    /*! Production::    relational_expression : relational_expression ">" shift_expression */
-case 57:
-    /*! Production::    relational_expression : relational_expression LE_OP shift_expression */
-case 58:
-    /*! Production::    relational_expression : relational_expression GE_OP shift_expression */
-
-    this.$ = {
-        type: 'relational_expression',
-        'relational_expression': yyvstack[yysp - 2],
-        'shift_expression': yyvstack[yysp]
-    };
-    break;
-
-case 59:
-    /*! Production::    equality_expression : relational_expression */
-
-    this.$ = {
-        type: 'equality_expression',
-        'relational_expression': yyvstack[yysp]
-    };
-    break;
-
-case 60:
-    /*! Production::    equality_expression : equality_expression EQ_OP relational_expression */
-case 61:
-    /*! Production::    equality_expression : equality_expression NE_OP relational_expression */
-
-    this.$ = {
-        type: 'equality_expression',
-        'equality_expression': yyvstack[yysp - 2],
-        'relational_expression': yyvstack[yysp]
-    };
-    break;
-
-case 62:
-    /*! Production::    and_expression : equality_expression */
-
-    this.$ = {
-        type: 'and_expression',
-        'equality_expression': yyvstack[yysp]
-    };
-    break;
-
-case 63:
-    /*! Production::    and_expression : and_expression "&" equality_expression */
-
-    this.$ = {
-        type: 'and_expression',
-        'and_expression': yyvstack[yysp - 2],
-        'equality_expression': yyvstack[yysp]
-    };
-    break;
-
-case 64:
-    /*! Production::    exclusive_or_expression : and_expression */
-
-    this.$ = {
-        type: 'exclusive_or_expression',
-        'and_expression': yyvstack[yysp]
-    };
-    break;
-
-case 65:
-    /*! Production::    exclusive_or_expression : exclusive_or_expression "^" and_expression */
-
-    this.$ = {
-        type: 'exclusive_or_expression',
-        'exclusive_or_expression': yyvstack[yysp - 2],
-        'and_expression': yyvstack[yysp]
-    };
-    break;
-
-case 66:
-    /*! Production::    inclusive_or_expression : exclusive_or_expression */
-
-    this.$ = {
-        type: 'inclusive_or_expression',
-        'exclusive_or_expression': yyvstack[yysp]
-    };
-    break;
-
-case 67:
-    /*! Production::    inclusive_or_expression : inclusive_or_expression "|" exclusive_or_expression */
-
-    this.$ = {
-        type: 'inclusive_or_expression',
-        'inclusive_or_expression': yyvstack[yysp - 2],
-        'exclusive_or_expression': yyvstack[yysp]
-    };
-    break;
-
-case 68:
-    /*! Production::    logical_and_expression : inclusive_or_expression */
-
-    this.$ = {
-        type: 'logical_and_expression',
-        'inclusive_or_expression': yyvstack[yysp]
-    };
-    break;
-
-case 69:
-    /*! Production::    logical_and_expression : logical_and_expression AND_OP inclusive_or_expression */
-
-    this.$ = {
-        type: 'logical_and_expression',
-        'logical_and_expression': yyvstack[yysp - 2],
-        'inclusive_or_expression': yyvstack[yysp]
-    };
-    break;
-
-case 70:
-    /*! Production::    logical_or_expression : logical_and_expression */
-
-    this.$ = {
-        type: 'logical_or_expression',
-        'logical_and_expression': yyvstack[yysp]
-    };
-    break;
-
-case 71:
-    /*! Production::    logical_or_expression : logical_or_expression OR_OP logical_and_expression */
-
-    this.$ = {
-        type: 'logical_and_expression',
-        'logical_or_expression': yyvstack[yysp - 2],
-        'logical_and_expression': yyvstack[yysp]
-    };
-    break;
-
-case 72:
-    /*! Production::    conditional_expression : logical_or_expression */
-
-    this.$ = {
-        type: 'conditional_expression',
-        'logical_or_expression': yyvstack[yysp]
-    };
-    break;
-
-case 73:
-    /*! Production::    conditional_expression : logical_or_expression "?" expression ":" conditional_expression */
-
-    this.$ = {
-        type: 'conditional_expression',
-        'logical_or_expression': yyvstack[yysp - 4],
-        'expression_statement': yyvstack[yysp - 2],
-        'conditional_expression': yyvstack[yysp]
-    };
-    break;
-
-case 74:
-    /*! Production::    assignment_expression : conditional_expression */
-
-    this.$ = {
-        type: 'assignment_expression',
-        'conditional_expression': yyvstack[yysp]
-    };
-    break;
-
-case 75:
-    /*! Production::    assignment_expression : unary_expression assignment_operator assignment_expression */
-
-    this.$ = {
-        type: 'assignment_expression',
-        'unary_expression': yyvstack[yysp - 2],
-        'assignment_operator': yyvstack[yysp - 1],
-        'assignment_expression': yyvstack[yysp]
-    };
-    break;
-
-case 76:
-    /*! Production::    assignment_operator : "=" */
-case 77:
-    /*! Production::    assignment_operator : MUL_ASSIGN */
-case 78:
-    /*! Production::    assignment_operator : DIV_ASSIGN */
-case 79:
-    /*! Production::    assignment_operator : MOD_ASSIGN */
-case 80:
-    /*! Production::    assignment_operator : ADD_ASSIGN */
-case 81:
-    /*! Production::    assignment_operator : SUB_ASSIGN */
-case 82:
-    /*! Production::    assignment_operator : LEFT_ASSIGN */
-case 83:
-    /*! Production::    assignment_operator : RIGHT_ASSIGN */
-case 84:
-    /*! Production::    assignment_operator : AND_ASSIGN */
-case 85:
-    /*! Production::    assignment_operator : XOR_ASSIGN */
-case 86:
-    /*! Production::    assignment_operator : OR_ASSIGN */
-
-    this.$ = {
-        type: 'assignment_operator',
-        'assignment_operator': yyvstack[yysp]
-    };
-    break;
-
-case 87:
-    /*! Production::    expression : assignment_expression */
-
-    this.$ = {
-        type: 'expression',
-        'assignment_expression': yyvstack[yysp]
-    }
-    break;
-
-case 88:
-    /*! Production::    expression : expression "," assignment_expression */
-
-    this.$ = {
-        type: 'expression',
-        expression: yyvstack[yysp - 2],
-        'assignment_expression': yyvstack[yysp]
-    }
-    break;
-
-case 89:
-    /*! Production::    constant_expression : conditional_expression */
-
-    this.$ = {
-        type: 'constant_expression',
-        'conditional_expression': yyvstack[yysp]
-    };
-    break;
-
-case 90:
-    /*! Production::    declaration : declaration_specifiers ";" */
-
-    this.$ = {
-        type: 'declaration',
-        'declaration_specifiers': yyvstack[yysp - 1]
-    };
-    break;
-
-case 91:
-    /*! Production::    declaration : declaration_specifiers init_declarator_list ";" */
-
-    this.$ = {
-        type: 'declaration',
-        'declaration_specifiers': yyvstack[yysp - 2],
-        'init_declarator_list': yyvstack[yysp - 1]
-    };
-    break;
-
-case 92:
-    /*! Production::    declaration : static_assert_declaration */
-
-    this.$ = {
-        type: 'declaration',
-        'static_assert_declaration': yyvstack[yysp]
-    };
-    break;
-
-case 93:
-    /*! Production::    declaration_specifiers : storage_class_specifier declaration_specifiers */
-
-    this.$ = {
-        type: 'declaration_specifiers',
-        'storage_class_specifier': yyvstack[yysp - 1],
-        'declaration_specifiers': yyvstack[yysp]
-    };
-    break;
-
-case 94:
-    /*! Production::    declaration_specifiers : storage_class_specifier */
-
-    this.$ = {
-        type: 'declaration_specifiers',
-        'storage_class_specifier': yyvstack[yysp]
-    };
-    break;
-
-case 95:
-    /*! Production::    declaration_specifiers : type_specifier declaration_specifiers */
-
-    this.$ = {
-        type: 'declaration_specifiers',
-        'type_specifier': yyvstack[yysp - 1],
-        'declaration_specifiers': yyvstack[yysp]
-    };
-    break;
-
-case 96:
-    /*! Production::    declaration_specifiers : type_specifier */
-
-    this.$ = {
-        type: 'declaration_specifiers',
-        'type_specifier': yyvstack[yysp]
-    };
-    break;
-
-case 97:
-    /*! Production::    declaration_specifiers : type_qualifier declaration_specifiers */
-
-    this.$ = {
-        type: 'declaration_specifiers',
-        'type_qualifier': yyvstack[yysp - 1],
-        'declaration_specifiers': yyvstack[yysp]
-    };
-    break;
-
-case 98:
-    /*! Production::    declaration_specifiers : type_qualifier */
-
-    this.$ = {
-        type: 'declaration_specifiers',
-        'type_qualifier': yyvstack[yysp]
-    };
-    break;
-
-case 99:
-    /*! Production::    declaration_specifiers : function_specifier declaration_specifiers */
-
-    this.$ = {
-        type: 'declaration_specifiers',
-        'function_specifier': yyvstack[yysp - 1],
-        'declaration_specifiers': yyvstack[yysp]
-    };
-    break;
-
-case 100:
-    /*! Production::    declaration_specifiers : function_specifier */
-
-    this.$ = {
-        type: 'declaration_specifiers',
-        'function_specifier': yyvstack[yysp]
-    };
-    break;
-
-case 101:
-    /*! Production::    declaration_specifiers : alignment_specifier declaration_specifiers */
-
-    this.$ = {
-        type: 'declaration_specifiers',
-        'alignment_specifier': yyvstack[yysp - 1],
-        'declaration_specifiers': yyvstack[yysp]
-    };
-    break;
-
-case 102:
-    /*! Production::    declaration_specifiers : alignment_specifier */
-
-    this.$ = {
-        type: 'declaration_specifiers',
-        'alignment_specifier': yyvstack[yysp]
-    };
-    break;
-
-case 103:
-    /*! Production::    init_declarator_list : init_declarator */
-
-    this.$ = {
-        type: 'init_declarator_list',
-        'init_declarator': yyvstack[yysp]
-    };
-    break;
-
-case 104:
-    /*! Production::    init_declarator_list : init_declarator_list "," init_declarator */
-
-    this.$ = {
-        type: 'init_declarator_list',
-        'init_declarator_list': yyvstack[yysp - 2],
-        'init_declarator_list': yyvstack[yysp]
-    };
-    break;
-
-case 105:
-    /*! Production::    init_declarator : declarator "=" initializer */
-
-    this.$ = {
-        type: 'init_declarator',
-        declarator: yyvstack[yysp - 2],
-        initializer: yyvstack[yysp - 1]
-    };
-    break;
-
-case 106:
-    /*! Production::    init_declarator : declarator */
-
-    this.$ = {
-        type: 'init_declarator',
-        declarator: yyvstack[yysp]
-    };
-    break;
-
-case 107:
-    /*! Production::    storage_class_specifier : TYPEDEF */
-case 108:
-    /*! Production::    storage_class_specifier : EXTERN */
-case 109:
-    /*! Production::    storage_class_specifier : STATIC */
-case 110:
-    /*! Production::    storage_class_specifier : THREAD_LOCAL */
-case 111:
-    /*! Production::    storage_class_specifier : AUTO */
-case 112:
-    /*! Production::    storage_class_specifier : REGISTER */
-
-    this.$ = {
-        type: 'storage_class_specifier',
-        'storage_class_specifier': yyvstack[yysp]
-    };
-    break;
-
-case 113:
-    /*! Production::    type_specifier : VOID */
-case 114:
-    /*! Production::    type_specifier : CHAR */
-case 115:
-    /*! Production::    type_specifier : SHORT */
-case 116:
-    /*! Production::    type_specifier : INT */
-case 117:
-    /*! Production::    type_specifier : LONG */
-case 118:
-    /*! Production::    type_specifier : FLOAT */
-case 119:
-    /*! Production::    type_specifier : DOUBLE */
-case 120:
-    /*! Production::    type_specifier : SIGNED */
-case 121:
-    /*! Production::    type_specifier : UNSIGNED */
-case 122:
-    /*! Production::    type_specifier : BOOL */
-case 123:
-    /*! Production::    type_specifier : COMPLEX */
-case 124:
-    /*! Production::    type_specifier : IMAGINARY */
-
-    this.$ = {
-        type: 'type_specifier',
-        'type_specifier': yyvstack[yysp]
-    };
-    break;
-
-case 125:
-    /*! Production::    type_specifier : atomic_type_specifier */
-
-    this.$ = {
-        type: 'type_specifier',
-        'atomic_type_specifier': yyvstack[yysp]
-    };
-    break;
-
-case 126:
-    /*! Production::    type_specifier : struct_or_union_specifier */
-
-    this.$ = {
-        type: 'type_specifier',
-        'struct_or_union_specifier': yyvstack[yysp]
-    };
-    break;
-
-case 127:
-    /*! Production::    type_specifier : enum_specifier */
-
-    this.$ = {
-        type: 'type_specifier',
-        'enum_specifier': yyvstack[yysp]
-    };
-    break;
-
-case 128:
-    /*! Production::    type_specifier : TYPEDEF_NAME */
-
-    this.$ = {
-        type: 'type_specifier',
-        'typedef_name': yyvstack[yysp]
-    };
-    break;
-
-case 129:
     /*! Production::    struct_or_union_specifier : struct_or_union "{" struct_declaration_list "}" */
-
-    this.$ = {
-        type: 'struct_or_union_specifier',
-        'struct_or_union': yyvstack[yysp - 3],
-        'struct_declaration_list': yyvstack[yysp - 1]
-    };
-    break;
-
-case 130:
-    /*! Production::    struct_or_union_specifier : struct_or_union IDENTIFIER "{" struct_declaration_list "}" */
-case 131:
-    /*! Production::    struct_or_union_specifier : struct_or_union TYPEDEF_NAME "{" struct_declaration_list "}" */
-
-    this.$ = {
-        type: 'struct_or_union_specifier',
-        'struct_or_union': yyvstack[yysp - 4],
-        identifier: yyvstack[yysp - 3],
-        'struct_declaration_list': yyvstack[yysp - 1]
-    };
-    break;
-
-case 132:
-    /*! Production::    struct_or_union_specifier : struct_or_union IDENTIFIER */
-case 133:
-    /*! Production::    struct_or_union_specifier : struct_or_union TYPEDEF_NAME */
-
-    this.$ = {
-        type: 'struct_or_union_specifier',
-        'struct_or_union': yyvstack[yysp - 1],
-        identifier: yyvstack[yysp]
-    };
-    break;
-
-case 134:
-    /*! Production::    struct_or_union : STRUCT */
-case 135:
-    /*! Production::    struct_or_union : UNION */
-
-    this.$ = {
-        type: 'struct_or_union',
-        'struct_or_union': yyvstack[yysp]
-    };
-    break;
-
-case 136:
-    /*! Production::    struct_declaration_list : struct_declaration */
-
-    this.$ = new Array();
-    this.$.push(yyvstack[yysp]);
-    break;
-
-case 137:
-    /*! Production::    struct_declaration_list : struct_declaration_list struct_declaration */
-
-    this.$ = yyvstack[yysp - 1];
-    this.$.push(yyvstack[yysp]);
-    break;
-
-case 138:
-    /*! Production::    struct_declaration : specifier_qualifier_list ";" */
-
-    this.$ = {
-        type: 'struct_declaration',
-        'specifier_qualifier_list': yyvstack[yysp - 1]
-    };
-    break;
-
-case 139:
-    /*! Production::    struct_declaration : specifier_qualifier_list struct_declarator_list ";" */
-
-    this.$ = {
-        type: 'struct_declaration',
-        'specifier_qualifier_list': yyvstack[yysp - 2],
-        'struct_declarator_list': yyvstack[yysp - 1]
-    };
-    break;
-
-case 140:
-    /*! Production::    struct_declaration : static_assert_declaration */
-
-    this.$ = {
-        type: 'struct_declaration',
-        'static_assert_declaration': yyvstack[yysp]
-    };
-    break;
-
-case 141:
-    /*! Production::    struct_declaration : direct_declarator ";" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        'direct_declarator': yyvstack[yysp - 1]
-    };
-    break;
-
-case 142:
-    /*! Production::    specifier_qualifier_list : type_specifier specifier_qualifier_list */
-
-    this.$ = {
-        type: 'specifier_qualifier_list',
-        'type_specifier': yyvstack[yysp - 1],
-        'specifier_qualifier_list': yyvstack[yysp]
-    };
-    break;
-
-case 143:
-    /*! Production::    specifier_qualifier_list : type_specifier */
-
-    this.$ = {
-        type: 'specifier_qualifier_list',
-        'type_specifier': yyvstack[yysp]
-    };
-    break;
-
-case 144:
-    /*! Production::    specifier_qualifier_list : type_qualifier specifier_qualifier_list */
-
-    this.$ = {
-        type: 'specifier_qualifier_list',
-        type_qualifier: yyvstack[yysp - 1],
-        'specifier_qualifier_list': yyvstack[yysp]
-    };
-    break;
-
-case 145:
-    /*! Production::    specifier_qualifier_list : type_qualifier */
-
-    this.$ = {
-        type: 'specifier_qualifier_list',
-        'type_qualifier': yyvstack[yysp]
-    };
-    break;
-
-case 146:
-    /*! Production::    struct_declarator_list : struct_declarator */
-
-    this.$ = {
-        type: 'struct_declarator_list',
-        'struct_declarator': yyvstack[yysp]
-    };
-    break;
-
-case 147:
-    /*! Production::    struct_declarator_list : struct_declarator_list "," struct_declarator */
-
-    this.$ = {
-        type: 'struct_declarator_list',
-        'struct_declarator_list': yyvstack[yysp - 2],
-        'struct_declarator': yyvstack[yysp]
-    };
-    break;
-
-case 148:
-    /*! Production::    struct_declarator : ":" constant_expression */
-
-    this.$ = {
-        type: 'struct_declarator',
-        'constant_expression': yyvstack[yysp]
-    };
-    break;
-
-case 149:
-    /*! Production::    struct_declarator : declarator ":" constant_expression */
-
-    this.$ = {
-        type: 'struct_declarator',
-        declarator: yyvstack[yysp - 2],
-        'constant_expression': yyvstack[yysp]
-    };
-    break;
-
-case 150:
-    /*! Production::    struct_declarator : declarator */
-
-    this.$ = {
-        type: 'struct_declarator',
-        declarator: yyvstack[yysp]
-    };
-    break;
-
-case 151:
-    /*! Production::    enum_specifier : ENUM "{" enumerator_list "}" */
-case 167:
+case 27:
+    /*! Production::    direct_declarator : direct_declarator "[" "*" "]" */
+case 33:
+    /*! Production::    direct_declarator : direct_declarator "[" type_qualifier_list "]" */
+case 34:
+    /*! Production::    direct_declarator : direct_declarator "[" assignment_expression "]" */
+case 35:
+    /*! Production::    direct_declarator : direct_declarator "(" parameter_type_list ")" */
+case 37:
+    /*! Production::    direct_declarator : direct_declarator "(" identifier_list ")" */
+case 65:
     /*! Production::    alignment_specifier : ALIGNAS "(" type_name ")" */
-case 168:
+case 66:
     /*! Production::    alignment_specifier : ALIGNAS "(" constant_expression ")" */
-case 210:
+case 80:
     /*! Production::    direct_abstract_declarator : "[" STATIC assignment_expression "]" */
-case 212:
+case 82:
     /*! Production::    direct_abstract_declarator : "[" type_qualifier_list assignment_expression "]" */
-case 216:
+case 86:
     /*! Production::    direct_abstract_declarator : direct_abstract_declarator "[" "*" "]" */
-case 221:
+case 91:
     /*! Production::    direct_abstract_declarator : direct_abstract_declarator "[" type_qualifier_list "]" */
-case 222:
+case 92:
     /*! Production::    direct_abstract_declarator : direct_abstract_declarator "[" assignment_expression "]" */
-case 226:
+case 96:
     /*! Production::    direct_abstract_declarator : direct_abstract_declarator "(" parameter_type_list ")" */
-case 232:
-    /*! Production::    initializer_list : initializer_list "," designation initializer */
-case 247:
-    /*! Production::    labeled_statement : CASE constant_expression ":" statement */
-case 275:
-    /*! Production::    function_definition : declaration_specifiers declarator declaration_list compound_statement */
+case 105:
+    /*! Production::    unary_expression : SIZEOF "(" type_name ")" */
+case 106:
+    /*! Production::    unary_expression : ALIGNOF "(" type_name ")" */
+case 114:
+    /*! Production::    cast_expression : "(" type_name ")" cast_expression */
+case 177:
+    /*! Production::    atomic_type_specifier : ATOMIC "(" type_name ")" */
+case 178:
+    /*! Production::    enum_specifier : ENUM "{" enumerator_list "}" */
 
     // default action (generated by JISON mode classic/merge :: 4,VT,VA,-,-,-,-,-,-):
     this.$ = yyvstack[yysp - 3];
     // END of default action (generated by JISON mode classic/merge :: 4,VT,VA,-,-,-,-,-,-)
     break;
 
-case 152:
-    /*! Production::    enum_specifier : ENUM "{" enumerator_list "," "}" */
-case 153:
-    /*! Production::    enum_specifier : ENUM IDENTIFIER "{" enumerator_list "}" */
-case 209:
+case 2:
+    /*! Production::    struct_or_union_specifier : struct_or_union IDENTIFIER "{" struct_declaration_list "}" */
+case 29:
+    /*! Production::    direct_declarator : direct_declarator "[" STATIC assignment_expression "]" */
+case 30:
+    /*! Production::    direct_declarator : direct_declarator "[" type_qualifier_list "*" "]" */
+case 32:
+    /*! Production::    direct_declarator : direct_declarator "[" type_qualifier_list assignment_expression "]" */
+case 79:
     /*! Production::    direct_abstract_declarator : "[" STATIC type_qualifier_list assignment_expression "]" */
-case 211:
+case 81:
     /*! Production::    direct_abstract_declarator : "[" type_qualifier_list STATIC assignment_expression "]" */
-case 218:
+case 88:
     /*! Production::    direct_abstract_declarator : direct_abstract_declarator "[" STATIC assignment_expression "]" */
-case 219:
+case 89:
     /*! Production::    direct_abstract_declarator : direct_abstract_declarator "[" type_qualifier_list assignment_expression "]" */
-case 258:
-    /*! Production::    selection_statement : IF "(" expression ")" statement */
-case 259:
-    /*! Production::    selection_statement : SWITCH "(" expression ")" statement */
-case 260:
-    /*! Production::    iteration_statement : WHILE "(" expression ")" statement */
+case 144:
+    /*! Production::    conditional_expression : logical_or_expression "?" expression ":" conditional_expression */
+case 179:
+    /*! Production::    enum_specifier : ENUM "{" enumerator_list "," "}" */
+case 180:
+    /*! Production::    enum_specifier : ENUM IDENTIFIER "{" enumerator_list "}" */
 
     // default action (generated by JISON mode classic/merge :: 5,VT,VA,-,-,-,-,-,-):
     this.$ = yyvstack[yysp - 4];
     // END of default action (generated by JISON mode classic/merge :: 5,VT,VA,-,-,-,-,-,-)
     break;
 
-case 154:
-    /*! Production::    enum_specifier : ENUM IDENTIFIER "{" enumerator_list "," "}" */
-case 217:
-    /*! Production::    direct_abstract_declarator : direct_abstract_declarator "[" STATIC type_qualifier_list assignment_expression "]" */
-case 220:
-    /*! Production::    direct_abstract_declarator : direct_abstract_declarator "[" type_qualifier_list STATIC assignment_expression "]" */
-case 262:
-    /*! Production::    iteration_statement : FOR "(" expression_statement expression_statement ")" statement */
-case 264:
-    /*! Production::    iteration_statement : FOR "(" declaration expression_statement ")" statement */
-
-    // default action (generated by JISON mode classic/merge :: 6,VT,VA,-,-,-,-,-,-):
-    this.$ = yyvstack[yysp - 5];
-    // END of default action (generated by JISON mode classic/merge :: 6,VT,VA,-,-,-,-,-,-)
-    break;
-
-case 155:
-    /*! Production::    enum_specifier : ENUM IDENTIFIER */
-case 195:
+case 3:
+    /*! Production::    struct_or_union_specifier : struct_or_union IDENTIFIER */
+case 6:
+    /*! Production::    struct_or_union : TYPEDEF STRUCT */
+case 8:
+    /*! Production::    struct_declaration_list : struct_declaration_list struct_declaration */
+case 9:
+    /*! Production::    struct_declaration : specifier_qualifier_list ";" */
+case 12:
+    /*! Production::    struct_declaration : direct_declarator ";" */
+case 15:
+    /*! Production::    specifier_qualifier_list : type_specifier specifier_qualifier_list */
+case 17:
+    /*! Production::    specifier_qualifier_list : type_qualifier specifier_qualifier_list */
+case 19:
+    /*! Production::    specifier_qualifier_list : type_specifier specifier_qualifier_list */
+case 21:
+    /*! Production::    specifier_qualifier_list : type_qualifier specifier_qualifier_list */
+case 39:
+    /*! Production::    type_qualifier_list : type_qualifier_list type_qualifier */
+case 44:
     /*! Production::    parameter_declaration : declaration_specifiers declarator */
-case 196:
+case 45:
     /*! Production::    parameter_declaration : declaration_specifiers abstract_declarator */
-case 200:
-    /*! Production::    identifier_list : "," identifier_list */
-case 201:
-    /*! Production::    type_name : specifier_qualifier_list abstract_declarator */
-case 203:
+case 47:
+    /*! Production::    declaration_specifiers : storage_class_specifier declaration_specifiers */
+case 49:
+    /*! Production::    declaration_specifiers : type_specifier declaration_specifiers */
+case 51:
+    /*! Production::    declaration_specifiers : type_qualifier declaration_specifiers */
+case 53:
+    /*! Production::    declaration_specifiers : function_specifier declaration_specifiers */
+case 55:
+    /*! Production::    declaration_specifiers : alignment_specifier declaration_specifiers */
+case 67:
+    /*! Production::    declarator : pointer direct_declarator */
+case 70:
+    /*! Production::    pointer : "*" type_qualifier_list */
+case 71:
+    /*! Production::    pointer : "*" pointer */
+case 73:
     /*! Production::    abstract_declarator : pointer direct_abstract_declarator */
-case 207:
+case 77:
     /*! Production::    direct_abstract_declarator : "[" "]" */
-case 223:
+case 93:
     /*! Production::    direct_abstract_declarator : "(" ")" */
-case 230:
-    /*! Production::    initializer_list : designation initializer */
-case 234:
-    /*! Production::    designation : designator_list "=" */
-case 236:
-    /*! Production::    designator_list : designator_list designator */
-case 238:
-    /*! Production::    designator : "." IDENTIFIER */
-case 249:
-    /*! Production::    compound_statement : "{" "}" */
-case 252:
-    /*! Production::    block_item_list : block_item_list block_item */
-case 256:
-    /*! Production::    expression_statement : expression ";" */
-case 267:
-    /*! Production::    jump_statement : CONTINUE ";" */
-case 268:
-    /*! Production::    jump_statement : BREAK ";" */
-case 269:
-    /*! Production::    jump_statement : RETURN ";" */
+case 99:
+    /*! Production::    identifier_list : "," identifier_list */
+case 101:
+    /*! Production::    unary_expression : INC_OP unary_expression */
+case 102:
+    /*! Production::    unary_expression : DEC_OP unary_expression */
+case 103:
+    /*! Production::    unary_expression : unary_operator cast_expression */
+case 104:
+    /*! Production::    unary_expression : SIZEOF unary_expression */
+case 182:
+    /*! Production::    enum_specifier : ENUM IDENTIFIER */
+case 191:
+    /*! Production::    type_name : specifier_qualifier_list abstract_declarator */
 
     // default action (generated by JISON mode classic/merge :: 2,VT,VA,-,-,-,-,-,-):
     this.$ = yyvstack[yysp - 1];
     // END of default action (generated by JISON mode classic/merge :: 2,VT,VA,-,-,-,-,-,-)
     break;
 
-case 156:
-    /*! Production::    enumerator_list : enumerator */
-case 159:
-    /*! Production::    enumerator : enumeration_constant */
-case 192:
+case 4:
+    /*! Production::    struct_or_union : STRUCT */
+case 5:
+    /*! Production::    struct_or_union : UNION */
+case 7:
+    /*! Production::    struct_declaration_list : struct_declaration */
+case 11:
+    /*! Production::    struct_declaration : static_assert_declaration */
+case 13:
+    /*! Production::    struct_declarator_list : struct_declarator */
+case 16:
+    /*! Production::    specifier_qualifier_list : type_specifier */
+case 18:
+    /*! Production::    specifier_qualifier_list : type_qualifier */
+case 20:
+    /*! Production::    specifier_qualifier_list : type_specifier */
+case 22:
+    /*! Production::    specifier_qualifier_list : type_qualifier */
+case 24:
+    /*! Production::    direct_declarator : IDENTIFIER */
+case 38:
+    /*! Production::    type_qualifier_list : type_qualifier */
+case 41:
     /*! Production::    parameter_type_list : parameter_list */
-case 193:
+case 42:
     /*! Production::    parameter_list : parameter_declaration */
-case 197:
+case 46:
     /*! Production::    parameter_declaration : declaration_specifiers */
-case 198:
-    /*! Production::    identifier_list : IDENTIFIER */
-case 202:
-    /*! Production::    type_name : specifier_qualifier_list */
-case 204:
+case 48:
+    /*! Production::    declaration_specifiers : storage_class_specifier */
+case 50:
+    /*! Production::    declaration_specifiers : type_specifier */
+case 52:
+    /*! Production::    declaration_specifiers : type_qualifier */
+case 54:
+    /*! Production::    declaration_specifiers : function_specifier */
+case 56:
+    /*! Production::    declaration_specifiers : alignment_specifier */
+case 57:
+    /*! Production::    storage_class_specifier : TYPEDEF */
+case 58:
+    /*! Production::    storage_class_specifier : EXTERN */
+case 59:
+    /*! Production::    storage_class_specifier : STATIC */
+case 60:
+    /*! Production::    storage_class_specifier : THREAD_LOCAL */
+case 61:
+    /*! Production::    storage_class_specifier : AUTO */
+case 62:
+    /*! Production::    storage_class_specifier : REGISTER */
+case 63:
+    /*! Production::    function_specifier : INLINE */
+case 64:
+    /*! Production::    function_specifier : NORETURN */
+case 68:
+    /*! Production::    declarator : direct_declarator */
+case 72:
+    /*! Production::    pointer : "*" */
+case 74:
     /*! Production::    abstract_declarator : pointer */
-case 205:
+case 75:
     /*! Production::    abstract_declarator : direct_abstract_declarator */
-case 231:
-    /*! Production::    initializer_list : initializer */
-case 235:
-    /*! Production::    designator_list : designator */
-case 240:
-    /*! Production::    statement : labeled_statement */
-case 241:
-    /*! Production::    statement : compound_statement */
-case 242:
-    /*! Production::    statement : expression_statement */
-case 243:
-    /*! Production::    statement : selection_statement */
-case 244:
-    /*! Production::    statement : iteration_statement */
-case 245:
-    /*! Production::    statement : jump_statement */
-case 251:
-    /*! Production::    block_item_list : block_item */
-case 253:
-    /*! Production::    block_item : declaration */
-case 254:
-    /*! Production::    block_item : statement */
-case 255:
-    /*! Production::    expression_statement : ";" */
+case 97:
+    /*! Production::    identifier_list : IDENTIFIER */
+case 100:
+    /*! Production::    unary_expression : postfix_expression */
+case 107:
+    /*! Production::    unary_operator : "&" */
+case 108:
+    /*! Production::    unary_operator : "*" */
+case 109:
+    /*! Production::    unary_operator : "+" */
+case 110:
+    /*! Production::    unary_operator : "-" */
+case 111:
+    /*! Production::    unary_operator : "~" */
+case 112:
+    /*! Production::    unary_operator : "!" */
+case 113:
+    /*! Production::    cast_expression : unary_expression */
+case 115:
+    /*! Production::    multiplicative_expression : cast_expression */
+case 119:
+    /*! Production::    additive_expression : multiplicative_expression */
+case 122:
+    /*! Production::    shift_expression : additive_expression */
+case 125:
+    /*! Production::    relational_expression : shift_expression */
+case 130:
+    /*! Production::    equality_expression : relational_expression */
+case 133:
+    /*! Production::    and_expression : equality_expression */
+case 135:
+    /*! Production::    exclusive_or_expression : and_expression */
+case 137:
+    /*! Production::    inclusive_or_expression : exclusive_or_expression */
+case 139:
+    /*! Production::    logical_and_expression : inclusive_or_expression */
+case 141:
+    /*! Production::    logical_or_expression : logical_and_expression */
+case 143:
+    /*! Production::    conditional_expression : logical_or_expression */
+case 145:
+    /*! Production::    assignment_expression : conditional_expression */
+case 147:
+    /*! Production::    assignment_operator : "=" */
+case 148:
+    /*! Production::    assignment_operator : MUL_ASSIGN */
+case 149:
+    /*! Production::    assignment_operator : DIV_ASSIGN */
+case 150:
+    /*! Production::    assignment_operator : MOD_ASSIGN */
+case 151:
+    /*! Production::    assignment_operator : ADD_ASSIGN */
+case 152:
+    /*! Production::    assignment_operator : SUB_ASSIGN */
+case 153:
+    /*! Production::    assignment_operator : LEFT_ASSIGN */
+case 154:
+    /*! Production::    assignment_operator : RIGHT_ASSIGN */
+case 155:
+    /*! Production::    assignment_operator : AND_ASSIGN */
+case 156:
+    /*! Production::    assignment_operator : XOR_ASSIGN */
+case 157:
+    /*! Production::    assignment_operator : OR_ASSIGN */
+case 158:
+    /*! Production::    expression : assignment_expression */
+case 160:
+    /*! Production::    constant_expression : conditional_expression */
+case 161:
+    /*! Production::    type_specifier : VOID */
+case 162:
+    /*! Production::    type_specifier : CHAR */
+case 163:
+    /*! Production::    type_specifier : SHORT */
+case 164:
+    /*! Production::    type_specifier : INT */
+case 165:
+    /*! Production::    type_specifier : LONG */
+case 166:
+    /*! Production::    type_specifier : FLOAT */
+case 167:
+    /*! Production::    type_specifier : DOUBLE */
+case 168:
+    /*! Production::    type_specifier : SIGNED */
+case 169:
+    /*! Production::    type_specifier : UNSIGNED */
+case 170:
+    /*! Production::    type_specifier : BOOL */
+case 171:
+    /*! Production::    type_specifier : COMPLEX */
+case 172:
+    /*! Production::    type_specifier : IMAGINARY */
+case 173:
+    /*! Production::    type_specifier : atomic_type_specifier */
+case 174:
+    /*! Production::    type_specifier : struct_or_union_specifier */
+case 175:
+    /*! Production::    type_specifier : enum_specifier */
+case 176:
+    /*! Production::    type_specifier : typedef_name */
+case 183:
+    /*! Production::    enumerator_list : enumerator */
+case 186:
+    /*! Production::    enumerator : enumeration_constant */
+case 187:
+    /*! Production::    type_qualifier : CONST */
+case 188:
+    /*! Production::    type_qualifier : RESTRICT */
+case 189:
+    /*! Production::    type_qualifier : VOLATILE */
+case 190:
+    /*! Production::    type_qualifier : ATOMIC */
+case 192:
+    /*! Production::    type_name : specifier_qualifier_list */
+case 193:
+    /*! Production::    typedef_name : TYPEDEF_NAME */
 
     // default action (generated by JISON mode classic/merge :: 1,VT,VA,-,-,-,-,-,-):
     this.$ = yyvstack[yysp];
     // END of default action (generated by JISON mode classic/merge :: 1,VT,VA,-,-,-,-,-,-)
     break;
 
-case 157:
-    /*! Production::    enumerator_list : enumerator_list "," enumerator */
-case 158:
-    /*! Production::    enumerator : enumeration_constant "=" constant_expression */
-case 191:
+case 10:
+    /*! Production::    struct_declaration : specifier_qualifier_list struct_declarator_list ";" */
+case 14:
+    /*! Production::    struct_declarator_list : struct_declarator_list "," struct_declarator */
+case 25:
+    /*! Production::    direct_declarator : "(" declarator ")" */
+case 26:
+    /*! Production::    direct_declarator : direct_declarator "[" "]" */
+case 36:
+    /*! Production::    direct_declarator : direct_declarator "(" ")" */
+case 40:
     /*! Production::    parameter_type_list : parameter_list "," ELLIPSIS */
-case 194:
+case 43:
     /*! Production::    parameter_list : parameter_list "," parameter_declaration */
-case 199:
-    /*! Production::    identifier_list : identifier_list "," IDENTIFIER */
-case 206:
+case 69:
+    /*! Production::    pointer : "*" type_qualifier_list pointer */
+case 76:
     /*! Production::    direct_abstract_declarator : "(" abstract_declarator ")" */
-case 208:
+case 78:
     /*! Production::    direct_abstract_declarator : "[" "*" "]" */
-case 213:
+case 83:
     /*! Production::    direct_abstract_declarator : "[" type_qualifier_list "]" */
-case 214:
+case 84:
     /*! Production::    direct_abstract_declarator : "[" assignment_expression "]" */
-case 215:
+case 85:
     /*! Production::    direct_abstract_declarator : direct_abstract_declarator "[" "]" */
-case 224:
+case 94:
     /*! Production::    direct_abstract_declarator : "(" parameter_type_list ")" */
-case 225:
+case 95:
     /*! Production::    direct_abstract_declarator : direct_abstract_declarator "(" ")" */
-case 233:
-    /*! Production::    initializer_list : initializer_list "," initializer */
-case 237:
-    /*! Production::    designator : "[" constant_expression "]" */
-case 246:
-    /*! Production::    labeled_statement : IDENTIFIER ":" statement */
-case 248:
-    /*! Production::    labeled_statement : DEFAULT ":" statement */
-case 250:
-    /*! Production::    compound_statement : "{" block_item_list "}" */
-case 266:
-    /*! Production::    jump_statement : GOTO IDENTIFIER ";" */
-case 270:
-    /*! Production::    jump_statement : RETURN expression ";" */
-case 276:
-    /*! Production::    function_definition : declaration_specifiers declarator compound_statement */
+case 98:
+    /*! Production::    identifier_list : identifier_list "," IDENTIFIER */
+case 116:
+    /*! Production::    multiplicative_expression : multiplicative_expression "*" cast_expression */
+case 117:
+    /*! Production::    multiplicative_expression : multiplicative_expression "/" cast_expression */
+case 118:
+    /*! Production::    multiplicative_expression : multiplicative_expression "%" cast_expression */
+case 120:
+    /*! Production::    additive_expression : additive_expression "+" multiplicative_expression */
+case 121:
+    /*! Production::    additive_expression : additive_expression "-" multiplicative_expression */
+case 123:
+    /*! Production::    shift_expression : shift_expression LEFT_OP additive_expression */
+case 124:
+    /*! Production::    shift_expression : shift_expression RIGHT_OP additive_expression */
+case 126:
+    /*! Production::    relational_expression : relational_expression "<" shift_expression */
+case 127:
+    /*! Production::    relational_expression : relational_expression ">" shift_expression */
+case 128:
+    /*! Production::    relational_expression : relational_expression LE_OP shift_expression */
+case 129:
+    /*! Production::    relational_expression : relational_expression GE_OP shift_expression */
+case 131:
+    /*! Production::    equality_expression : equality_expression EQ_OP relational_expression */
+case 132:
+    /*! Production::    equality_expression : equality_expression NE_OP relational_expression */
+case 134:
+    /*! Production::    and_expression : and_expression "&" equality_expression */
+case 136:
+    /*! Production::    exclusive_or_expression : exclusive_or_expression "^" and_expression */
+case 138:
+    /*! Production::    inclusive_or_expression : inclusive_or_expression "|" exclusive_or_expression */
+case 140:
+    /*! Production::    logical_and_expression : logical_and_expression AND_OP inclusive_or_expression */
+case 142:
+    /*! Production::    logical_or_expression : logical_or_expression OR_OP logical_and_expression */
+case 146:
+    /*! Production::    assignment_expression : unary_expression assignment_operator assignment_expression */
+case 159:
+    /*! Production::    expression : expression "," assignment_expression */
+case 184:
+    /*! Production::    enumerator_list : enumerator_list "," enumerator */
+case 185:
+    /*! Production::    enumerator : enumeration_constant "=" constant_expression */
 
     // default action (generated by JISON mode classic/merge :: 3,VT,VA,-,-,-,-,-,-):
     this.$ = yyvstack[yysp - 2];
     // END of default action (generated by JISON mode classic/merge :: 3,VT,VA,-,-,-,-,-,-)
     break;
 
-case 160:
-    /*! Production::    atomic_type_specifier : ATOMIC "(" type_name ")" */
-
-    this.$ = {
-        type: 'atomic_type_specifier',
-        atomic: true,
-        'type_name': yyvstack[yysp - 1]
-    };
-    break;
-
-case 161:
-    /*! Production::    type_qualifier : CONST */
-case 162:
-    /*! Production::    type_qualifier : RESTRICT */
-case 163:
-    /*! Production::    type_qualifier : VOLATILE */
-case 164:
-    /*! Production::    type_qualifier : ATOMIC */
-
-    this.$ = {
-        type: 'type_qualifier',
-        'type_qualifier': yyvstack[yysp]
-    };
-    break;
-
-case 165:
-    /*! Production::    function_specifier : INLINE */
-case 166:
-    /*! Production::    function_specifier : NORETURN */
-
-    this.$ = {
-        type: 'function_specifier',
-        'function_specifier': yyvstack[yysp]
-    };
-    break;
-
-case 169:
-    /*! Production::    declarator : pointer direct_declarator */
-
-    this.$ = {
-        type: 'declarator',
-        pointer: yyvstack[yysp - 1],
-        'direct_declarator': yyvstack[yysp]
-    };
-    break;
-
-case 170:
-    /*! Production::    declarator : direct_declarator */
-
-    this.$ = {
-        type: 'declarator',
-        'direct_declarator': yyvstack[yysp]
-    };
-    break;
-
-case 171:
-    /*! Production::    direct_declarator : IDENTIFIER */
-
-    this.$ = {
-        type: 'direct_declarator',
-        identifier: yyvstack[yysp]
-    };
-    break;
-
-case 172:
-    /*! Production::    direct_declarator : "(" declarator ")" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        declarator: yyvstack[yysp - 1]
-    };
-    break;
-
-case 173:
-    /*! Production::    direct_declarator : direct_declarator "[" "]" */
-case 183:
-    /*! Production::    direct_declarator : direct_declarator "(" ")" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        'direct_declarator': yyvstack[yysp - 2]
-    };
-    break;
-
-case 174:
-    /*! Production::    direct_declarator : direct_declarator "[" "*" "]" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        'direct_declarator': yyvstack[yysp - 3]
-    };
-    break;
-
-case 175:
-    /*! Production::    direct_declarator : direct_declarator "[" STATIC type_qualifier_list assignment_expression "]" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        'direct_declarator': yyvstack[yysp - 5],
-        'type_qualifier_list': yyvstack[yysp - 2],
-        'assignment_expression': yyvstack[yysp - 1]
-    };
-    break;
-
-case 176:
-    /*! Production::    direct_declarator : direct_declarator "[" STATIC assignment_expression "]" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        'direct_declarator': yyvstack[yysp - 4],
-        'assignment_expression': yyvstack[yysp - 2]
-    };
-    break;
-
-case 177:
-    /*! Production::    direct_declarator : direct_declarator "[" type_qualifier_list "*" "]" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        'direct_declarator': yyvstack[yysp - 4],
-        'type_qualifier_list': yyvstack[yysp - 2]
-    };
-    break;
-
-case 178:
-    /*! Production::    direct_declarator : direct_declarator "[" type_qualifier_list STATIC assignment_expression "]" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        'direct_declarator': yyvstack[yysp - 5],
-        'type_qualifier_list': yyvstack[yysp - 3],
-        'assignment_expression': yyvstack[yysp - 1]
-    };
-    break;
-
-case 179:
-    /*! Production::    direct_declarator : direct_declarator "[" type_qualifier_list assignment_expression "]" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        'direct_declarator': yyvstack[yysp - 4],
-        'type_qualifier_list': yyvstack[yysp - 2],
-        'assignment_expression': yyvstack[yysp - 1]
-    };
-    break;
-
-case 180:
-    /*! Production::    direct_declarator : direct_declarator "[" type_qualifier_list "]" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        'direct_declarator': yyvstack[yysp - 3],
-        'type_qualifier_list': yyvstack[yysp - 1],
-    };
-    break;
-
-case 181:
-    /*! Production::    direct_declarator : direct_declarator "[" assignment_expression "]" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        'direct_declarator': yyvstack[yysp - 3],
-        'assignment_expression': yyvstack[yysp - 1],
-    };
-    break;
-
-case 182:
-    /*! Production::    direct_declarator : direct_declarator "(" parameter_type_list ")" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        'direct_declarator': yyvstack[yysp - 3],
-        'parameter_type_list': yyvstack[yysp - 1],
-    };
-    break;
-
-case 184:
-    /*! Production::    direct_declarator : direct_declarator "(" identifier_list ")" */
-
-    this.$ = {
-        type: 'direct_declarator',
-        'direct_declarator': yyvstack[yysp - 3],
-        'identifier_list': yyvstack[yysp - 1]
-    };
-    break;
-
-case 185:
-    /*! Production::    pointer : "*" type_qualifier_list pointer */
-
-    this.$ = {
-        type: 'pointer',
-        'type_qualifier_list': yyvstack[yysp - 1],
-        pointer: yyvstack[yysp]
-    };
-    break;
-
-case 186:
-    /*! Production::    pointer : "*" type_qualifier_list */
-
-    this.$ = {
-        type: 'pointer',
-        'type_qualifier_list': yyvstack[yysp]
-    };
-    break;
-
-case 187:
-    /*! Production::    pointer : "*" pointer */
-
-    this.$ = {
-        type: 'pointer',
-        pointer: yyvstack[yysp]
-    };
-    break;
-
-case 188:
-    /*! Production::    pointer : "*" */
-
-    this.$ = {
-        type: 'pointer'
-    }
-    break;
-
-case 189:
-    /*! Production::    type_qualifier_list : type_qualifier */
-
-    this.$ = {
-        type: 'type_qualifier_list',
-        'type_qualifier': yyvstack[yysp]
-    };
-    break;
-
-case 190:
-    /*! Production::    type_qualifier_list : type_qualifier_list type_qualifier */
-
-    this.$ = {
-        type: 'type_qualifier_list',
-        'type_qualifier': yyvstack[yysp - 1],
-        'type_qualifier_list': yyvstack[yysp]
-    };
-    break;
-
-case 227:
-    /*! Production::    initializer : "{" initializer_list "}" */
-
-    this.$ = {
-        type: 'initializer',
-        'initializer_list': yyvstack[yysp - 1]
-    }
-    break;
-
-case 228:
-    /*! Production::    initializer : "{" initializer_list "," "}" */
-
-    this.$ = {
-        type: 'initializer',
-        'initializer_list': yyvstack[yysp - 2]
-    }
-    break;
-
-case 229:
-    /*! Production::    initializer : assignment_expression */
-
-    this.$ = {
-        type: 'initializer',
-        'assignment_expression': yyvstack[yysp]
-    }
-    break;
-
-case 239:
+case 23:
     /*! Production::    static_assert_declaration : STATIC_ASSERT "(" constant_expression "," STRING_LITERAL ")" ";" */
-
-    this.$ = {
-        type: 'static_assert_declaration',
-        'constant_expression': yyvstack[yysp - 4],
-        'string_literal': yyvstack[yysp - 2]
-    };
-    break;
-
-case 257:
-    /*! Production::    selection_statement : IF "(" expression ")" statement ELSE statement */
-case 261:
-    /*! Production::    iteration_statement : DO statement WHILE "(" expression ")" ";" */
-case 263:
-    /*! Production::    iteration_statement : FOR "(" expression_statement expression_statement expression ")" statement */
-case 265:
-    /*! Production::    iteration_statement : FOR "(" declaration expression_statement expression ")" statement */
 
     // default action (generated by JISON mode classic/merge :: 7,VT,VA,-,-,-,-,-,-):
     this.$ = yyvstack[yysp - 6];
     // END of default action (generated by JISON mode classic/merge :: 7,VT,VA,-,-,-,-,-,-)
     break;
 
-case 271:
-    /*! Production::    translation_unit : external_declaration */
+case 28:
+    /*! Production::    direct_declarator : direct_declarator "[" STATIC type_qualifier_list assignment_expression "]" */
+case 31:
+    /*! Production::    direct_declarator : direct_declarator "[" type_qualifier_list STATIC assignment_expression "]" */
+case 87:
+    /*! Production::    direct_abstract_declarator : direct_abstract_declarator "[" STATIC type_qualifier_list assignment_expression "]" */
+case 90:
+    /*! Production::    direct_abstract_declarator : direct_abstract_declarator "[" type_qualifier_list STATIC assignment_expression "]" */
+case 181:
+    /*! Production::    enum_specifier : ENUM IDENTIFIER "{" enumerator_list "," "}" */
 
-    this.$ = {
-        type: 'translation_unit',
-        'external_declaration': yyvstack[yysp]
-    };
-    break;
-
-case 272:
-    /*! Production::    translation_unit : translation_unit external_declaration */
-
-    this.$ = {
-        type: 'translation_unit',
-        'translation_unit': yyvstack[yysp - 1],
-        'external_declaration': yyvstack[yysp]
-    };
-    break;
-
-case 273:
-    /*! Production::    external_declaration : function_definition */
-
-    this.$ = {
-        type: 'external_declaration',
-        'function_definition': yyvstack[yysp]
-    }
-    break;
-
-case 274:
-    /*! Production::    external_declaration : declaration */
-
-    this.$ = {
-        type: 'external_declaration',
-        declaration: yyvstack[yysp]
-    }
-    break;
-
-case 277:
-    /*! Production::    declaration_list : declaration */
-
-    this.$ = {
-        type: 'declaration_list',
-        declaration: yyvstack[yysp]
-    };
-    break;
-
-case 278:
-    /*! Production::    declaration_list : declaration_list declaration */
-
-    this.$ = {
-        type: 'declaration_list',
-        'declaration_list': yyvstack[yysp - 1],
-        declaration: yyvstack[yysp]
-    };
+    // default action (generated by JISON mode classic/merge :: 6,VT,VA,-,-,-,-,-,-):
+    this.$ = yyvstack[yysp - 5];
+    // END of default action (generated by JISON mode classic/merge :: 6,VT,VA,-,-,-,-,-,-)
     break;
 
 }
 },
 table: bt({
   len: u([
-  45,
-  45,
-  s,
-  [0, 3],
-  9,
-  0,
-  s,
-  [46, 5],
+  5,
   1,
-  s,
-  [0, 25],
-  37,
+  2,
   0,
   0,
   1,
-  3,
-  2,
-  s,
-  [0, 3],
-  48,
+  36,
+  39,
   0,
-  2,
-  3,
-  38,
+  36,
   0,
-  14,
+  3,
+  0,
+  3,
+  35,
+  35,
+  1,
   0,
   6,
   s,
-  [0, 5],
-  38,
-  28,
-  66,
-  34,
-  38,
-  38,
-  4,
-  38,
-  44,
-  0,
-  40,
-  0,
-  104,
-  9,
-  0,
-  7,
-  38,
-  46,
-  46,
-  13,
-  s,
-  [0, 3],
-  1,
-  1,
-  0,
-  s,
-  [8, 5, 1],
-  14,
-  18,
-  20,
-  22,
-  25,
-  0,
-  0,
-  67,
-  42,
-  25,
-  25,
-  26,
-  25,
-  c,
-  [93, 17],
-  1,
-  1,
-  8,
-  34,
-  34,
-  1,
-  1,
-  34,
-  0,
-  10,
-  0,
-  3,
-  34,
-  34,
+  [0, 19],
+  37,
   2,
-  0,
-  3,
-  0,
-  4,
-  s,
-  [0, 3],
-  46,
-  c,
-  [109, 4],
-  103,
-  s,
-  [0, 9],
-  39,
-  38,
-  1,
-  0,
-  2,
-  s,
-  [1, 3],
-  59,
-  s,
-  [1, 4],
-  40,
-  c,
-  [36, 3],
-  0,
-  19,
-  44,
-  45,
-  c,
-  [96, 3],
-  2,
-  c,
-  [48, 4],
-  11,
-  c,
-  [70, 4],
-  39,
-  s,
-  [35, 6, -1],
-  30,
-  s,
-  [29, 4],
-  28,
-  28,
-  27,
-  27,
-  s,
-  [26, 3],
-  1,
-  2,
-  39,
-  40,
-  c,
-  [36, 3],
-  c,
-  [122, 3],
-  c,
-  [4, 4],
-  28,
-  38,
-  0,
-  0,
-  5,
-  5,
-  49,
-  c,
-  [89, 3],
-  s,
-  [0, 5],
-  2,
-  0,
-  38,
-  3,
-  0,
-  34,
-  34,
-  0,
-  4,
-  38,
-  2,
-  2,
-  40,
-  c,
-  [115, 3],
-  38,
-  1,
   c,
   [32, 3],
+  0,
+  0,
+  c,
+  [43, 3],
+  35,
+  47,
+  0,
+  0,
+  27,
+  1,
+  3,
+  4,
+  13,
+  30,
+  3,
+  38,
+  36,
+  0,
+  1,
+  0,
+  13,
+  33,
+  34,
+  1,
+  0,
+  0,
+  34,
+  0,
+  7,
+  0,
+  13,
+  13,
+  15,
+  14,
+  1,
+  8,
+  s,
+  [0, 5],
+  9,
+  10,
+  11,
+  13,
+  17,
+  19,
+  21,
+  24,
+  0,
+  30,
+  1,
+  0,
+  2,
+  2,
+  c,
+  [89, 3],
+  11,
+  s,
+  [46, 5],
+  35,
+  s,
+  [0, 7],
+  1,
+  c,
+  [50, 3],
+  0,
+  0,
+  4,
+  12,
+  0,
+  1,
+  7,
+  c,
+  [29, 3],
+  3,
+  s,
+  [0, 3],
+  32,
+  1,
+  13,
+  27,
+  c,
+  [21, 4],
+  27,
   s,
   [0, 11],
-  59,
-  1,
-  59,
-  0,
-  38,
-  s,
-  [39, 3],
-  1,
-  83,
-  c,
-  [66, 4],
-  2,
-  0,
-  43,
-  1,
-  19,
-  c,
-  [132, 3],
-  c,
-  [106, 4],
-  41,
-  c,
-  [257, 3],
-  7,
-  52,
-  1,
-  2,
-  c,
-  [219, 6],
-  18,
-  s,
-  [20, 4],
-  22,
-  22,
-  25,
-  c,
-  [225, 3],
-  0,
-  27,
-  c,
-  [40, 3],
-  c,
-  [286, 4],
-  s,
-  [1, 4],
-  5,
-  46,
-  43,
-  1,
-  0,
-  1,
-  c,
-  [167, 5],
-  0,
-  8,
-  0,
-  c,
-  [92, 7],
-  4,
-  c,
-  [216, 4],
-  c,
-  [22, 3],
-  c,
-  [95, 3],
-  c,
-  [84, 3],
-  2,
-  2,
-  1,
-  41,
-  41,
-  c,
-  [15, 5],
-  c,
-  [89, 6],
-  37,
-  c,
-  [30, 4],
-  38,
-  c,
-  [7, 3],
-  31,
-  c,
-  [55, 6],
-  c,
-  [22, 4],
-  43,
-  1,
-  c,
-  [118, 6],
-  0,
-  c,
-  [347, 3],
-  c,
-  [54, 3],
-  59,
-  59,
-  39,
-  40,
-  c,
-  [9, 4],
-  c,
-  [105, 5],
-  c,
-  [220, 3],
-  43,
-  1,
-  c,
-  [183, 5],
-  c,
-  [44, 5],
-  63,
-  c,
-  [22, 3],
-  59,
-  2,
-  59,
-  2,
-  c,
-  [70, 3],
-  30,
-  38,
-  c,
-  [54, 4],
-  c,
-  [3, 3],
-  59,
-  1,
-  c,
-  [106, 3],
-  c,
-  [108, 3],
-  s,
-  [0, 8]
-]),
-  symbol: u([
-  s,
-  [58, 29, 1],
-  88,
-  127,
-  128,
-  s,
-  [131, 4, 1],
-  140,
-  s,
-  [143, 4, 1],
-  163,
-  173,
-  174,
-  175,
-  1,
-  c,
-  [46, 42],
-  174,
-  175,
-  3,
-  13,
-  26,
-  27,
-  129,
-  130,
-  147,
-  148,
-  149,
-  3,
-  4,
-  5,
-  7,
-  c,
-  [12, 3],
-  c,
-  [60, 29],
-  c,
-  [58, 10],
-  c,
-  [46, 185],
-  s,
-  [3, 5, 1],
-  c,
-  [48, 32],
-  3,
-  10,
-  27,
-  76,
-  10,
-  27,
-  5,
-  10,
-  25,
-  26,
-  c,
-  [331, 42],
-  166,
-  176,
-  5,
-  26,
-  3,
-  27,
-  148,
-  c,
-  [96, 5],
-  c,
-  [57, 33],
-  c,
-  [134, 6],
-  27,
-  c,
-  [15, 4],
-  144,
-  149,
-  150,
-  3,
-  13,
-  27,
-  c,
-  [385, 4],
-  s,
-  [12, 6, 1],
-  s,
-  [27, 7, 1],
-  s,
-  [36, 4, 1],
-  100,
-  101,
-  103,
-  104,
-  107,
-  s,
-  [109, 14, 1],
-  126,
-  c,
-  [82, 20],
-  c,
-  [132, 3],
-  137,
-  c,
-  [133, 3],
-  155,
-  c,
-  [66, 18],
-  c,
-  [46, 20],
-  c,
-  [86, 20],
-  c,
-  [66, 9],
-  27,
-  c,
-  [50, 20],
-  88,
-  s,
-  [132, 6, 1],
-  c,
-  [33, 3],
-  148,
-  163,
-  c,
-  [224, 6],
-  c,
-  [321, 33],
-  c,
-  [38, 37],
-  27,
-  102,
-  141,
-  142,
-  c,
-  [42, 38],
-  10,
-  c,
-  [392, 43],
-  3,
-  10,
-  c,
-  [329, 36],
-  123,
-  158,
-  3,
-  s,
-  [10, 8, 1],
-  s,
-  [26, 9, 1],
-  c,
-  [43, 4],
-  c,
-  [105, 30],
-  89,
-  90,
-  s,
-  [92, 10, 1],
-  c,
-  [83, 18],
-  125,
-  c,
-  [136, 12],
-  s,
-  [164, 9, 1],
-  c,
-  [866, 10],
-  13,
-  27,
-  c,
-  [873, 7],
-  c,
-  [546, 36],
-  8,
-  c,
-  [198, 17],
-  60,
-  c,
-  [446, 23],
-  123,
-  144,
-  150,
-  4,
-  5,
-  c,
-  [769, 40],
-  s,
-  [151, 4, 1],
-  c,
-  [638, 13],
-  4,
-  5,
-  c,
-  [14, 3],
-  8,
-  11,
+  28,
   24,
-  26,
-  47,
-  c,
-  [8, 7],
-  46,
-  c,
-  [9, 6],
-  23,
-  c,
-  [10, 9],
-  22,
-  c,
-  [11, 10],
-  12,
-  c,
-  [12, 16],
   s,
-  [44, 4, 1],
-  c,
-  [14, 6],
+  [0, 4],
+  30,
+  30,
   s,
-  [20, 5, 1],
-  26,
+  [23, 5, -1],
+  19,
   s,
-  [42, 6, 1],
-  c,
-  [18, 12],
+  [18, 4],
+  17,
+  17,
+  16,
+  16,
   s,
-  [40, 8, 1],
+  [15, 3],
   c,
-  [20, 6],
-  14,
+  [41, 3],
+  1,
+  42,
+  c,
+  [139, 3],
+  7,
+  4,
+  53,
+  c,
+  [82, 6],
+  57,
+  c,
+  [59, 4],
+  4,
+  50,
+  0,
+  3,
+  27,
+  2,
+  c,
+  [28, 4],
+  c,
+  [168, 4],
+  8,
+  1,
+  1,
+  c,
+  [133, 5],
+  17,
+  s,
+  [19, 4],
+  21,
+  21,
+  24,
+  c,
+  [76, 4],
   15,
   c,
-  [22, 20],
-  c,
-  [234, 3],
-  s,
-  [18, 7, 1],
-  c,
-  [25, 9],
-  c,
-  [716, 57],
-  123,
-  125,
-  c,
-  [717, 9],
-  s,
-  [4, 6, 1],
-  c,
-  [95, 12],
-  25,
-  26,
+  [38, 4],
   35,
-  36,
-  37,
+  44,
+  1,
+  c,
+  [182, 7],
   s,
-  [40, 18, 1],
+  [1, 3],
+  s,
+  [0, 4],
   c,
-  [891, 25],
-  c,
-  [25, 50],
-  111,
-  c,
-  [51, 26],
-  3,
-  4,
-  3,
-  4,
-  c,
-  [376, 3],
-  149,
-  156,
-  157,
-  c,
-  [8, 5],
+  [127, 3],
   26,
   c,
-  [876, 21],
+  [119, 5],
   c,
-  [189, 7],
+  [202, 5],
   c,
-  [34, 34],
-  4,
-  4,
-  3,
-  11,
+  [19, 4],
+  32,
+  1,
   c,
-  [942, 25],
+  [140, 5],
   c,
-  [941, 8],
-  6,
+  [12, 5],
   c,
-  [68, 3],
-  138,
-  139,
+  [13, 3],
+  1,
   c,
-  [629, 4],
-  7,
+  [30, 4],
   c,
-  [1181, 3],
+  [26, 5],
   c,
-  [988, 33],
-  c,
-  [34, 33],
-  5,
-  11,
-  5,
-  11,
-  25,
-  c,
-  [951, 5],
-  7,
-  9,
-  c,
-  [871, 39],
-  s,
-  [159, 4, 1],
-  c,
-  [486, 16],
-  25,
-  c,
-  [487, 9],
-  c,
-  [388, 10],
-  124,
-  c,
-  [912, 98],
-  c,
-  [911, 6],
-  c,
-  [533, 3],
-  9,
-  c,
-  [531, 59],
-  c,
-  [1336, 13],
-  6,
-  c,
-  [1524, 3],
-  s,
-  [3, 3],
-  c,
-  [267, 7],
-  c,
-  [185, 13],
-  c,
-  [155, 31],
-  c,
-  [143, 3],
-  c,
-  [142, 5],
+  [3, 6],
+  0,
+  0
+]),
+  symbol: u([
   27,
+  28,
+  29,
+  84,
+  85,
+  1,
+  3,
   26,
-  26,
-  c,
-  [107, 7],
-  c,
-  [62, 8],
-  c,
-  [330, 24],
-  125,
-  5,
-  25,
-  26,
-  c,
-  [1046, 19],
-  c,
-  [169, 18],
-  c,
-  [1063, 26],
-  c,
-  [1109, 45],
-  8,
-  4,
-  c,
-  [1051, 4],
-  5,
   27,
-  c,
-  [1071, 4],
-  c,
-  [1070, 3],
-  c,
-  [581, 3],
-  156,
-  157,
+  7,
+  s,
+  [26, 4, 1],
   31,
-  c,
-  [279, 37],
+  s,
+  [65, 14, 1],
+  s,
+  [80, 8, 1],
+  89,
+  90,
+  91,
   123,
+  124,
   125,
+  128,
+  130,
+  1,
+  3,
+  s,
+  [5, 5, 1],
+  11,
+  s,
+  [26, 5, 1],
+  33,
+  s,
+  [35, 7, 1],
   c,
-  [39, 35],
+  [51, 18],
+  4,
+  c,
+  [76, 26],
+  c,
+  [75, 9],
+  5,
+  30,
+  88,
+  5,
+  7,
+  9,
+  5,
+  c,
+  [78, 4],
+  c,
+  [77, 4],
+  c,
+  [44, 20],
+  89,
+  c,
+  [41, 6],
   c,
   [35, 34],
-  c,
-  [34, 33],
-  c,
-  [33, 32],
-  c,
-  [32, 31],
-  c,
-  [31, 30],
-  c,
-  [30, 59],
-  c,
-  [29, 115],
-  c,
-  [28, 55],
-  c,
-  [27, 53],
-  c,
-  [26, 52],
-  c,
-  [588, 3],
-  c,
-  [571, 40],
-  4,
-  c,
-  [40, 22],
-  s,
-  [108, 16, 1],
-  27,
-  27,
-  c,
-  [1571, 68],
-  c,
-  [67, 66],
-  c,
-  [2449, 46],
-  c,
-  [75, 20],
-  c,
-  [1516, 4],
-  c,
-  [1555, 3],
-  c,
-  [1176, 3],
-  3,
-  4,
   7,
-  13,
-  c,
-  [1992, 39],
-  149,
-  c,
-  [1993, 3],
-  c,
-  [1609, 3],
-  c,
-  [2086, 45],
-  c,
-  [1197, 3],
-  c,
-  [1238, 37],
-  5,
-  6,
-  26,
-  c,
-  [1628, 35],
-  c,
-  [34, 33],
+  7,
   11,
-  27,
-  102,
-  142,
+  26,
+  91,
+  100,
+  101,
   c,
-  [113, 39],
-  c,
-  [1623, 3],
-  c,
-  [2487, 40],
-  7,
-  9,
-  25,
-  162,
-  c,
-  [86, 38],
-  c,
-  [545, 19],
-  c,
-  [383, 21],
-  c,
-  [1470, 58],
-  6,
-  c,
-  [1530, 60],
-  c,
-  [157, 38],
-  c,
-  [1392, 73],
-  c,
-  [39, 43],
-  93,
-  c,
-  [1682, 19],
-  c,
-  [1928, 30],
-  c,
-  [1918, 33],
-  169,
+  [156, 37],
+  3,
   26,
   c,
-  [637, 20],
+  [233, 36],
   c,
-  [1660, 26],
+  [75, 3],
+  s,
+  [10, 7, 1],
+  33,
+  s,
+  [42, 5, 1],
+  77,
   c,
-  [1769, 37],
-  c,
-  [59, 20],
+  [33, 3],
+  92,
+  s,
+  [105, 15, 1],
+  128,
+  6,
   8,
   c,
-  [2825, 30],
-  87,
+  [74, 4],
   c,
-  [148, 10],
-  153,
+  [107, 26],
+  84,
+  85,
+  s,
+  [93, 7, 1],
+  104,
   c,
-  [1171, 3],
+  [166, 6],
   c,
-  [1754, 3],
-  27,
-  148,
+  [81, 6],
   c,
-  [892, 3],
+  [80, 5],
   c,
-  [1760, 3],
+  [75, 14],
+  122,
+  8,
+  7,
+  26,
+  91,
   c,
-  [888, 39],
+  [189, 4],
   c,
-  [1799, 3],
+  [193, 6],
   c,
-  [890, 5],
+  [109, 5],
+  101,
+  128,
   c,
-  [943, 3],
+  [92, 3],
   c,
-  [2864, 86],
+  [243, 25],
+  129,
+  130,
+  79,
+  126,
+  127,
   c,
-  [2882, 32],
+  [397, 74],
+  30,
   c,
-  [20, 60],
+  [238, 8],
   c,
-  [2942, 22],
+  [157, 5],
   c,
-  [2964, 41],
+  [169, 12],
   c,
-  [2989, 26],
+  [249, 21],
   c,
-  [956, 26],
-  5,
+  [284, 18],
+  c,
+  [34, 16],
+  10,
+  6,
+  c,
+  [35, 5],
+  s,
+  [17, 9, 1],
+  s,
+  [47, 18, 1],
+  120,
+  s,
+  [4, 4, 2],
+  23,
+  24,
+  54,
+  c,
+  [277, 13],
+  c,
+  [13, 13],
+  c,
+  [304, 15],
+  c,
+  [15, 14],
+  7,
+  c,
+  [63, 6],
+  53,
+  54,
+  c,
+  [8, 4],
+  c,
+  [98, 3],
+  c,
+  [9, 6],
+  c,
+  [108, 4],
+  c,
+  [10, 6],
+  12,
+  c,
+  [11, 15],
+  c,
+  [125, 4],
+  c,
+  [13, 5],
+  c,
+  [145, 6],
+  c,
+  [142, 6],
+  c,
+  [17, 11],
+  c,
+  [161, 8],
+  c,
+  [19, 5],
+  13,
+  14,
+  c,
+  [21, 18],
+  c,
+  [207, 12],
+  c,
+  [24, 8],
+  c,
+  [418, 30],
+  8,
+  6,
+  8,
+  6,
+  8,
+  6,
+  26,
+  104,
+  c,
+  [421, 6],
+  c,
+  [672, 3],
+  102,
+  103,
+  c,
+  [432, 9],
+  c,
+  [565, 28],
+  c,
+  [562, 4],
+  c,
+  [406, 5],
+  c,
+  [46, 219],
+  7,
+  6,
+  c,
+  [751, 14],
+  101,
+  128,
   8,
   c,
-  [2118, 3],
+  [12, 4],
   c,
-  [1534, 4],
+  [291, 3],
+  4,
+  6,
+  4,
+  6,
+  25,
   c,
-  [1248, 5],
+  [733, 3],
   c,
-  [3285, 46],
+  [645, 16],
   c,
-  [3283, 42],
+  [610, 17],
   c,
-  [2829, 3],
+  [691, 25],
   c,
-  [2330, 108],
-  c,
-  [2904, 3],
-  27,
-  c,
-  [2902, 5],
-  c,
-  [1160, 37],
-  c,
-  [1288, 5],
-  c,
-  [2864, 3],
-  c,
-  [2783, 7],
-  c,
-  [1249, 32],
-  c,
-  [2864, 3],
-  8,
-  c,
-  [1112, 59],
-  c,
-  [2485, 4],
-  c,
-  [367, 3],
-  c,
-  [2645, 40],
-  169,
-  c,
-  [41, 41],
-  8,
-  8,
-  c,
-  [1599, 38],
-  c,
-  [3099, 46],
-  c,
-  [982, 38],
+  [42, 15],
   10,
   c,
-  [635, 4],
+  [28, 27],
   c,
-  [321, 6],
+  [27, 27],
+  121,
   c,
-  [3139, 27],
-  34,
+  [28, 24],
   c,
-  [555, 20],
-  105,
-  106,
+  [501, 30],
   c,
-  [1934, 9],
+  [30, 30],
   c,
-  [2877, 109],
+  [84, 23],
   c,
-  [1262, 45],
+  [23, 22],
   c,
-  [1243, 38],
+  [22, 21],
   c,
-  [4314, 42],
+  [21, 20],
   c,
-  [1686, 58],
+  [20, 19],
   c,
-  [59, 118],
+  [19, 37],
   c,
-  [2587, 62],
+  [18, 71],
   c,
-  [40, 56],
-  5,
-  11,
+  [17, 33],
   c,
-  [599, 3],
-  6,
+  [16, 31],
   c,
-  [425, 44],
+  [15, 30],
   c,
-  [426, 40],
-  c,
-  [427, 3],
-  c,
-  [3789, 52],
+  [1380, 6],
   s,
-  [91, 9, 1],
+  [34, 8, 1],
   c,
-  [961, 3],
+  [348, 20],
   c,
-  [1026, 60],
+  [1379, 5],
   c,
-  [61, 62],
+  [633, 6],
+  8,
   c,
-  [1195, 45],
-  c,
-  [884, 21],
-  c,
-  [883, 10],
-  c,
-  [2277, 75],
-  c,
-  [341, 4],
-  c,
-  [215, 57],
+  [594, 4],
   26,
+  91,
   c,
-  [729, 118]
+  [872, 5],
+  c,
+  [691, 36],
+  91,
+  s,
+  [93, 11, 1],
+  c,
+  [1444, 6],
+  c,
+  [1526, 34],
+  c,
+  [160, 7],
+  c,
+  [90, 3],
+  c,
+  [36, 5],
+  c,
+  [494, 21],
+  c,
+  [1503, 15],
+  c,
+  [509, 6],
+  32,
+  c,
+  [146, 3],
+  103,
+  c,
+  [1741, 7],
+  c,
+  [1589, 35],
+  c,
+  [147, 8],
+  4,
+  79,
+  c,
+  [780, 13],
+  c,
+  [91, 15],
+  4,
+  6,
+  10,
+  10,
+  6,
+  24,
+  c,
+  [1293, 8],
+  8,
+  8,
+  c,
+  [1295, 71],
+  c,
+  [1312, 30],
+  c,
+  [19, 57],
+  c,
+  [1369, 20],
+  c,
+  [1390, 41],
+  c,
+  [24, 24],
+  c,
+  [286, 15],
+  c,
+  [508, 5],
+  c,
+  [455, 34],
+  8,
+  c,
+  [390, 38],
+  c,
+  [387, 5],
+  8,
+  8,
+  c,
+  [1824, 81],
+  s,
+  [8, 3],
+  c,
+  [473, 29],
+  c,
+  [1205, 28],
+  c,
+  [140, 81],
+  c,
+  [1388, 34],
+  c,
+  [1375, 27],
+  5,
+  c,
+  [62, 33],
+  c,
+  [63, 29],
+  s,
+  [10, 3]
 ]),
   type: u([
   s,
-  [2, 30],
-  s,
-  [0, 15],
+  [2, 3],
+  0,
+  0,
   1,
-  c,
-  [46, 44],
-  c,
-  [18, 9],
   s,
-  [2, 36],
-  c,
-  [55, 14],
-  c,
-  [46, 216],
+  [2, 27],
   s,
-  [2, 42],
-  c,
-  [331, 19],
-  c,
-  [68, 52],
-  c,
-  [6, 9],
-  c,
-  [472, 30],
-  c,
-  [193, 25],
-  c,
-  [221, 46],
+  [0, 12],
   s,
-  [0, 28],
+  [2, 64],
   c,
-  [51, 34],
+  [75, 13],
   c,
-  [320, 80],
+  [78, 31],
   c,
-  [392, 82],
+  [116, 35],
   c,
-  [243, 40],
+  [35, 12],
   c,
-  [507, 76],
+  [158, 66],
   c,
-  [340, 32],
-  c,
-  [9, 8],
-  c,
-  [120, 88],
-  c,
-  [681, 50],
-  c,
-  [25, 9],
+  [233, 32],
   s,
-  [2, 189],
+  [0, 17],
   c,
-  [377, 33],
+  [81, 44],
   c,
-  [89, 63],
+  [47, 15],
   c,
-  [25, 50],
+  [27, 18],
   c,
-  [51, 34],
+  [78, 15],
   c,
-  [154, 30],
+  [95, 24],
   c,
-  [188, 34],
+  [51, 10],
   c,
-  [34, 33],
+  [240, 76],
   c,
-  [258, 15],
+  [200, 45],
   c,
-  [46, 41],
+  [47, 20],
   c,
-  [1022, 41],
+  [283, 48],
   c,
-  [43, 24],
+  [510, 21],
   c,
-  [394, 61],
+  [55, 13],
   c,
-  [912, 104],
+  [304, 17],
   c,
-  [98, 77],
-  c,
-  [1393, 99],
-  c,
-  [186, 54],
-  c,
-  [252, 46],
-  c,
-  [45, 29],
-  c,
-  [501, 10],
-  c,
-  [1372, 60],
-  c,
-  [35, 51],
-  c,
-  [34, 33],
-  c,
-  [1256, 43],
-  c,
-  [1577, 38],
-  c,
-  [30, 71],
-  c,
-  [29, 115],
-  c,
-  [28, 55],
-  c,
-  [27, 53],
-  c,
-  [26, 70],
-  c,
-  [742, 43],
-  c,
-  [782, 61],
-  c,
-  [1037, 67],
-  c,
-  [67, 49],
-  c,
-  [775, 43],
-  c,
-  [2616, 46],
-  c,
-  [977, 61],
-  c,
-  [171, 29],
-  c,
-  [278, 39],
-  c,
-  [123, 44],
-  c,
-  [2142, 22],
-  c,
-  [1286, 67],
-  c,
-  [86, 58],
-  c,
-  [516, 51],
-  c,
-  [575, 60],
-  c,
-  [60, 46],
-  c,
-  [38, 58],
-  c,
-  [39, 97],
-  c,
-  [1918, 66],
-  c,
-  [59, 46],
-  c,
-  [1938, 90],
-  c,
-  [43, 18],
-  c,
-  [110, 36],
-  c,
-  [3134, 80],
+  [42, 25],
   s,
-  [2, 226],
+  [2, 143],
   c,
-  [2338, 67],
+  [260, 16],
   c,
-  [3572, 62],
+  [8, 7],
   c,
-  [2330, 96],
+  [832, 40],
   c,
-  [964, 44],
+  [878, 46],
   c,
-  [96, 24],
+  [46, 184],
   c,
-  [1112, 102],
+  [507, 23],
   c,
-  [250, 49],
+  [61, 9],
   c,
-  [89, 43],
+  [69, 18],
   c,
-  [40, 59],
+  [610, 42],
   c,
-  [1287, 62],
+  [41, 28],
   c,
-  [496, 51],
+  [915, 42],
   c,
-  [2877, 116],
+  [28, 25],
   c,
-  [2291, 76],
+  [501, 37],
   c,
-  [1342, 72],
+  [30, 35],
   c,
-  [1746, 59],
+  [107, 33],
   c,
-  [59, 105],
+  [66, 41],
   c,
-  [2587, 80],
+  [20, 19],
   c,
-  [178, 49],
+  [19, 37],
   c,
-  [2369, 88],
+  [18, 71],
   c,
-  [4345, 99],
+  [17, 33],
   c,
-  [61, 85],
+  [16, 31],
   c,
-  [48, 45],
+  [15, 42],
   c,
-  [2277, 85],
+  [1462, 39],
   c,
-  [276, 93],
+  [642, 40],
+  s,
+  [0, 19],
   c,
-  [729, 87]
+  [1526, 67],
+  c,
+  [87, 20],
+  c,
+  [1702, 10],
+  c,
+  [62, 50],
+  c,
+  [53, 15],
+  c,
+  [1385, 49],
+  s,
+  [2, 237],
+  c,
+  [274, 25],
+  c,
+  [455, 47],
+  c,
+  [357, 45],
+  c,
+  [1824, 57],
+  c,
+  [473, 27],
+  c,
+  [499, 56],
+  c,
+  [1964, 69],
+  c,
+  [34, 29],
+  c,
+  [96, 63],
+  c,
+  [29, 19]
 ]),
   state: u([
-  4,
-  5,
-  7,
-  8,
+  1,
+  2,
   32,
-  42,
-  33,
-  31,
-  9,
-  10,
-  11,
-  6,
+  2,
   s,
-  [1, 5, 1],
+  [9, 6, 1],
+  31,
+  33,
+  15,
+  34,
+  32,
+  2,
+  43,
   c,
-  [15, 10],
-  46,
-  3,
-  49,
-  52,
-  47,
-  51,
+  [11, 8],
+  45,
+  32,
+  2,
   50,
-  56,
   c,
-  [18, 9],
-  57,
+  [20, 7],
+  51,
   c,
-  [10, 9],
-  58,
-  c,
-  [10, 9],
-  59,
-  c,
-  [10, 9],
+  [8, 5],
+  55,
+  53,
+  54,
+  32,
+  2,
   60,
   c,
-  [10, 9],
-  72,
-  74,
-  c,
-  [69, 10],
+  [43, 9],
+  66,
   70,
-  69,
-  77,
-  82,
-  81,
-  80,
-  84,
-  51,
-  50,
-  106,
-  114,
-  115,
-  116,
-  100,
-  98,
-  103,
+  76,
   s,
-  [97, 13, -1],
-  125,
+  [93, 9, -1],
+  79,
+  72,
+  69,
+  67,
+  68,
   32,
-  42,
-  124,
-  33,
+  2,
+  95,
+  98,
+  101,
+  102,
+  103,
+  106,
+  107,
+  97,
+  104,
   31,
-  126,
-  123,
+  33,
+  105,
+  34,
+  119,
   c,
-  [28, 19],
+  [31, 12],
+  118,
+  117,
+  122,
+  123,
+  124,
+  c,
+  [34, 3],
+  126,
+  c,
+  [59, 4],
+  125,
+  34,
+  127,
   128,
   c,
-  [28, 7],
-  127,
+  [105, 11],
+  134,
   c,
-  [8, 3],
-  129,
-  130,
-  131,
+  [73, 14],
+  135,
+  68,
   c,
-  [10, 3],
-  133,
-  132,
+  [16, 14],
   138,
-  136,
-  137,
+  140,
   142,
+  156,
+  76,
+  157,
+  76,
+  119,
+  76,
+  158,
+  159,
+  76,
   c,
-  [91, 11],
-  141,
-  c,
-  [55, 5],
-  147,
-  c,
-  [55, 12],
-  146,
-  145,
-  143,
-  c,
-  [21, 19],
-  173,
-  163,
-  151,
-  c,
-  [55, 11],
-  152,
-  153,
-  154,
-  149,
-  150,
-  s,
-  [155, 4, 1],
-  49,
-  52,
-  174,
-  51,
-  50,
-  175,
-  c,
-  [4, 3],
-  c,
-  [51, 19],
-  180,
-  82,
+  [65, 7],
   179,
-  188,
-  c,
-  [51, 9],
-  181,
+  34,
   184,
+  55,
+  185,
   187,
-  183,
-  190,
-  189,
+  186,
+  188,
+  32,
+  2,
+  191,
   c,
-  [89, 20],
-  213,
+  [111, 3],
   c,
-  [166, 7],
+  [110, 5],
+  32,
+  2,
+  192,
+  c,
+  [11, 10],
+  193,
+  c,
+  [11, 10],
+  194,
+  c,
+  [11, 10],
+  195,
+  c,
+  [11, 8],
+  198,
+  140,
+  201,
+  200,
+  188,
+  206,
+  128,
+  c,
+  [103, 14],
+  207,
+  140,
+  c,
+  [16, 14],
+  210,
+  c,
+  [15, 14],
   212,
   c,
-  [29, 5],
-  220,
-  103,
+  [15, 14],
+  214,
+  213,
   c,
-  [7, 5],
+  [223, 11],
+  215,
+  c,
+  [151, 7],
+  216,
+  c,
+  [101, 3],
+  c,
+  [9, 5],
+  217,
+  c,
+  [253, 11],
+  218,
+  c,
+  [11, 9],
+  219,
+  c,
+  [10, 8],
+  220,
+  c,
+  [9, 7],
+  221,
+  c,
+  [8, 6],
   222,
   c,
   [7, 6],
-  98,
-  103,
   223,
   c,
-  [8, 5],
+  [7, 5],
   224,
-  103,
-  230,
+  c,
+  [6, 5],
+  225,
+  c,
+  [6, 5],
+  226,
+  c,
+  [6, 5],
+  227,
+  c,
+  [6, 4],
+  228,
+  c,
+  [5, 4],
   229,
-  231,
   c,
-  [40, 3],
+  [5, 3],
+  230,
+  c,
+  [4, 3],
+  231,
+  119,
+  76,
+  232,
+  119,
+  76,
+  233,
+  119,
+  76,
   234,
+  32,
+  2,
+  238,
   c,
-  [40, 3],
+  [369, 4],
   c,
-  [7, 3],
-  235,
-  c,
-  [7, 6],
+  [214, 5],
+  122,
   239,
-  c,
-  [211, 6],
-  241,
-  242,
+  32,
+  2,
+  55,
   244,
-  51,
-  50,
   c,
-  [15, 3],
-  246,
-  c,
-  [227, 7],
-  c,
-  [11, 3],
-  247,
-  c,
-  [238, 8],
-  251,
-  137,
-  c,
-  [225, 20],
-  254,
-  252,
-  253,
-  255,
-  256,
-  259,
-  c,
-  [230, 36],
-  272,
-  c,
-  [229, 4],
-  c,
-  [347, 19],
-  274,
-  c,
-  [61, 21],
-  281,
-  s,
-  [153, 6, 1],
-  c,
-  [28, 20],
-  287,
-  c,
-  [21, 19],
-  290,
-  82,
-  289,
-  c,
-  [22, 19],
-  293,
-  190,
-  300,
-  301,
-  51,
-  303,
-  302,
-  231,
-  c,
-  [70, 20],
-  306,
-  c,
-  [139, 16],
-  307,
-  c,
-  [17, 15],
-  308,
-  c,
-  [16, 14],
-  309,
-  c,
-  [15, 13],
-  310,
-  c,
-  [14, 12],
-  311,
-  c,
-  [13, 11],
-  312,
-  c,
-  [12, 11],
-  313,
-  c,
-  [12, 10],
-  314,
-  c,
-  [11, 10],
-  315,
-  c,
-  [11, 10],
-  316,
-  c,
-  [11, 10],
-  317,
-  c,
-  [11, 9],
-  318,
-  c,
-  [10, 9],
-  319,
-  c,
-  [10, 8],
-  320,
-  c,
-  [9, 8],
-  321,
-  c,
-  [9, 7],
-  322,
-  c,
-  [8, 7],
-  323,
-  c,
-  [8, 7],
-  324,
-  c,
-  [226, 20],
-  327,
+  [386, 6],
+  53,
+  187,
+  242,
+  188,
   c,
   [21, 5],
-  329,
+  248,
   c,
-  [22, 14],
-  330,
+  [183, 14],
+  249,
   c,
-  [568, 28],
-  333,
+  [387, 4],
   c,
-  [29, 28],
-  334,
+  [409, 14],
+  251,
   c,
-  [8, 7],
-  335,
+  [177, 4],
+  250,
+  34,
   c,
-  [37, 19],
-  336,
-  337,
+  [61, 3],
   c,
-  [671, 10],
-  230,
-  342,
-  184,
-  187,
-  340,
+  [60, 7],
+  201,
   c,
-  [371, 20],
-  347,
-  82,
-  346,
+  [59, 7],
+  254,
   c,
-  [511, 19],
-  350,
-  c,
-  [638, 10],
-  c,
-  [10, 10],
-  138,
-  355,
-  c,
-  [42, 19],
-  356,
-  c,
-  [640, 20],
-  361,
-  363,
-  c,
-  [42, 19],
-  364,
-  c,
-  [42, 19],
-  366,
-  c,
-  [615, 21],
-  367,
-  c,
-  [615, 26],
-  163,
-  369,
-  c,
-  [28, 25],
-  370,
-  c,
-  [48, 20],
-  371,
-  c,
-  [21, 20],
-  372,
-  c,
-  [21, 20],
-  373,
-  c,
-  [111, 21],
-  376,
-  c,
-  [815, 11],
-  375,
-  c,
-  [34, 19],
-  379,
-  190,
-  c,
-  [21, 19],
-  382,
-  c,
-  [376, 10],
-  386,
-  77,
-  c,
-  [389, 11],
-  84,
-  51,
-  303,
-  c,
-  [391, 10],
-  98,
-  103,
-  389,
-  c,
-  [59, 19],
-  402,
-  82,
-  401,
-  c,
-  [48, 10],
-  404,
-  184,
-  187,
-  c,
-  [35, 19],
-  409,
-  82,
-  408,
-  c,
-  [22, 19],
-  411,
-  190,
-  414,
-  c,
-  [1062, 3],
-  c,
-  [375, 19],
-  415,
-  c,
-  [439, 7],
-  c,
-  [419, 15],
-  419,
-  418,
+  [40, 14],
   255,
-  256,
+  119,
+  76,
+  264,
+  268,
   c,
-  [242, 21],
-  421,
+  [78, 14],
+  269,
   c,
-  [381, 27],
-  426,
+  [78, 3],
+  271,
   c,
-  [22, 21],
-  427,
+  [53, 6],
   c,
-  [118, 18],
-  431,
+  [50, 5],
+  275,
   c,
-  [1174, 21],
-  432,
+  [31, 14],
+  276,
   c,
-  [1174, 3],
+  [457, 15],
+  278,
+  140,
   c,
-  [25, 19],
-  433,
-  434,
-  435,
+  [83, 14],
+  285,
   c,
-  [710, 7],
-  436,
+  [31, 14],
+  286,
+  288,
   c,
-  [30, 19],
-  440,
-  82,
-  439,
+  [16, 14],
+  289,
   c,
-  [22, 19],
-  441,
+  [63, 15],
+  290,
   c,
-  [376, 20],
-  446,
+  [417, 15],
+  295,
   c,
-  [21, 20],
-  448,
+  [16, 15],
+  297,
   c,
-  [139, 20],
-  450,
+  [15, 14],
+  300,
   c,
-  [201, 21],
-  451,
-  c,
-  [251, 27],
-  452,
-  c,
-  [28, 27],
-  453,
-  c,
-  [28, 26],
-  454,
-  c,
-  [21, 20],
-  456,
-  c,
-  [21, 20],
-  458,
-  c,
-  [21, 19],
-  465,
-  c,
-  [209, 20],
-  468,
-  c,
-  [132, 21],
-  473,
-  c,
-  [160, 27],
-  475,
-  c,
-  [28, 25],
-  c,
-  [519, 5],
-  478,
-  c,
-  [382, 27],
-  479,
-  c,
-  [20, 19],
-  480,
-  c,
-  [101, 21],
-  483,
-  c,
-  [129, 27],
-  485,
-  c,
-  [28, 27],
-  486,
-  c,
-  [28, 6]
+  [31, 15],
+  303
 ]),
   mode: u([
   s,
-  [1, 64],
+  [1, 30],
+  2,
+  1,
   s,
-  [2, 7],
+  [2, 37],
   c,
-  [36, 173],
+  [69, 31],
   c,
-  [38, 9],
+  [35, 7],
+  c,
+  [39, 19],
+  c,
+  [27, 27],
+  c,
+  [31, 6],
+  c,
+  [128, 35],
   s,
-  [2, 29],
+  [1, 93],
   c,
-  [42, 7],
+  [129, 3],
   c,
-  [3, 5],
+  [131, 5],
   c,
-  [263, 36],
+  [162, 24],
   c,
-  [85, 37],
+  [198, 10],
   c,
-  [39, 4],
+  [167, 58],
+  c,
+  [229, 13],
+  c,
+  [148, 36],
+  c,
+  [88, 14],
+  c,
+  [58, 18],
+  c,
+  [177, 33],
+  c,
+  [87, 27],
+  c,
+  [403, 7],
+  c,
+  [94, 17],
+  c,
+  [394, 17],
+  c,
+  [136, 9],
+  c,
+  [112, 7],
+  c,
+  [32, 25],
+  c,
+  [30, 21],
+  c,
+  [81, 7],
+  c,
+  [205, 17],
+  c,
+  [292, 26],
+  c,
+  [395, 5],
+  c,
+  [166, 9],
+  c,
+  [201, 35],
+  c,
+  [35, 140],
+  c,
+  [537, 30],
+  c,
+  [613, 16],
+  c,
+  [7, 5],
+  c,
+  [89, 21],
+  c,
+  [555, 48],
   s,
-  [1, 106],
+  [1, 293],
   c,
-  [113, 7],
+  [377, 6],
   c,
-  [151, 38],
+  [818, 51],
   c,
-  [33, 37],
+  [1093, 42],
   c,
-  [39, 34],
-  s,
-  [1, 119],
+  [152, 55],
   c,
-  [233, 37],
+  [533, 8],
   c,
-  [328, 63],
+  [915, 65],
   c,
-  [13, 14],
+  [932, 36],
   c,
-  [313, 14],
+  [19, 57],
   c,
-  [125, 10],
+  [1281, 21],
   c,
-  [135, 11],
+  [1010, 40],
   c,
-  [146, 17],
+  [1034, 36],
   c,
-  [634, 10],
+  [411, 54],
   c,
-  [10, 6],
+  [812, 77],
   c,
-  [650, 18],
-  c,
-  [18, 14],
-  c,
-  [682, 22],
-  c,
-  [21, 3],
-  c,
-  [25, 16],
-  c,
-  [294, 44],
-  c,
-  [59, 18],
-  c,
-  [455, 94],
-  c,
-  [174, 11],
-  c,
-  [946, 58],
-  c,
-  [140, 75],
-  c,
-  [1042, 37],
-  c,
-  [464, 11],
-  c,
-  [123, 74],
-  c,
-  [1143, 42],
-  c,
-  [117, 73],
-  c,
-  [119, 21],
-  c,
-  [72, 52],
-  c,
-  [317, 28],
-  s,
-  [1, 480],
-  c,
-  [962, 7],
-  c,
-  [667, 81],
-  c,
-  [430, 343],
-  c,
-  [1009, 71],
-  c,
-  [1622, 44],
-  c,
-  [1802, 77],
-  c,
-  [1820, 38],
-  c,
-  [20, 60],
-  c,
-  [1880, 23],
-  c,
-  [1902, 40],
-  c,
-  [1927, 53],
-  c,
-  [833, 60],
-  c,
-  [467, 69],
-  c,
-  [1147, 183],
-  c,
-  [2677, 56],
-  c,
-  [308, 250],
-  c,
-  [3140, 82],
-  s,
-  [2, 49],
-  c,
-  [990, 11],
-  s,
-  [1, 241]
+  [889, 114]
 ]),
   goto: u([
   s,
-  [13, 18, 1],
-  34,
-  44,
-  45,
-  43,
+  [3, 6, 1],
+  18,
+  17,
+  c,
+  [8, 3],
+  16,
+  s,
+  [19, 12, 1],
   38,
+  39,
   35,
   36,
   37,
-  39,
   40,
+  3,
   41,
   s,
-  [12, 19, 1],
+  [3, 37],
+  42,
   c,
-  [30, 12],
-  55,
-  53,
+  [64, 24],
+  44,
+  46,
+  47,
+  49,
   48,
-  54,
   s,
-  [94, 7],
+  [16, 5],
   c,
-  [41, 29],
+  [32, 22],
   s,
-  [96, 7],
+  [18, 5],
   c,
-  [36, 29],
+  [27, 3],
   s,
-  [98, 7],
+  [18, 13, 1],
   c,
-  [36, 29],
+  [27, 6],
+  52,
+  18,
+  56,
+  17,
+  190,
+  190,
+  57,
   s,
-  [100, 7],
+  [190, 34],
+  58,
+  59,
   c,
-  [36, 29],
-  s,
-  [102, 7],
-  c,
-  [36, 29],
+  [126, 24],
   61,
   62,
+  94,
+  63,
+  64,
   s,
-  [164, 36],
-  s,
-  [63, 6, 1],
-  106,
+  [80, 5, 1],
+  65,
   73,
-  71,
-  106,
-  c,
-  [262, 30],
-  76,
+  74,
   75,
-  55,
-  54,
-  79,
-  s,
-  [170, 3],
+  77,
   78,
-  s,
-  [170, 33],
-  s,
-  [188, 5],
-  53,
-  188,
-  83,
+  71,
   c,
-  [57, 3],
-  55,
-  53,
-  54,
+  [21, 3],
+  100,
+  96,
   99,
+  3,
+  4,
+  108,
+  110,
+  109,
   s,
-  [107, 7, 1],
+  [111, 6, 1],
+  c,
+  [52, 18],
+  94,
+  120,
+  c,
+  [49, 5],
+  c,
+  [48, 5],
+  121,
+  18,
+  17,
+  68,
+  49,
+  68,
+  48,
   s,
-  [117, 6, 1],
-  101,
-  102,
-  104,
-  105,
-  c,
-  [98, 20],
-  c,
-  [38, 38],
-  55,
-  54,
-  c,
-  [22, 20],
-  12,
-  s,
-  [132, 5],
-  134,
-  s,
-  [132, 32],
-  s,
-  [133, 5],
-  135,
-  s,
-  [133, 32],
-  139,
-  s,
-  [155, 5],
-  140,
-  s,
-  [155, 32],
-  73,
-  c,
-  [301, 30],
-  99,
-  144,
-  c,
-  [208, 17],
-  99,
-  73,
-  148,
-  c,
-  [20, 6],
-  162,
-  159,
-  c,
-  [21, 6],
-  161,
-  c,
-  [22, 4],
-  c,
-  [71, 30],
-  160,
-  s,
-  [164, 9, 1],
-  c,
-  [644, 4],
-  c,
-  [333, 3],
-  79,
-  s,
-  [169, 3],
-  78,
-  s,
-  [169, 33],
-  99,
-  176,
-  107,
-  177,
-  c,
-  [126, 15],
-  178,
-  c,
-  [398, 4],
-  182,
-  186,
-  185,
-  c,
-  [112, 29],
-  s,
-  [186, 5],
-  53,
-  186,
-  c,
-  [43, 4],
-  191,
-  192,
-  s,
-  [72, 5],
-  193,
+  [72, 4],
+  56,
   72,
-  194,
+  c,
+  [61, 4],
+  c,
+  [103, 3],
+  c,
+  [50, 18],
+  129,
+  130,
   s,
-  [70, 7],
-  195,
-  70,
+  [182, 37],
+  131,
+  c,
+  [166, 24],
+  132,
+  108,
+  133,
   s,
-  [68, 5],
-  196,
+  [108, 11],
+  c,
+  [128, 12],
+  c,
+  [115, 4],
+  94,
+  139,
+  136,
+  c,
+  [17, 5],
+  137,
+  c,
+  [18, 9],
+  141,
   s,
-  [68, 4],
+  [113, 14],
+  143,
   s,
-  [66, 5],
-  197,
+  [113, 8],
   s,
-  [66, 5],
+  [144, 10, 1],
   s,
-  [64, 5],
-  198,
+  [143, 4],
+  154,
+  143,
+  155,
+  c,
+  [74, 11],
+  c,
+  [11, 11],
+  c,
+  [97, 12],
+  160,
+  c,
+  [12, 11],
+  161,
   s,
-  [64, 6],
+  [141, 6],
+  162,
+  141,
   s,
-  [62, 10],
-  199,
-  200,
-  62,
-  62,
+  [139, 4],
+  163,
   s,
-  [59, 6],
-  201,
-  202,
+  [139, 4],
   s,
-  [59, 4],
-  203,
-  204,
+  [137, 4],
+  164,
   s,
-  [59, 4],
+  [137, 5],
   s,
-  [54, 12],
-  205,
-  206,
+  [135, 4],
+  165,
   s,
-  [54, 6],
+  [135, 6],
   s,
-  [51, 6],
-  207,
-  208,
+  [133, 9],
+  166,
+  167,
+  133,
+  133,
   s,
-  [51, 14],
+  [130, 5],
+  168,
+  169,
+  s,
+  [130, 4],
+  170,
+  171,
+  s,
+  [130, 4],
+  s,
+  [125, 11],
+  172,
+  173,
+  s,
+  [125, 6],
+  s,
+  [122, 5],
+  174,
+  175,
+  s,
+  [122, 14],
+  s,
+  [119, 4],
+  176,
+  s,
+  [119, 3],
+  177,
+  178,
+  s,
+  [119, 14],
+  c,
+  [353, 21],
+  180,
+  182,
+  181,
+  183,
+  41,
+  100,
+  99,
+  46,
+  189,
+  46,
+  190,
+  56,
+  17,
   s,
   [48, 6],
-  209,
-  48,
-  48,
-  210,
-  211,
-  s,
-  [48, 14],
   c,
-  [551, 38],
-  215,
-  s,
-  [29, 3],
-  214,
-  29,
-  216,
-  s,
-  [29, 14],
-  217,
-  218,
-  219,
-  s,
-  [29, 18],
-  221,
-  c,
-  [80, 17],
-  c,
-  [18, 18],
-  c,
-  [116, 18],
-  225,
-  c,
-  [18, 17],
-  226,
-  227,
-  228,
-  232,
-  202,
-  202,
-  233,
-  53,
-  s,
-  [143, 7],
-  c,
-  [149, 20],
-  s,
-  [145, 7],
-  c,
-  [27, 20],
-  236,
-  237,
-  55,
-  238,
-  c,
-  [730, 22],
-  55,
-  243,
-  53,
-  240,
-  54,
-  79,
-  78,
-  245,
-  c,
-  [761, 23],
-  c,
-  [23, 23],
-  249,
-  248,
-  159,
-  159,
-  250,
-  139,
-  99,
-  257,
-  258,
-  c,
-  [646, 18],
-  s,
-  [42, 16],
-  260,
-  s,
-  [42, 9],
-  s,
-  [261, 10, 1],
-  99,
-  73,
-  271,
-  c,
-  [682, 59],
-  1,
-  1,
-  273,
-  s,
-  [1, 36],
-  c,
-  [342, 18],
-  275,
-  277,
-  276,
-  278,
-  279,
-  280,
-  99,
-  73,
-  c,
-  [124, 19],
-  c,
-  [94, 10],
-  s,
-  [282, 4, 1],
-  c,
-  [59, 7],
-  286,
-  c,
-  [60, 11],
-  106,
-  71,
-  106,
-  37,
-  288,
-  s,
-  [37, 17],
-  c,
-  [100, 18],
-  c,
-  [731, 4],
-  99,
-  294,
-  107,
-  291,
-  c,
-  [23, 15],
-  292,
-  c,
-  [24, 4],
-  s,
-  [295, 4, 1],
-  192,
-  299,
-  186,
-  185,
-  304,
-  197,
-  197,
-  233,
-  53,
-  54,
-  305,
-  c,
-  [61, 18],
-  c,
-  [18, 324],
-  325,
-  326,
-  277,
-  c,
-  [39, 19],
-  328,
-  c,
-  [19, 17],
-  331,
-  332,
-  c,
-  [1592, 76],
-  c,
-  [58, 38],
-  232,
-  204,
-  204,
-  233,
-  339,
-  s,
-  [205, 3],
-  338,
-  232,
-  341,
-  233,
-  53,
-  c,
-  [751, 29],
-  99,
-  343,
-  107,
-  344,
-  c,
-  [61, 15],
-  345,
-  c,
-  [579, 4],
-  349,
-  348,
-  c,
-  [86, 18],
-  150,
-  351,
-  150,
-  55,
-  352,
-  c,
-  [959, 23],
-  353,
-  c,
-  [24, 22],
-  354,
-  139,
-  c,
-  [71, 18],
-  358,
-  357,
-  360,
-  359,
-  c,
-  [1622, 19],
-  257,
-  258,
-  362,
-  c,
-  [44, 18],
-  365,
-  c,
-  [355, 19],
-  c,
-  [855, 30],
-  368,
-  c,
-  [32, 31],
-  c,
-  [511, 72],
-  374,
-  c,
-  [19, 7],
-  162,
-  c,
-  [20, 11],
-  c,
-  [1113, 30],
-  377,
-  277,
-  378,
-  c,
-  [967, 22],
-  380,
-  37,
-  381,
-  c,
-  [1009, 35],
-  383,
-  384,
-  c,
-  [95, 29],
-  385,
-  200,
-  298,
-  304,
-  c,
-  [502, 3],
-  54,
-  304,
-  c,
-  [498, 3],
-  54,
-  c,
-  [42, 29],
-  387,
-  277,
-  388,
-  s,
-  [71, 7],
-  195,
-  71,
-  s,
-  [69, 5],
-  196,
-  s,
-  [69, 4],
-  s,
-  [67, 5],
-  197,
-  s,
-  [67, 5],
-  s,
-  [65, 5],
-  198,
-  s,
-  [65, 6],
-  s,
-  [63, 10],
-  199,
-  200,
-  63,
-  63,
-  s,
-  [60, 6],
-  201,
-  202,
-  s,
-  [60, 4],
-  203,
-  204,
-  s,
-  [60, 4],
-  s,
-  [61, 6],
-  201,
-  202,
-  s,
-  [61, 4],
-  203,
-  204,
-  s,
-  [61, 4],
-  s,
-  [55, 12],
-  205,
-  206,
-  s,
-  [55, 6],
-  s,
-  [56, 12],
-  205,
-  206,
-  s,
-  [56, 6],
-  s,
-  [57, 12],
-  205,
-  206,
-  s,
-  [57, 6],
-  s,
-  [58, 12],
-  205,
-  206,
-  s,
-  [58, 6],
-  s,
-  [52, 6],
-  207,
-  208,
-  s,
-  [52, 14],
-  s,
-  [53, 6],
-  207,
-  208,
-  s,
-  [53, 14],
-  s,
-  [49, 6],
-  209,
-  49,
-  49,
-  210,
-  211,
-  s,
-  [49, 14],
+  [451, 29],
   s,
   [50, 6],
+  c,
+  [35, 29],
+  s,
+  [52, 6],
+  c,
+  [35, 29],
+  s,
+  [54, 6],
+  c,
+  [35, 29],
+  s,
+  [56, 6],
+  c,
+  [35, 29],
+  s,
+  [57, 6],
+  8,
+  s,
+  [57, 28],
+  196,
+  197,
+  67,
+  49,
+  67,
+  48,
+  s,
+  [70, 4],
+  56,
+  70,
+  c,
+  [480, 4],
+  199,
+  202,
+  192,
+  190,
+  56,
+  203,
+  204,
+  186,
+  186,
+  205,
+  129,
+  c,
+  [525, 16],
+  208,
+  108,
   209,
-  50,
-  50,
-  210,
+  c,
+  [555, 23],
   211,
-  s,
-  [50, 14],
+  c,
+  [13, 12],
+  c,
+  [12, 24],
+  c,
+  [350, 21],
+  c,
+  [21, 21],
+  c,
+  [78, 36],
+  c,
+  [12, 168],
+  235,
+  236,
+  c,
+  [418, 4],
+  237,
+  c,
+  [419, 25],
+  182,
   99,
-  390,
+  74,
+  189,
+  74,
+  190,
+  17,
+  75,
+  241,
+  75,
+  240,
+  189,
+  243,
   c,
-  [361, 17],
+  [610, 3],
+  c,
+  [1055, 30],
+  245,
+  246,
+  c,
+  [90, 5],
+  247,
+  c,
+  [929, 10],
+  c,
+  [107, 6],
+  c,
+  [327, 3],
+  c,
+  [19, 5],
+  c,
+  [51, 18],
+  252,
+  202,
+  74,
+  190,
+  202,
+  c,
+  [89, 3],
+  c,
+  [88, 29],
+  253,
+  c,
+  [492, 13],
+  s,
+  [256, 4, 1],
+  261,
+  260,
+  s,
+  [142, 6],
+  162,
+  142,
+  262,
+  263,
+  s,
+  [140, 4],
+  163,
+  s,
+  [140, 4],
+  s,
+  [138, 4],
+  164,
+  s,
+  [138, 5],
+  s,
+  [136, 4],
+  165,
+  s,
+  [136, 6],
+  s,
+  [134, 9],
+  166,
+  167,
+  134,
+  134,
+  s,
+  [131, 5],
+  168,
+  169,
+  s,
+  [131, 4],
+  170,
+  171,
+  s,
+  [131, 4],
+  s,
+  [132, 5],
+  168,
+  169,
+  s,
+  [132, 4],
+  170,
+  171,
+  s,
+  [132, 4],
+  s,
+  [126, 11],
+  172,
+  173,
+  s,
+  [126, 6],
+  s,
+  [127, 11],
+  172,
+  173,
+  s,
+  [127, 6],
+  s,
+  [128, 11],
+  172,
+  173,
+  s,
+  [128, 6],
+  s,
+  [129, 11],
+  172,
+  173,
+  s,
+  [129, 6],
+  s,
+  [123, 5],
+  174,
+  175,
+  s,
+  [123, 14],
+  s,
+  [124, 5],
+  174,
+  175,
+  s,
+  [124, 14],
+  s,
+  [120, 4],
+  176,
+  s,
+  [120, 3],
+  177,
+  178,
+  s,
+  [120, 14],
+  s,
+  [121, 4],
+  176,
+  s,
+  [121, 3],
+  177,
+  178,
+  s,
+  [121, 14],
+  c,
+  [271, 12],
+  73,
+  241,
+  73,
+  240,
+  94,
+  265,
+  266,
+  c,
+  [17, 5],
+  267,
+  c,
+  [377, 9],
+  270,
+  c,
+  [337, 29],
+  272,
+  273,
+  108,
+  274,
+  c,
+  [1367, 28],
+  279,
+  c,
+  [17, 6],
   277,
+  c,
+  [18, 9],
   s,
-  [391, 7, 1],
-  339,
+  [280, 5, 1],
+  c,
+  [390, 13],
+  c,
+  [12, 12],
+  108,
+  287,
+  c,
+  [77, 28],
+  292,
+  c,
+  [17, 6],
+  291,
+  c,
+  [18, 9],
+  293,
+  294,
+  c,
+  [36, 16],
+  296,
+  c,
+  [17, 12],
+  298,
+  299,
+  c,
+  [31, 16],
+  301,
+  302,
+  c,
+  [18, 12],
   s,
-  [203, 3],
-  338,
-  99,
-  398,
-  107,
-  399,
-  c,
-  [32, 15],
-  400,
-  c,
-  [436, 4],
-  403,
-  c,
-  [355, 29],
-  405,
-  406,
-  37,
-  407,
-  c,
-  [1476, 40],
-  412,
-  c,
-  [23, 17],
-  410,
-  c,
-  [24, 4],
-  413,
-  c,
-  [1841, 3],
-  c,
-  [2674, 19],
-  416,
-  c,
-  [1805, 5],
-  417,
-  c,
-  [24, 17],
-  420,
-  c,
-  [759, 31],
-  422,
-  277,
-  423,
-  277,
-  424,
-  277,
-  425,
-  c,
-  [693, 19],
-  c,
-  [19, 19],
-  428,
-  429,
-  430,
-  c,
-  [771, 19],
-  c,
-  [1925, 20],
-  c,
-  [39, 18],
-  390,
-  s,
-  [34, 4],
-  c,
-  [5, 5],
-  s,
-  [34, 28],
-  437,
-  c,
-  [313, 20],
-  37,
-  438,
-  c,
-  [308, 40],
-  443,
-  c,
-  [23, 17],
-  442,
-  c,
-  [24, 4],
-  444,
-  445,
-  c,
-  [48, 22],
-  447,
-  c,
-  [23, 18],
-  449,
-  c,
-  [2776, 21],
-  c,
-  [1082, 30],
-  c,
-  [31, 62],
-  c,
-  [111, 18],
-  455,
-  c,
-  [19, 18],
-  457,
-  c,
-  [19, 17],
-  460,
-  459,
-  s,
-  [461, 4, 1],
-  c,
-  [216, 22],
-  466,
-  467,
-  c,
-  [24, 18],
-  469,
-  470,
-  s,
-  [258, 54],
-  471,
-  s,
-  [258, 8],
-  472,
-  277,
-  c,
-  [202, 31],
-  474,
-  c,
-  [33, 32],
-  476,
-  277,
-  c,
-  [556, 4],
-  477,
-  c,
-  [155, 17],
-  c,
-  [501, 21],
-  c,
-  [1388, 36],
-  481,
-  482,
-  c,
-  [114, 31],
-  484,
-  c,
-  [412, 62]
+  [304, 4, 1]
 ])
 }),
 defaultActions: bda({
   idx: u([
-  2,
   3,
   4,
-  6,
-  s,
-  [13, 25, 1],
-  39,
-  40,
-  44,
-  45,
-  46,
-  48,
-  52,
-  54,
-  s,
-  [56, 5, 1],
-  70,
-  72,
-  75,
-  81,
-  82,
-  83,
-  86,
-  97,
-  98,
-  s,
-  [106, 16, 1],
-  130,
-  132,
-  137,
-  139,
-  141,
-  142,
-  143,
-  145,
-  146,
-  148,
-  s,
-  [150, 9, 1],
-  162,
-  173,
-  175,
-  176,
-  182,
-  185,
-  187,
-  189,
-  190,
-  191,
-  218,
-  219,
-  220,
-  222,
-  223,
-  224,
-  228,
-  229,
-  s,
-  [234, 7, 1],
-  242,
-  245,
-  248,
-  254,
-  256,
-  s,
-  [260, 13, 1],
-  276,
-  284,
-  285,
-  286,
-  288,
-  s,
-  [294, 4, 1],
-  301,
-  302,
-  322,
-  323,
-  s,
-  [324, 4, 2],
-  331,
-  332,
-  341,
-  343,
-  348,
-  350,
-  s,
-  [352, 6, 1],
-  359,
-  361,
-  362,
-  363,
-  365,
-  366,
-  367,
-  369,
-  370,
-  377,
-  378,
-  380,
-  381,
-  s,
-  [383, 4, 1],
-  389,
-  391,
-  392,
-  396,
-  398,
-  403,
-  405,
-  406,
-  407,
-  s,
-  [412, 6, 1],
-  419,
-  420,
-  421,
-  s,
-  [428, 4, 1],
-  433,
-  435,
-  438,
-  443,
-  444,
-  445,
-  447,
-  449,
-  450,
-  452,
-  453,
-  459,
-  461,
-  466,
-  467,
-  469,
-  470,
-  473,
-  475,
-  s,
-  [477, 10, 1]
-]),
-  goto: u([
-  271,
-  273,
-  274,
-  92,
-  s,
-  [107, 22, 1],
-  161,
-  162,
-  163,
-  165,
-  166,
-  134,
-  135,
-  272,
-  90,
-  103,
-  171,
-  s,
-  [93, 5, 2],
-  276,
-  277,
-  91,
-  187,
-  189,
-  164,
-  89,
-  44,
-  42,
+  8,
+  10,
+  12,
   17,
   s,
-  [36, 6, 1],
-  1,
-  2,
-  3,
-  s,
-  [5, 4, 1],
-  10,
-  11,
-  136,
-  140,
-  156,
-  9,
-  275,
-  278,
-  105,
-  229,
-  74,
-  249,
-  251,
-  253,
-  254,
-  s,
-  [240, 6, 1],
-  255,
-  87,
-  104,
-  173,
-  183,
-  198,
-  193,
-  185,
-  190,
-  172,
-  23,
-  24,
-  s,
-  [30, 4, 1],
-  160,
-  201,
-  142,
-  144,
-  167,
-  168,
-  129,
-  137,
-  138,
-  146,
-  141,
-  151,
-  231,
-  235,
-  s,
-  [76, 11, 1],
-  250,
-  252,
-  256,
-  267,
-  268,
-  269,
-  174,
-  180,
-  181,
-  182,
-  184,
-  195,
-  196,
-  45,
+  [19, 19, 1],
+  40,
+  42,
+  43,
+  44,
   46,
   47,
-  4,
-  19,
-  27,
-  21,
-  22,
-  223,
-  207,
-  139,
-  148,
-  130,
-  131,
-  152,
-  157,
-  158,
-  153,
-  227,
-  230,
-  234,
-  236,
-  238,
-  75,
-  246,
-  248,
-  88,
-  266,
-  270,
-  176,
-  177,
-  179,
-  199,
-  191,
-  194,
-  43,
-  18,
-  20,
-  35,
-  215,
-  225,
-  206,
-  224,
-  208,
-  213,
-  214,
-  147,
-  149,
-  154,
-  228,
-  233,
-  237,
-  247,
-  175,
-  178,
-  239,
+  50,
+  51,
+  61,
+  63,
+  68,
+  69,
+  71,
   73,
-  28,
-  13,
-  216,
-  221,
-  222,
-  226,
-  210,
-  212,
-  232,
-  259,
-  260,
-  25,
-  12,
-  218,
-  219,
+  s,
+  [80, 5, 1],
+  93,
+  96,
+  99,
+  101,
+  s,
+  [109, 7, 1],
+  s,
+  [118, 4, 1],
+  124,
+  128,
+  131,
+  132,
+  133,
+  139,
+  140,
+  141,
+  s,
+  [143, 11, 1],
+  s,
+  [156, 4, 1],
+  180,
+  181,
+  185,
+  186,
+  s,
+  [191, 5, 1],
+  198,
+  199,
+  200,
+  203,
+  208,
   209,
   211,
-  262,
-  264,
-  26,
-  14,
+  212,
+  214,
+  232,
+  233,
+  234,
+  236,
+  237,
+  238,
+  243,
+  245,
+  s,
+  [253, 4, 1],
+  258,
+  259,
+  s,
+  [262, 4, 1],
+  270,
+  272,
+  273,
+  274,
+  s,
+  [279, 4, 1],
+  s,
+  [284, 4, 1],
+  292,
+  293,
+  294,
+  296,
+  298,
+  299,
+  301,
+  302,
+  s,
+  [304, 4, 1]
+]),
+  goto: u([
+  s,
+  [4, 4, 1],
+  11,
+  24,
+  s,
+  [161, 16, 1],
+  187,
+  188,
+  189,
+  193,
+  1,
+  8,
+  9,
+  13,
+  12,
   15,
-  16,
-  217,
-  220,
-  257,
-  261,
-  263,
-  265
+  17,
+  10,
+  26,
+  38,
+  145,
+  190,
+  100,
+  107,
+  s,
+  [109, 4, 1],
+  115,
+  36,
+  97,
+  42,
+  s,
+  [58, 7, 1],
+  160,
+  113,
+  108,
+  25,
+  71,
+  183,
+  2,
+  14,
+  27,
+  33,
+  39,
+  34,
+  s,
+  [147, 11, 1],
+  s,
+  [101, 4, 1],
+  35,
+  37,
+  44,
+  s,
+  [45, 6, 2],
+  69,
+  177,
+  191,
+  178,
+  29,
+  30,
+  32,
+  146,
+  158,
+  116,
+  117,
+  118,
+  98,
+  40,
+  43,
+  93,
+  77,
+  179,
+  184,
+  185,
+  180,
+  28,
+  31,
+  105,
+  106,
+  114,
+  85,
+  95,
+  76,
+  94,
+  78,
+  83,
+  84,
+  65,
+  66,
+  181,
+  144,
+  159,
+  86,
+  91,
+  92,
+  96,
+  80,
+  82,
+  23,
+  88,
+  89,
+  79,
+  81,
+  87,
+  90
 ])
 }),
 parseError: function parseError(str, hash, ExceptionClass) {
@@ -5867,7 +3483,7 @@ parse: function parse(input) {
     var TERROR = this.TERROR;
     var EOF = this.EOF;
     var ERROR_RECOVERY_TOKEN_DISCARD_COUNT = (this.options.errorRecoveryTokenDiscardCount | 0) || 3;
-    var NO_ACTION = [0, 487 /* === table.length :: ensures that anyone using this new state will fail dramatically! */];
+    var NO_ACTION = [0, 308 /* === table.length :: ensures that anyone using this new state will fail dramatically! */];
 
     var lexer;
     if (this.__lexer__) {
@@ -8163,12 +5779,9 @@ EOF: 1,
 
     performAction: function lexer__performAction(yy, yyrulenumber, YY_START) {
       var yy_ = this;
-
-      yy.debug = (token) => {
-        // console.log(token);
-        return;
-      };
-
+      yy.types = ['mfastbinptr', 'mchunkptr', 'INTERNAL_SIZE_T'];
+      yy.enumConstants = [];
+      yy.vars = [];
       var YYSTATE = YY_START;
 
       switch (yyrulenumber) {
@@ -8187,377 +5800,372 @@ EOF: 1,
       case 2:
         /*! Conditions:: INITIAL */
         /*! Rule::       auto\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 62;
+        return 37;
         break;
 
       case 3:
         /*! Conditions:: INITIAL */
         /*! Rule::       break\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 98;
+        return 'BREAK';
         break;
 
       case 4:
         /*! Conditions:: INITIAL */
         /*! Rule::       case\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 89;
+        return 'CASE';
         break;
 
       case 5:
         /*! Conditions:: INITIAL */
         /*! Rule::       char\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 65;
+        return 66;
         break;
 
       case 6:
         /*! Conditions:: INITIAL */
         /*! Rule::       const\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 81;
+        return 80;
         break;
 
       case 7:
         /*! Conditions:: INITIAL */
         /*! Rule::       continue\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 97;
+        return 'CONTINUE';
         break;
 
       case 8:
         /*! Conditions:: INITIAL */
         /*! Rule::       default\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 34;
+        return 'DEFAULT';
         break;
 
       case 9:
         /*! Conditions:: INITIAL */
         /*! Rule::       do\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 94;
+        return 'DO';
         break;
 
       case 10:
         /*! Conditions:: INITIAL */
         /*! Rule::       double\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 70;
+        return 71;
         break;
 
       case 11:
         /*! Conditions:: INITIAL */
         /*! Rule::       else\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 91;
+        return 'ELSE';
         break;
 
       case 12:
         /*! Conditions:: INITIAL */
         /*! Rule::       enum\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 79;
+        return 78;
         break;
 
       case 13:
         /*! Conditions:: INITIAL */
         /*! Rule::       extern\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 59;
+        return 35;
         break;
 
       case 14:
         /*! Conditions:: INITIAL */
         /*! Rule::       float\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 69;
+        return 70;
         break;
 
       case 15:
         /*! Conditions:: INITIAL */
         /*! Rule::       for\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 95;
+        return 'FOR';
         break;
 
       case 16:
         /*! Conditions:: INITIAL */
         /*! Rule::       goto\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 96;
+        return 'GOTO';
         break;
 
       case 17:
         /*! Conditions:: INITIAL */
         /*! Rule::       if\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 90;
+        return 'IF';
         break;
 
       case 18:
         /*! Conditions:: INITIAL */
         /*! Rule::       inline\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 84;
+        return 39;
         break;
 
       case 19:
         /*! Conditions:: INITIAL */
         /*! Rule::       int\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 67;
+        return 68;
         break;
 
       case 20:
         /*! Conditions:: INITIAL */
         /*! Rule::       long\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 68;
+        return 69;
         break;
 
       case 21:
         /*! Conditions:: INITIAL */
         /*! Rule::       register\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 63;
+        return 38;
         break;
 
       case 22:
         /*! Conditions:: INITIAL */
         /*! Rule::       restrict\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 82;
+        return 81;
         break;
 
       case 23:
         /*! Conditions:: INITIAL */
         /*! Rule::       return\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 99;
+        return 'RETURN';
         break;
 
       case 24:
         /*! Conditions:: INITIAL */
         /*! Rule::       short\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 66;
+        return 67;
         break;
 
       case 25:
         /*! Conditions:: INITIAL */
         /*! Rule::       signed\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 71;
+        return 72;
         break;
 
       case 26:
         /*! Conditions:: INITIAL */
         /*! Rule::       sizeof\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 38;
+        return 45;
         break;
 
       case 27:
         /*! Conditions:: INITIAL */
         /*! Rule::       static\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 60;
+        return 33;
         break;
 
       case 28:
         /*! Conditions:: INITIAL */
         /*! Rule::       struct\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 77;
+        return 27;
         break;
 
       case 29:
         /*! Conditions:: INITIAL */
         /*! Rule::       switch\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 92;
+        return 'SWITCH';
         break;
 
       case 30:
         /*! Conditions:: INITIAL */
         /*! Rule::       typedef\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 58;
+        return 29;
         break;
 
       case 31:
         /*! Conditions:: INITIAL */
         /*! Rule::       union\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 78;
+        return 28;
         break;
 
       case 32:
         /*! Conditions:: INITIAL */
         /*! Rule::       unsigned\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 72;
+        return 73;
         break;
 
       case 33:
         /*! Conditions:: INITIAL */
         /*! Rule::       void\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 64;
+        return 65;
         break;
 
       case 34:
         /*! Conditions:: INITIAL */
         /*! Rule::       volatile\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 83;
+        return 82;
         break;
 
       case 35:
         /*! Conditions:: INITIAL */
         /*! Rule::       while\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 93;
+        return 'WHILE';
         break;
 
       case 36:
         /*! Conditions:: INITIAL */
         /*! Rule::       _Alignas\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 86;
+        return 41;
         break;
 
       case 37:
         /*! Conditions:: INITIAL */
         /*! Rule::       _Alignof\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 39;
+        return 46;
         break;
 
       case 38:
         /*! Conditions:: INITIAL */
         /*! Rule::       _Atomic\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 80;
+        return 77;
         break;
 
       case 39:
         /*! Conditions:: INITIAL */
         /*! Rule::       _Bool\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 73;
+        return 74;
         break;
 
       case 40:
         /*! Conditions:: INITIAL */
         /*! Rule::       _Complex\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 74;
+        return 75;
         break;
 
       case 41:
         /*! Conditions:: INITIAL */
         /*! Rule::       _Generic\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 33;
+        return 'GENERIC';
         break;
 
       case 42:
         /*! Conditions:: INITIAL */
         /*! Rule::       _Imaginary\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 75;
+        return 76;
         break;
 
       case 43:
         /*! Conditions:: INITIAL */
         /*! Rule::       _Noreturn\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 85;
+        return 40;
         break;
 
       case 44:
         /*! Conditions:: INITIAL */
         /*! Rule::       _Static_assert\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 88;
+        return 31;
         break;
 
       case 45:
         /*! Conditions:: INITIAL */
         /*! Rule::       _Thread_local\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 61;
+        return 36;
         break;
 
       case 46:
         /*! Conditions:: INITIAL */
         /*! Rule::       __func__\b */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 32;
+        return 'FUNC_NAME';
         break;
 
       case 47:
         /*! Conditions:: INITIAL */
         /*! Rule::       {L}{A}* */
-        yy.debug(yy.types);
+        console.log('IDENTIFIER ', yy_.yytext);
 
         if (yy.types.includes(yy_.yytext)) {
-          yy.debug('TYPEDEF_NAME ' + yy_.yytext);
-          return 76;
-        } else if (yy.enumConstants.includes(yy_.yytext)) {
-          yy.debug('ENUMERATION_CONSTANT ' + yy_.yytext);
-          return 30;
+          return 83;
         } else {
-          yy.debug('IDENTIFIER ' + yy_.yytext);
-          return 27;
+          return 26;
         }
 
         break;
@@ -8565,311 +6173,311 @@ EOF: 1,
       case 48:
         /*! Conditions:: INITIAL */
         /*! Rule::       {HP}{H}+{IS}? */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 28;
+        return 'I_CONSTANT';
         break;
 
       case 49:
         /*! Conditions:: INITIAL */
         /*! Rule::       {NZ}{D}*{IS}? */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 28;
+        return 'I_CONSTANT';
         break;
 
       case 50:
         /*! Conditions:: INITIAL */
         /*! Rule::       0{O}*{IS}? */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 28;
+        return 'I_CONSTANT';
         break;
 
       case 51:
         /*! Conditions:: INITIAL */
         /*! Rule::       {CP}?'([^'\\\n]|{ES})+' */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 28;
+        return 'I_CONSTANT';
         break;
 
       case 52:
         /*! Conditions:: INITIAL */
         /*! Rule::       {D}+{E}{FS}? */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 29;
+        return 'F_CONSTANT';
         break;
 
       case 53:
         /*! Conditions:: INITIAL */
         /*! Rule::       {D}*\.{D}+{E}?{FS}? */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 29;
+        return 'F_CONSTANT';
         break;
 
       case 54:
         /*! Conditions:: INITIAL */
         /*! Rule::       {D}+\.{E}?{FS}? */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 29;
+        return 'F_CONSTANT';
         break;
 
       case 55:
         /*! Conditions:: INITIAL */
         /*! Rule::       {HP}{H}+{P}{FS}? */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 29;
+        return 'F_CONSTANT';
         break;
 
       case 56:
         /*! Conditions:: INITIAL */
         /*! Rule::       {HP}{H}*\.{H}+{P}{FS}? */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 29;
+        return 'F_CONSTANT';
         break;
 
       case 57:
         /*! Conditions:: INITIAL */
         /*! Rule::       {HP}{H}+\.{P}{FS}? */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 29;
+        return 'F_CONSTANT';
         break;
 
       case 58:
         /*! Conditions:: INITIAL */
         /*! Rule::       ({SP}?"([^"\\\n]|{ES})*"{WS}*)+ */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 31;
+        return 32;
         break;
 
       case 59:
         /*! Conditions:: INITIAL */
         /*! Rule::       \.\.\. */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 87;
+        return 34;
         break;
 
       case 60:
         /*! Conditions:: INITIAL */
         /*! Rule::       >>= */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 54;
+        return 61;
         break;
 
       case 61:
         /*! Conditions:: INITIAL */
         /*! Rule::       <<= */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 53;
+        return 60;
         break;
 
       case 62:
         /*! Conditions:: INITIAL */
         /*! Rule::       \+= */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 51;
+        return 58;
         break;
 
       case 63:
         /*! Conditions:: INITIAL */
         /*! Rule::       -= */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 52;
+        return 59;
         break;
 
       case 64:
         /*! Conditions:: INITIAL */
         /*! Rule::       \*= */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 48;
+        return 55;
         break;
 
       case 65:
         /*! Conditions:: INITIAL */
         /*! Rule::       \/= */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 49;
+        return 56;
         break;
 
       case 66:
         /*! Conditions:: INITIAL */
         /*! Rule::       %= */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 50;
+        return 57;
         break;
 
       case 67:
         /*! Conditions:: INITIAL */
         /*! Rule::       &= */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 55;
+        return 62;
         break;
 
       case 68:
         /*! Conditions:: INITIAL */
         /*! Rule::       \^= */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 56;
+        return 63;
         break;
 
       case 69:
         /*! Conditions:: INITIAL */
         /*! Rule::       \|= */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 57;
+        return 64;
         break;
 
       case 70:
         /*! Conditions:: INITIAL */
         /*! Rule::       >> */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 41;
+        return 48;
         break;
 
       case 71:
         /*! Conditions:: INITIAL */
         /*! Rule::       << */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 40;
+        return 47;
         break;
 
       case 72:
         /*! Conditions:: INITIAL */
         /*! Rule::       \+\+ */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 36;
+        return 43;
         break;
 
       case 73:
         /*! Conditions:: INITIAL */
         /*! Rule::       -- */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 37;
+        return 44;
         break;
 
       case 74:
         /*! Conditions:: INITIAL */
         /*! Rule::       -> */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 35;
+        return 'PTR_OP';
         break;
 
       case 75:
         /*! Conditions:: INITIAL */
         /*! Rule::       && */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 46;
+        return 53;
         break;
 
       case 76:
         /*! Conditions:: INITIAL */
         /*! Rule::       \|\| */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 47;
+        return 54;
         break;
 
       case 77:
         /*! Conditions:: INITIAL */
         /*! Rule::       <= */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 42;
+        return 49;
         break;
 
       case 78:
         /*! Conditions:: INITIAL */
         /*! Rule::       >= */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 43;
+        return 50;
         break;
 
       case 79:
         /*! Conditions:: INITIAL */
         /*! Rule::       == */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 44;
+        return 51;
         break;
 
       case 80:
         /*! Conditions:: INITIAL */
         /*! Rule::       != */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 45;
+        return 52;
         break;
 
       case 81:
         /*! Conditions:: INITIAL */
         /*! Rule::       ; */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 26;
+        return 5;
         break;
 
       case 82:
         /*! Conditions:: INITIAL */
         /*! Rule::       (\{|<%) */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 10;
+        return 3;
         break;
 
       case 83:
         /*! Conditions:: INITIAL */
         /*! Rule::       (\}|%>) */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 11;
+        return 4;
         break;
 
       case 84:
         /*! Conditions:: INITIAL */
         /*! Rule::       , */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 5;
+        return 6;
         break;
 
       case 85:
         /*! Conditions:: INITIAL */
         /*! Rule::       : */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 6;
+        return 24;
         break;
 
       case 86:
         /*! Conditions:: INITIAL */
         /*! Rule::       = */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
         return 25;
         break;
@@ -8877,47 +6485,47 @@ EOF: 1,
       case 87:
         /*! Conditions:: INITIAL */
         /*! Rule::       \( */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 3;
+        return 7;
         break;
 
       case 88:
         /*! Conditions:: INITIAL */
         /*! Rule::       \) */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 4;
+        return 8;
         break;
 
       case 89:
         /*! Conditions:: INITIAL */
         /*! Rule::       (\[|<:) */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 7;
+        return 9;
         break;
 
       case 90:
         /*! Conditions:: INITIAL */
         /*! Rule::       (\]|:>) */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 8;
+        return 10;
         break;
 
       case 91:
         /*! Conditions:: INITIAL */
         /*! Rule::       \. */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 9;
+        return '.';
         break;
 
       case 92:
         /*! Conditions:: INITIAL */
         /*! Rule::       & */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
         return 12;
         break;
@@ -8925,97 +6533,97 @@ EOF: 1,
       case 93:
         /*! Conditions:: INITIAL */
         /*! Rule::       ! */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 17;
+        return 16;
         break;
 
       case 94:
         /*! Conditions:: INITIAL */
         /*! Rule::       ~ */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 16;
+        return 15;
         break;
 
       case 95:
         /*! Conditions:: INITIAL */
         /*! Rule::       - */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 15;
+        return 14;
         break;
 
       case 96:
         /*! Conditions:: INITIAL */
         /*! Rule::       \+ */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 14;
+        return 13;
         break;
 
       case 97:
         /*! Conditions:: INITIAL */
         /*! Rule::       \* */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 13;
+        return 11;
         break;
 
       case 98:
         /*! Conditions:: INITIAL */
         /*! Rule::       \/ */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 18;
+        return 17;
         break;
 
       case 99:
         /*! Conditions:: INITIAL */
         /*! Rule::       % */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 19;
+        return 18;
         break;
 
       case 100:
         /*! Conditions:: INITIAL */
         /*! Rule::       < */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 20;
+        return 19;
         break;
 
       case 101:
         /*! Conditions:: INITIAL */
         /*! Rule::       > */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 21;
+        return 20;
         break;
 
       case 102:
         /*! Conditions:: INITIAL */
         /*! Rule::       \^ */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 22;
+        return 21;
         break;
 
       case 103:
         /*! Conditions:: INITIAL */
         /*! Rule::       \| */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 23;
+        return 22;
         break;
 
       case 104:
         /*! Conditions:: INITIAL */
         /*! Rule::       \? */
-        yy.debug(yy_.yytext);
+        console.log(yy_.yytext);
 
-        return 24;
+        return 23;
         break;
 
       case 105:
@@ -9280,10 +6888,48 @@ return new Parser();
 
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-  exports.parser = c11;
-  exports.Parser = c11.Parser;
+  exports.parser = structtypeparse;
+  exports.Parser = structtypeparse.Parser;
   exports.parse = function () {
-    return c11.parse.apply(c11, arguments);
+    return structtypeparse.parse.apply(structtypeparse, arguments);
   };
   
+
+
+var fs = require('fs');
+var path = require('path');
+
+
+exports.main = function (args) {
+    // When the parser comes with its own `main` function, then use that one:
+    if (typeof exports.parser.main === 'function') {
+      return exports.parser.main(args);
+    }
+
+    if (!args[1]) {
+        console.log('Usage:', path.basename(args[0]) + ' FILE');
+        process.exit(1);
+    }
+    var source = fs.readFileSync(path.normalize(args[1]), 'utf8');
+    var dst = exports.parser.parse(source);
+    console.log('parser output:\n\n', {
+        type: typeof dst,
+        value: dst
+    });
+    try {
+        console.log("\n\nor as JSON:\n", JSON.stringify(dst, null, 2));
+    } catch (e) { /* ignore crashes; output MAY not be serializable! We are a generic bit of code, after all... */ }
+    var rv = 0;
+    if (typeof dst === 'number' || typeof dst === 'boolean') {
+        rv = dst;
+    }
+    return dst;
+};
+
+// IFF this is the main module executed by NodeJS,
+// then run 'main()' immediately:
+if (typeof module !== 'undefined' && require.main === module) {
+  exports.main(process.argv.slice(1));
+}
+
 }

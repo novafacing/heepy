@@ -15,7 +15,63 @@ function generateJson (struct, fullmalloc) {
   struct = structPreprocessed.code;
   c11.yy.types.unshift(...typedefs.parse(fullmalloc));
   c11.yy.types.unshift(...structTypes.parse(struct));
-  return c11.parse(struct);
+  return {
+    struct: c11.parse(struct),
+    defs: c11.yy.defines
+  };
+}
+function sliceObject(obj, key) {
+var value;
+  Object.keys(object).some(function(k) {
+      if (k === key) {
+          value = object[k];
+          return true;
+      }
+      if (object[k] && typeof object[k] === 'object') {
+          value = sliceObject(object[k], key);
+          return value !== undefined;
+      }
+  });
+  return value;
+}
+
+function getMallocChunkMemberType(decl) {
+  var proto = {};
+  for (var struct_declaration in decl) {
+    if (struct_declaration.type == 'struct_declaration') {
+      /* We have a valid declaration we want to include in the proto */
+
+    }
+  }
+}
+
+var szmap = {
+  
+}
+
+function getMallocStateMemberType(decl) {
+  var proto = {};
+  for (var struct_declaration in decl) {
+    if (struct_declaration.type == 'struct_declaration') {
+      /* We have a valid declaration we want to include in the proto */
+      var sql = struct_declaration.specifier_qualifier_list;
+      var sdl = struct_declaration.struct_declarator_list;
+
+
+
+    }
+  }
+}
+
+function protoJsonMallocChunk(struct, defines, size) {
+  var declList = sliceObject(struct, 'struct_declaration_list');
+  var proto = {};
+  for (var decl in declList) {
+    var type = getMallocChunkMemberType(decl);
+
+  }
+
+
 }
 
 

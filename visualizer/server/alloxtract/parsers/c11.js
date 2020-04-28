@@ -1557,11 +1557,36 @@ case 28:
 
 case 29:
     /*! Production::    unary_expression : postfix_expression */
+case 42:
+    /*! Production::    cast_expression : unary_expression */
+case 44:
+    /*! Production::    multiplicative_expression : cast_expression */
+case 48:
+    /*! Production::    additive_expression : multiplicative_expression */
+case 51:
+    /*! Production::    shift_expression : additive_expression */
+case 54:
+    /*! Production::    relational_expression : shift_expression */
+case 59:
+    /*! Production::    equality_expression : relational_expression */
+case 62:
+    /*! Production::    and_expression : equality_expression */
+case 64:
+    /*! Production::    exclusive_or_expression : and_expression */
+case 66:
+    /*! Production::    inclusive_or_expression : exclusive_or_expression */
+case 68:
+    /*! Production::    logical_and_expression : inclusive_or_expression */
+case 70:
+    /*! Production::    logical_or_expression : logical_and_expression */
+case 72:
+    /*! Production::    conditional_expression : logical_or_expression */
+case 74:
+    /*! Production::    assignment_expression : conditional_expression */
+case 87:
+    /*! Production::    expression : assignment_expression */
 
-    this.$ = {
-        type: 'unary_expression',
-        'postfix_expression': yyvstack[yysp]
-    };
+    this.$ = yyvstack[yysp];
     break;
 
 case 30:
@@ -1617,15 +1642,6 @@ case 41:
     };
     break;
 
-case 42:
-    /*! Production::    cast_expression : unary_expression */
-
-    this.$ = {
-        type: 'cast_expression',
-        'unary_expression': yyvstack[yysp]
-    };
-    break;
-
 case 43:
     /*! Production::    cast_expression : "(" type_name ")" cast_expression */
 
@@ -1636,102 +1652,131 @@ case 43:
     };
     break;
 
-case 44:
-    /*! Production::    multiplicative_expression : cast_expression */
+case 45:
+    /*! Production::    multiplicative_expression : multiplicative_expression "*" cast_expression */
 
     this.$ = {
         type: 'multiplicative_expression',
+        'multiplicative_expression': yyvstack[yysp - 2],
+        multiply: true,
+        mod: false,
         'cast_expression': yyvstack[yysp]
     };
     break;
 
-case 45:
-    /*! Production::    multiplicative_expression : multiplicative_expression "*" cast_expression */
 case 46:
     /*! Production::    multiplicative_expression : multiplicative_expression "/" cast_expression */
+
+    this.$ = {
+        type: 'multiplicative_expression',
+        'multiplicative_expression': yyvstack[yysp - 2],
+        multiply: false,
+        mod: false,
+        'cast_expression': yyvstack[yysp]
+    };
+    break;
+
 case 47:
     /*! Production::    multiplicative_expression : multiplicative_expression "%" cast_expression */
 
     this.$ = {
         type: 'multiplicative_expression',
         'multiplicative_expression': yyvstack[yysp - 2],
+        multiply: false,
+        mod: true,
         'cast_expression': yyvstack[yysp]
-    };
-    break;
-
-case 48:
-    /*! Production::    additive_expression : multiplicative_expression */
-
-    this.$ = {
-        type: 'additive_expression',
-        'multiplicative_expression': yyvstack[yysp]
     };
     break;
 
 case 49:
     /*! Production::    additive_expression : additive_expression "+" multiplicative_expression */
+
+    this.$ = {
+        type: 'additive_expression',
+        'additive_expression': yyvstack[yysp - 2],
+        add: true,
+        'multiplicative_expression': yyvstack[yysp]
+    };
+    break;
+
 case 50:
     /*! Production::    additive_expression : additive_expression "-" multiplicative_expression */
 
     this.$ = {
         type: 'additive_expression',
         'additive_expression': yyvstack[yysp - 2],
+        add: false,
         'multiplicative_expression': yyvstack[yysp]
-    };
-    break;
-
-case 51:
-    /*! Production::    shift_expression : additive_expression */
-
-    this.$ = {
-        type: 'shift_expression',
-        'additive_expression': yyvstack[yysp]
     };
     break;
 
 case 52:
     /*! Production::    shift_expression : shift_expression LEFT_OP additive_expression */
+
+    this.$ = {
+        type: 'shift_expression',
+        'shift_expression': yyvstack[yysp - 2],
+        left: true,
+        'additive_expression': yyvstack[yysp]
+    };
+    break;
+
 case 53:
     /*! Production::    shift_expression : shift_expression RIGHT_OP additive_expression */
 
     this.$ = {
         type: 'shift_expression',
         'shift_expression': yyvstack[yysp - 2],
+        left: false,
         'additive_expression': yyvstack[yysp]
-    };
-    break;
-
-case 54:
-    /*! Production::    relational_expression : shift_expression */
-
-    this.$ = {
-        type: 'relational_expression',
-        'shift_expression': yyvstack[yysp]
     };
     break;
 
 case 55:
     /*! Production::    relational_expression : relational_expression "<" shift_expression */
+
+    this.$ = {
+        type: 'relational_expression',
+        'relational_expression': yyvstack[yysp - 2],
+        less: true,
+        equal: false,
+        'shift_expression': yyvstack[yysp]
+    };
+    break;
+
 case 56:
     /*! Production::    relational_expression : relational_expression ">" shift_expression */
+
+    this.$ = {
+        type: 'relational_expression',
+        'relational_expression': yyvstack[yysp - 2],
+        less: false,
+        equal: false,
+        'shift_expression': yyvstack[yysp]
+    };
+    break;
+
 case 57:
     /*! Production::    relational_expression : relational_expression LE_OP shift_expression */
+
+    this.$ = {
+        type: 'relational_expression',
+        'relational_expression': yyvstack[yysp - 2],
+        less: true,
+        equal: true,
+        'shift_expression': yyvstack[yysp]
+    };
+    break;
+
 case 58:
     /*! Production::    relational_expression : relational_expression GE_OP shift_expression */
 
     this.$ = {
         type: 'relational_expression',
         'relational_expression': yyvstack[yysp - 2],
+        less: false,
+        equal: true,
         'shift_expression': yyvstack[yysp]
-    };
-    break;
-
-case 59:
-    /*! Production::    equality_expression : relational_expression */
-
-    this.$ = {
-        type: 'equality_expression',
-        'relational_expression': yyvstack[yysp]
     };
     break;
 
@@ -1747,15 +1792,6 @@ case 61:
     };
     break;
 
-case 62:
-    /*! Production::    and_expression : equality_expression */
-
-    this.$ = {
-        type: 'and_expression',
-        'equality_expression': yyvstack[yysp]
-    };
-    break;
-
 case 63:
     /*! Production::    and_expression : and_expression "&" equality_expression */
 
@@ -1763,15 +1799,6 @@ case 63:
         type: 'and_expression',
         'and_expression': yyvstack[yysp - 2],
         'equality_expression': yyvstack[yysp]
-    };
-    break;
-
-case 64:
-    /*! Production::    exclusive_or_expression : and_expression */
-
-    this.$ = {
-        type: 'exclusive_or_expression',
-        'and_expression': yyvstack[yysp]
     };
     break;
 
@@ -1785,15 +1812,6 @@ case 65:
     };
     break;
 
-case 66:
-    /*! Production::    inclusive_or_expression : exclusive_or_expression */
-
-    this.$ = {
-        type: 'inclusive_or_expression',
-        'exclusive_or_expression': yyvstack[yysp]
-    };
-    break;
-
 case 67:
     /*! Production::    inclusive_or_expression : inclusive_or_expression "|" exclusive_or_expression */
 
@@ -1801,15 +1819,6 @@ case 67:
         type: 'inclusive_or_expression',
         'inclusive_or_expression': yyvstack[yysp - 2],
         'exclusive_or_expression': yyvstack[yysp]
-    };
-    break;
-
-case 68:
-    /*! Production::    logical_and_expression : inclusive_or_expression */
-
-    this.$ = {
-        type: 'logical_and_expression',
-        'inclusive_or_expression': yyvstack[yysp]
     };
     break;
 
@@ -1823,15 +1832,6 @@ case 69:
     };
     break;
 
-case 70:
-    /*! Production::    logical_or_expression : logical_and_expression */
-
-    this.$ = {
-        type: 'logical_or_expression',
-        'logical_and_expression': yyvstack[yysp]
-    };
-    break;
-
 case 71:
     /*! Production::    logical_or_expression : logical_or_expression OR_OP logical_and_expression */
 
@@ -1842,15 +1842,6 @@ case 71:
     };
     break;
 
-case 72:
-    /*! Production::    conditional_expression : logical_or_expression */
-
-    this.$ = {
-        type: 'conditional_expression',
-        'logical_or_expression': yyvstack[yysp]
-    };
-    break;
-
 case 73:
     /*! Production::    conditional_expression : logical_or_expression "?" expression ":" conditional_expression */
 
@@ -1858,15 +1849,6 @@ case 73:
         type: 'conditional_expression',
         'logical_or_expression': yyvstack[yysp - 4],
         'expression_statement': yyvstack[yysp - 2],
-        'conditional_expression': yyvstack[yysp]
-    };
-    break;
-
-case 74:
-    /*! Production::    assignment_expression : conditional_expression */
-
-    this.$ = {
-        type: 'assignment_expression',
         'conditional_expression': yyvstack[yysp]
     };
     break;
@@ -1909,15 +1891,6 @@ case 86:
         type: 'assignment_operator',
         'assignment_operator': yyvstack[yysp]
     };
-    break;
-
-case 87:
-    /*! Production::    expression : assignment_expression */
-
-    this.$ = {
-        type: 'expression',
-        'assignment_expression': yyvstack[yysp]
-    }
     break;
 
 case 88:
@@ -2234,6 +2207,8 @@ case 135:
 
 case 136:
     /*! Production::    struct_declaration_list : struct_declaration */
+case 146:
+    /*! Production::    struct_declarator_list : struct_declarator */
 
     this.$ = new Array();
     this.$.push(yyvstack[yysp]);
@@ -2243,7 +2218,7 @@ case 137:
     /*! Production::    struct_declaration_list : struct_declaration_list struct_declaration */
 
     this.$ = yyvstack[yysp - 1];
-    this.$.push(yyvstack[yysp]);
+    this.$.unshift(yyvstack[yysp]);
     break;
 
 case 138:
@@ -2321,23 +2296,11 @@ case 145:
     };
     break;
 
-case 146:
-    /*! Production::    struct_declarator_list : struct_declarator */
-
-    this.$ = {
-        type: 'struct_declarator_list',
-        'struct_declarator': yyvstack[yysp]
-    };
-    break;
-
 case 147:
     /*! Production::    struct_declarator_list : struct_declarator_list "," struct_declarator */
 
-    this.$ = {
-        type: 'struct_declarator_list',
-        'struct_declarator_list': yyvstack[yysp - 2],
-        'struct_declarator': yyvstack[yysp]
-    };
+    this.$ = yyvstack[yysp - 2];
+    this.$.push(yyvstack[yysp]);
     break;
 
 case 148:
