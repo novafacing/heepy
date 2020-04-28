@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from pygdbmi.gdbcontroller import GdbController
+import pygdbmi
 import socketio
 import time
 import sys
@@ -15,6 +16,12 @@ if len(sys.argv) < 2:
     sys.exit()
 
 gdbmi = GdbController()
+
+# TODO: Come up with a better way to determine a TTY. Currently just sleeping in a new window lol
+# Open a terminal. Run `tty`, then change the tty below V
+# Then run `sleep 100000` in that terminal.
+response = gdbmi.write('tty /dev/pts/3')
+
 response = gdbmi.write('-file-exec-and-symbols ' + sys.argv[1])
 response = gdbmi.write('start')
 
@@ -84,6 +91,7 @@ def address_of_symbol(data):
     print("address_of_symbol: ", data["symbol_name"])
     result = gdbmi.write("-data-evaluate-expression &" + data["symbol_name"])
     # This is hex b/c it's a symbol. weird...
+    print(result)
     value = int(result[0]['payload']['value'].split(' ')[0][2:], 16)
 
     return {
@@ -99,7 +107,12 @@ def continue_execution():
         print("Program exited normally")
         sys.exit()
 
-    #print(response)
+    while response[-1]['message'] == 'running':
+        try:
+            response = gdbmi.write('', timeout_sec=1)
+        except pygdbmi.gdbcontroller.GdbTimeoutError:
+            pass
+
     data = {
         'called-function': None,
         'rax-after-call': None,
@@ -107,8 +120,15 @@ def continue_execution():
         'rsi-before-call': None,
     }
 
+    bp_at = 0
+
+    for i, line in enumerate(response):
+        if line['message'] == 'breakpoint-modified':
+            bp_at = i
+            break;
+
     try:
-        if response[2]['payload']['at'] == '<malloc>':
+        if response[bp_at]['payload']['at'] == '<malloc>':
             print("We're at the end of a malloc!")
             result = gdbmi.write("-data-evaluate-expression $rax")
             rax = int(result[0]['payload']['value'])
@@ -116,12 +136,12 @@ def continue_execution():
             data['called-function'] = 'malloc'
             data['rax-after-call'] = rax
 
-            rdi = int(response[6]['payload'].split(' ')[-1][:-2])
+            rdi = int(response[bp_at+4]['payload'].split(' ')[-1][:-2])
             data['rdi-before-call'] = rdi
 
             print(hex(rdi))
             print(hex(rax))
-        if response[2]['payload']['at'] == '<free>':
+        if response[bp_at]['payload']['at'] == '<free>':
             print("We're at the end of a free!")
             result = gdbmi.write("-data-evaluate-expression $rax")
             rax = int(result[0]['payload']['value'])
@@ -129,12 +149,12 @@ def continue_execution():
             data['called-function'] = 'free'
             data['rax-after-call'] = rax
 
-            rdi = int(response[6]['payload'].split(' ')[-1][:-2])
+            rdi = int(response[bp_at+4]['payload'].split(' ')[-1][:-2])
             data['rdi-before-call'] = rdi
 
             print(hex(rdi))
             print(hex(rax))
-        if response[2]['payload']['at'] == '<realloc>':
+        if response[bp_at]['payload']['at'] == '<realloc>':
             print("We're at the end of a realloc!")
             result = gdbmi.write("-data-evaluate-expression $rax")
             rax = int(result[0]['payload']['value'])
@@ -142,15 +162,15 @@ def continue_execution():
             data['called-function'] = 'realloc'
             data['rax-after-call'] = rax
 
-            rdi = int(response[6]['payload'].split(' ')[-1][:-2])
+            rdi = int(response[bp_at+4]['payload'].split(' ')[-1][:-2])
             data['rdi-before-call'] = rdi
-            rsi = int(response[7]['payload'].split(' ')[-1][:-2])
+            rsi = int(response[bp_at+5]['payload'].split(' ')[-1][:-2])
             data['rsi-before-call'] = rsi
 
             print(hex(rdi))
             print(hex(rsi))
             print(hex(rax))
-        if response[2]['payload']['at'] == '<calloc>':
+        if response[bp_at]['payload']['at'] == '<calloc>':
             print("We're at the end of a calloc!")
             result = gdbmi.write("-data-evaluate-expression $rax")
             rax = int(result[0]['payload']['value'])
@@ -159,9 +179,9 @@ def continue_execution():
             data['rax-after-call'] = rax
             #print(response)
 
-            rdi = int(response[6]['payload'].split(' ')[-1][:-2])
+            rdi = int(response[bp_at+4]['payload'].split(' ')[-1][:-2])
             data['rdi-before-call'] = rdi
-            rsi = int(response[7]['payload'].split(' ')[-1][:-2])
+            rsi = int(response[bp_at+5]['payload'].split(' ')[-1][:-2])
             data['rsi-before-call'] = rsi
 
             print(hex(rdi))
