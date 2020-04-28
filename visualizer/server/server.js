@@ -768,7 +768,6 @@ function getContentsAt(sk, addr, size) {
   });
 }
 
-<<<<<<< HEAD
 function malloc (sk, st, data) {
   console.log('Got malloc');
   var retAddr = data['rax-after-call'];
