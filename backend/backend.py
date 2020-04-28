@@ -10,7 +10,7 @@ import subprocess
 sio = socketio.Client()
 
 
-# recieves 'read-from-address' (addr, n_bytes)
+# recieves 'read-from-address' (address, n_bytes)
 # recieves 'address-of-symbol' (symbol_name)
 # recieves 'continue-execution'
 # emits 'heap-changed'
@@ -158,11 +158,16 @@ def continue_execution():
     for i, line in enumerate(response):
         if line["message"] == "breakpoint-modified":
             bp_at = i
-        if bp_at is not None and line["type"] == "console" and line["payload"] and isinstance(line["payload"], str) and line["payload"][0] == "$":
+        if (
+            bp_at is not None
+            and line["type"] == "console"
+            and line["payload"]
+            and isinstance(line["payload"], str)
+            and line["payload"][0] == "$"
+        ):
             # Yeah, this be lazy and might(?) have false positives
             print_at = i
             break
-
 
     if bp_at is not None and print_at is not None:
         try:
@@ -239,7 +244,7 @@ def update_heap_info(data):
     Update info when breakpoint reached
     """
     print("Updating heap info")
-    sio.emit("heap_changed", data)
+    sio.emit("heap_changed", data, namespace="/gef")
 
 
 sio.connect("http://localhost:3000/gef", namespaces=["/gef"])
