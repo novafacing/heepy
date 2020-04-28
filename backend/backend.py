@@ -152,13 +152,19 @@ def continue_execution():
     }
 
     bp_at = None
+    print_at = None
+    print(response)
 
     for i, line in enumerate(response):
         if line["message"] == "breakpoint-modified":
             bp_at = i
+        if bp_at is not None and line["type"] == "console" and line["payload"] and isinstance(line["payload"], str) and line["payload"][0] == "$":
+            # Yeah, this be lazy and might(?) have false positives
+            print_at = i
             break
 
-    if bp_at is not None:
+
+    if bp_at is not None and print_at is not None:
         try:
             if response[bp_at]["payload"]["at"] == "<malloc>":
                 print("We're at the end of a malloc!")
@@ -169,7 +175,7 @@ def continue_execution():
                 data["rax-after-call"] = rax
 
                 # TODO: NATHAN NEEDS TO LOOK AT THIS
-                rdi = int(response[bp_at + 4]["payload"].split(" ")[-1][:-2])
+                rdi = int(response[print_at]["payload"].split(" ")[-1][:-2])
                 # rdi = int(response[bp_at
                 data["rdi-before-call"] = rdi
 
@@ -183,7 +189,7 @@ def continue_execution():
                 data["called-function"] = "free"
                 data["rax-after-call"] = rax
 
-                rdi = int(response[bp_at + 4]["payload"].split(" ")[-1][:-2])
+                rdi = int(response[print_at]["payload"].split(" ")[-1][:-2])
                 data["rdi-before-call"] = rdi
 
                 print(hex(rdi))
@@ -196,9 +202,9 @@ def continue_execution():
                 data["called-function"] = "realloc"
                 data["rax-after-call"] = rax
 
-                rdi = int(response[bp_at + 4]["payload"].split(" ")[-1][:-2])
+                rdi = int(response[print_at]["payload"].split(" ")[-1][:-2])
                 data["rdi-before-call"] = rdi
-                rsi = int(response[bp_at + 5]["payload"].split(" ")[-1][:-2])
+                rsi = int(response[print_at + 1]["payload"].split(" ")[-1][:-2])
                 data["rsi-before-call"] = rsi
 
                 print(hex(rdi))
@@ -213,9 +219,9 @@ def continue_execution():
                 data["rax-after-call"] = rax
                 # print(response)
 
-                rdi = int(response[bp_at + 4]["payload"].split(" ")[-1][:-2])
+                rdi = int(response[print_at]["payload"].split(" ")[-1][:-2])
                 data["rdi-before-call"] = rdi
-                rsi = int(response[bp_at + 5]["payload"].split(" ")[-1][:-2])
+                rsi = int(response[print_at + 1]["payload"].split(" ")[-1][:-2])
                 data["rsi-before-call"] = rsi
 
                 print(hex(rdi))
