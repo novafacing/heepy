@@ -80,6 +80,7 @@ var initialized = false;
 var glibcVersion = 2.31;
 var ptrSize = 8;
 var gMainArena = {};
+var gTcache = {};
 
 server.listen(3000);
 
@@ -97,12 +98,8 @@ function addNodeToClient(node) {
   //  label: "prev: 100\n..."
   // }
   // Check argument same as an assert
-  if (
-    !node.hasOwnProperty("id") ||
-    node.hasOwnProperty("group") ||
-    node.hasOwnProperty("label")
-  ) {
-    console.log("Invalid call to addNodeToClient, missing id, group, or label");
+  if(!node.hasOwnProperty('id') || !node.hasOwnProperty('group') || !node.hasOwnProperty('label')){
+    console.log('Invalid call to addNodeToClient, missing id, group, or label');
     return;
   }
   // TODO remove after testing
@@ -280,6 +277,7 @@ function getConstants() {
   // TODO: Make this the actual calculation
   // constants.nfastbins = fastbin_index(constants.max_fast_size);
   constants.nfastbins = 10;
+  constants.tcache_max_bins = 64;
   return constants;
 }
 
@@ -315,7 +313,16 @@ function offsetOf(proto, field) {
   return offset;
 }
 
-function mallocChunk() {
+function tcacheBins () {
+  return {
+    bins: {
+      size: ptrSize,
+      count: getConstants().tcache_max_bins
+    }
+  }
+}
+
+function mallocChunk () {
   return {
     mchunk_prev_size: {
       size: ptrSize,
@@ -517,6 +524,26 @@ function condense(addr, raw, prototype, ...kwargs) {
         data: condensed
       };
       break;
+    case 'tcache_bins':
+      console.log('condensing ', raw, ' into ', tcacheBins());
+      let cacheBins = tcacheBins();
+      for (let member in cacheBins) {
+        if (cacheBins[member].count > 1) {
+          condensed[member] = [];
+          for (var i = 0;  i < cacheBins[member].count; i++) {
+            condensed[member].push(parseInt(changeEndianness(raw.slice(loc, loc + (cacheBins[member].size * 2))), 16));
+            loc += cacheBins[member].size * 2;
+          }
+        } else {
+          condensed[member] = parseInt(changeEndianness(raw.slice(loc, loc + (cacheBins[member].size * 2))), 16);
+          loc += cacheBins[member].size * 2;
+        }
+      }
+      return {
+        addr: addr,
+        data: condensed
+      };
+      break;
   }
 }
 
@@ -599,13 +626,41 @@ function getPtrSize(socket) {
 
 function getMainArenaSize(socket) {
   return new Promise((resolve, reject) => {
+    resolve(2200);
+    /*
+    // TODO: Make real
     if (!socket) {
       reject("No connection.");
     } else {
-      socket.emit("sizeof", { var: "main_arena" }, data => {
-        //resolve(data.result);
-        // TODO: Make real
-        resolve(2200);
+      socket.emit('sizeof', { var: 'main_arena' }, (data) => {
+        resolve(data.result);
+      });
+    }
+    */
+  });
+}
+
+function getHeapBase (socket) {
+  return new Promise((resolve, reject) => {
+    if (!socket) {
+      reject('No connection.');
+    } else {
+      socket.emit('address_of_symbol', { symbol_name: 'mp_->sbrk_base' }, (data) => {
+        console.log('addr of heap base ', data.result.toString(16));
+        resolve(data.result);
+      });
+    }
+  });
+}
+
+function getTcacheBins (socket, addr) {
+  var tcache_addr = addr + (2 * ptrSize) + getConstants().tcache_max_bins;
+  return new Promise((resolve, reject) => {
+    if (!socket) {
+      reject('No connection.');
+    } else {
+      socket.emit('read_from_address', { address: tcache_addr, size: ptrSize * getConstants().tcache_max_bins }, (data) => {
+        resolve(data.result);
       });
     }
   });
@@ -635,7 +690,20 @@ function getMainArenaAddr(socket) {
   });
 }
 
-function getVersionNumber(socket) {
+function derefAddr (sk, addr) {
+  return new Promise((resolve, reject) => {
+    if (!sk) {
+      reject('No connection.');
+    } else {
+      sk.emit('read_from_address', { address: addr, size: ptrSize }, (data) => {
+        resolve(parseInt(changeEndianness(data.result), 16));
+      });
+    }
+  });
+} 
+
+
+function getVersionNumber (socket) {
   /* call the version number emit */
   return new Promise((resolve, reject) => {
     if (!socket) {
@@ -722,19 +790,21 @@ function free(sk, st, data) {
         /* Whoof, exploit! add to freelist */
       }
       /* which freelist? tcache, largebin, smallbin? */
-      getMainArenaAddr(sk).then(main_arena => {
-        getMainArenaSize(sk, main_arena).then(main_arena_size => {
-          getMainArenaContents(sk, main_arena, main_arena_size).then(
-            main_arena_contents => {
-              gMainArena = condense(
-                main_arena,
-                main_arena_contents.slice(8),
-                "malloc_state"
-              );
-              console.log(gMainArena);
-              sk.emit("continue_execution");
-            }
-          );
+      getMainArenaAddr(sk).then((main_arena) => {
+        getMainArenaSize(sk, main_arena).then((main_arena_size) => {
+          getMainArenaContents(sk, main_arena, main_arena_size).then((main_arena_contents) => {
+            gMainArena = condense(main_arena, main_arena_contents.slice(8), 'malloc_state');
+            console.log(gMainArena);
+            getHeapBase(sk).then((heap_base_addr) => {
+              derefAddr(sk, heap_base_addr).then((heap_base)  => {
+                getTcacheBins(sk, heap_base).then((tcache_bins) => {
+                  gTcache = condense(heap_base, tcache_bins, 'tcache_bins');
+                  console.log('got tcache bins: ', gTcache);
+                  sk.emit('continue_execution');
+                });
+              });
+            });
+          });
         });
       });
     });
