@@ -664,9 +664,11 @@ function getHeapBase (socket) {
     if (!socket) {
       reject('No connection.');
     } else {
-      socket.emit('address_of_symbol', { symbol_name: 'mp_->sbrk_base' }, (data) => {
-        console.log('addr of heap base ', data.result.toString(16));
-        resolve(data.result);
+      // TODO: Make real
+      //socket.emit('address_of_symbol', { symbol_name: 'mp_->sbrk_base' }, (data) => {
+      socket.emit('evaluate_expression', { expression: '(unsigned long) (((void*)&mp_)+72)' }, (data) => {
+        console.log('addr of heap base ', parseInt(data.result, 10).toString(16));
+        resolve(parseInt(data.result, 10));
       });
     }
   });
