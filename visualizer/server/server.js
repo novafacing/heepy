@@ -561,15 +561,17 @@ function getPtrSize (socket) {
 
 function getMainArenaSize (socket) {
   return new Promise((resolve, reject) => {
+    resolve(2200);
+    /*
+    // TODO: Make real
     if (!socket) {
       reject('No connection.');
     } else {
       socket.emit('sizeof', { var: 'main_arena' }, (data) => {
-        //resolve(data.result);
-        // TODO: Make real
-        resolve(2200);
+        resolve(data.result);
       });
     }
+    */
   });
 }
 
