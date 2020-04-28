@@ -200,6 +200,7 @@ function mallocChunk () {
 }
 
 function inUseMallocChunk(totalSize) {
+  console.log('inuse chunk with size ', totalSize);
   return {
     mchunk_prev_size: {
       size: ptrSize,
@@ -213,6 +214,7 @@ function inUseMallocChunk(totalSize) {
       size: totalSize - (2 * ptrSize),
       count: 1
     }
+  };
 }
 
 function mallocState () {
@@ -274,8 +276,8 @@ function mallocState () {
   };
 }
 
-function condense (addr, raw, prototype) {
-  var kwargs = Array.prototype.slice.call (arguments, condense.length);
+function condense (addr, raw, prototype,...kwargs) {
+  console.log('condense kw ', kwargs);
   let condensed = {};
   let loc = 0;
   switch(prototype) {
@@ -301,17 +303,21 @@ function condense (addr, raw, prototype) {
       break;
     case 'inuse_malloc_chunk':
       console.log('condensing ', raw, ' into ', inUseMallocChunk(kwargs[0]));
-      let chunk = inUseMallocChunk(kwargs[0]);
-      for (let member in chunk) {
-        if (chunk[member].count > 1) {
+      let inuseChunk = inUseMallocChunk(kwargs[0]);
+      for (let member in inuseChunk) {
+        if (inuseChunk[member].count > 1) {
           condensed[member] = [];
-          for (var i = 0;  i < chunk[member].count; i++) {
-            condensed[member].push(parseInt(changeEndianness(raw.slice(loc, loc + (chunk[member].size * 2))), 16));
-            loc += chunk[member].size * 2;
+          for (var i = 0;  i < inuseChunk[member].count; i++) {
+            condensed[member].push(parseInt(changeEndianness(raw.slice(loc, loc + (inuseChunk[member].size * 2))), 16));
+            loc += inuseChunk[member].size * 2;
           }
+        } else if (member !== 'data') {
+          condensed[member] = parseInt(changeEndianness(raw.slice(loc, loc + (inuseChunk[member].size * 2))), 16);
+          loc += inuseChunk[member].size * 2;
         } else {
-          condensed[member] = parseInt(changeEndianness(raw.slice(loc, loc + (chunk[member].size * 2))), 16);
-          loc += chunk[member].size * 2;
+          condensed[member] = split(raw.slice(loc, loc + (inuseChunk[member].size * 2)), ptrSize);
+          loc += inuseChunk[member].size * 2;
+
         }
       }
       return {
@@ -340,6 +346,16 @@ function condense (addr, raw, prototype) {
       };
       break;
   }
+}
+
+function split (st, num) {
+  if (!num || num < 1) throw Error('Segment length must be defined and greater than/equal to 1');
+  const target = [];
+  for (
+      const array = Array.from(st);
+      array.length;
+      target.push(array.splice(0,num).join('')));
+  return target;
 }
 
 function gefAction (sk, st, data) {
@@ -467,7 +483,7 @@ function getAllocSize (sk, retAddr) {
   /* Where retAddr is the addr returned from malloc */
   return new Promise(resolve => {
     sk.emit('read_from_address', { size: ptrSize, address: retAddr }, (data) => {
-    /* Callback for addr read  */
+      /* Callback for addr read  */
       resolve(parseInt((changeEndianness(data.result) >> 1) << 1, 16));
     });
   });
@@ -489,7 +505,7 @@ function malloc (sk, st, data) {
   getAllocSize(sk, retAddr - ptrSize).then((allocSize) => {
     getContentsAt(sk, retAddr - (2 * ptrSize), allocSize).then((contents) => {
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
-      inUseGroup.chunks.push(condense(retAddr - (2 * ptrSize), contents, 'inuse_malloc_chunk'));
+      inUseGroup.chunks.push(condense(retAddr, contents, 'inuse_malloc_chunk', allocSize));
       console.log(inUseGroup.chunks[inUseGroup.chunks.length - 1].data);
       addNodeToClient({
         id: inUseGroup.chunks[inUseGroup.chunks.length - 1].addr,
@@ -504,6 +520,9 @@ function calloc (sk, st, data) {
 function realloc (sk, st, data) {
 }
 function free (sk, st, data) {
+  console.log('got free');
+  var freedAddr = data['rdi-before-call'];
+
 }
 
 
