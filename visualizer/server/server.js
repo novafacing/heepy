@@ -100,7 +100,7 @@ function addNodeToClient(node) {
   //  label: "prev: 100\n..."
   // }
   // Check argument same as an assert
-  if(!node.hasOwnProperty('id') || node.hasOwnProperty('group') || node.hasOwnProperty('label')){
+  if(!node.hasOwnProperty('id') || !node.hasOwnProperty('group') || !node.hasOwnProperty('label')){
     console.log('Invalid call to addNodeToClient, missing id, group, or label');
     return;
   }
@@ -285,9 +285,9 @@ function offsetOf(proto, field) {
 
 function tcacheBins () {
   return {
-    chunks: {
+    bins: {
       size: ptrSize,
-      count: getConstants().max_tcache_bins
+      count: getConstants().tcache_max_bins
     }
   }
 }
@@ -468,6 +468,7 @@ function condense (addr, raw, prototype,...kwargs) {
       };
       break;
     case 'tcache_bins':
+      console.log('condensing ', raw, ' into ', tcacheBins());
       let cacheBins = tcacheBins();
       for (let member in cacheBins) {
         if (cacheBins[member].count > 1) {
