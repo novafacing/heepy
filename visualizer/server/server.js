@@ -283,7 +283,7 @@ function request2size(req) {
   return req + constants.size_sz + constants.malloc_align_mask < minSize()
     ? minSize()
     : (req + constants.size_sz + constants.malloc_align_mask) &
-        ~malloc_align_mask;
+    ~malloc_align_mask;
 }
 
 function fastbin_index(sz) {
@@ -647,7 +647,7 @@ function getMainArenaSize(socket) {
   return new Promise((resolve, reject) => {
     resolve(2200);
     /*
-    // TODO: Make real
+      // TODO: Make real
     if (!socket) {
       reject("No connection.");
     } else {
@@ -658,7 +658,6 @@ function getMainArenaSize(socket) {
     */
   });
 }
-
 function getHeapBase (socket) {
   return new Promise((resolve, reject) => {
     if (!socket) {
@@ -776,6 +775,12 @@ function malloc (sk, st, data) {
   console.log('got addr ', retAddr);
   getAllocSize(sk, retAddr - ptrSize).then((allocSize) => {
     getContentsAt(sk, retAddr - (2 * ptrSize), allocSize).then((contents) => {
+      for (var group in state.groups) {
+        if (state.groups[group].chunks.find(c => c.addr == retAddr)) {
+          var remidx = state.groups[group].chunks.findIndex(c => c.addr == retAddr);
+          state.groups[group].chunks.splice(remidx, 1);
+        }
+      }
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
       var newChunk = condense(retAddr, contents, 'inuse_malloc_chunk', allocSize);
       inUseGroup.chunks.push({ id: newChunk.addr, group: 'inUse', label: JSON.stringify(newChunk, null, 2) });
@@ -784,6 +789,9 @@ function malloc (sk, st, data) {
       sk.emit('continue_execution');
     });
   });
+}
+
+function scanTcacheBins(sk, addrs) {
 }
 
 function calloc (sk, st, data) {
@@ -810,25 +818,36 @@ function free (sk, st, data) {
         getMainArenaSize(sk, main_arena).then((main_arena_size) => {
           getMainArenaContents(sk, main_arena, main_arena_size).then((main_arena_contents) => {
             gMainArena = condense(main_arena, main_arena_contents.slice(8), 'malloc_state');
-            console.log(gMainArena);
             getHeapBase(sk).then((heap_base_addr) => {
               derefAddr(sk, heap_base_addr).then((heap_base)  => {
                 getTcacheBins(sk, heap_base).then((tcache_bins) => {
-                  gTcache = condense(heap_base, tcache_bins, 'tcache_bins');
-                  console.log('got tcache bins: ', gTcache);
-                  if (gTcache.data.bins.includes(freedAddr)) {
-                    /* freed bin is in tcache */
-                    var tCacheGroup = state.groups.find(g => g.name === 'tcache');
-                    var newChunk = condense(freedAddr, contents, 'malloc_chunk');
-                    tCacheGroup.chunks.push({ id: newChunk.addr, group: 'tcache', label: JSON.stringify(newChunk, null, 2) });
-
-                  } else if (gMainArena.fastbinsY.includes(freedAddr)) {
-                    /* freed bin is in fastbin */
-                  } else {
-                    /* freed bin is in regular bins */
+                  var tcache = state.groups.find(g => g.name === 'tcache');
+                  /* clear */
+                  var addrs = condense(heap_base, tcache_bins, 'tcache_bins').data.bins;
+                  console.log('tcache bins ', addrs);
+                  tcache.chunks.splice(0,tcache.chunks.length);
+                  var proms = [];
+                  var exAddr = {};
+                  for (var addr in addrs) {
+                    exAddr[addr] = addrs[addr];
+                    console.log(addrs);
+                    if (exAddr[addr] > 0) {
+                      console.log('examining tcache chunk at ', exAddr[addr]);
+                      proms.push(getAllocSize(sk, exAddr[addr] - ptrSize).then((tcNodeSize) => {
+                        getContentsAt(sk, exAddr[addr] - (2 * ptrSize), tcNodeSize).then((contents) => {
+                          console.log('got at ', exAddr[addr]);
+                          var tc_entry = condense(exAddr[addr], contents, 'malloc_chunk');
+                          console.log('pushing ', tc_entry);
+                          tcache.push({ id: tc_entry.addr, group: 'tcache', label: JSON.stringify(tc_entry, null, 2) });
+                        });
+                      }));
+                    }
                   }
-                  redraw();
-                  sk.emit('continue_execution');
+                  Promise.all(proms).then(() => {
+                    console.log('done, continuing');
+                    redraw();
+                    sk.emit('continue_execution');
+                  });
                 });
               });
             });
