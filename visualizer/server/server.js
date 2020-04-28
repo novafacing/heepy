@@ -8,6 +8,25 @@ io.use(middleware);
 const web = io.of("/web");
 const gef = io.of("/gef");
 
+function redraw () {
+  console.log('redrawing');
+  web.emit('clear');
+  for (var group in state.groups) {
+    group = state.groups[group];
+    console.log(group);
+    if (group.name === 'inUse') {
+      for (var chunk in group.chunks) {
+        addNodeToClient(group.chunks[chunk]);
+      }
+    }
+    if (group.name === 'tcache') {
+      for (var chunk in group.chunks) {
+        addNodeToClient(group.chunks[chunk]);
+      }
+    }
+  }
+}
+
 var state = {
   groups: [
     {
@@ -667,7 +686,9 @@ function getAllocSize (sk, retAddr) {
   return new Promise(resolve => {
     sk.emit('read_from_address', { size: ptrSize, address: retAddr }, (data) => {
       /* Callback for addr read  */
-      resolve(parseInt((changeEndianness(data.result) >> 1) << 1, 16));
+      var size_state = parseInt(changeEndianness(data.result), 16);
+      size_state = ((size_state >> 1) << 1);
+      resolve(size_state);
     });
   });
 }
@@ -688,13 +709,10 @@ function malloc (sk, st, data) {
   getAllocSize(sk, retAddr - ptrSize).then((allocSize) => {
     getContentsAt(sk, retAddr - (2 * ptrSize), allocSize).then((contents) => {
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
-      inUseGroup.chunks.push(condense(retAddr, contents, 'inuse_malloc_chunk', allocSize));
+      var newChunk = condense(retAddr, contents, 'inuse_malloc_chunk', allocSize);
+      inUseGroup.chunks.push({ id: newChunk.addr, group: 'inUse', label: JSON.stringify(newChunk, null, 2) });
       console.log(inUseGroup.chunks[inUseGroup.chunks.length - 1].data);
-      addNodeToClient({
-        id: inUseGroup.chunks[inUseGroup.chunks.length - 1].addr,
-        group: 'inUse',
-        label: JSON.stringify(inUseGroup.chunks[inUseGroup.chunks.length - 1], null, 2)
-      });
+      redraw();
       sk.emit('continue_execution');
     });
   });
@@ -707,12 +725,14 @@ function realloc (sk, st, data) {
 function free (sk, st, data) {
   console.log('got free');
   var freedAddr = data['rdi-before-call'];
+  console.log('freed ', freedAddr);
   getAllocSize(sk, freedAddr - ptrSize).then((allocSize) => {
     getContentsAt(sk, freedAddr - (2 * ptrSize), allocSize).then((contents) => {
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
-      if (inUseGroup.chunks.find(c => c.addr == freedAddr)) {
+      if (inUseGroup.chunks.find(c => c.id == freedAddr)) {
         /* remove from inUse */
-        var freedChunkIdx = inUseGroup.chunks.findIndex(c => c.addr == freedAddr);
+        var freedChunkIdx = inUseGroup.chunks.findIndex(c => c.id == freedAddr);
+        console.log('freed chunk index ', freedChunkIdx);
         inUseGroup.chunks.splice(freedChunkIdx, 1);
       } else {
         /* Whoof, exploit! add to freelist */
@@ -728,6 +748,18 @@ function free (sk, st, data) {
                 getTcacheBins(sk, heap_base).then((tcache_bins) => {
                   gTcache = condense(heap_base, tcache_bins, 'tcache_bins');
                   console.log('got tcache bins: ', gTcache);
+                  if (gTcache.data.bins.includes(freedAddr)) {
+                    /* freed bin is in tcache */
+                    var tCacheGroup = state.groups.find(g => g.name === 'tcache');
+                    var newChunk = condense(freedAddr, contents, 'malloc_chunk');
+                    tCacheGroup.chunks.push({ id: newChunk.addr, group: 'tcache', label: JSON.stringify(newChunk, null, 2) });
+
+                  } else if (gMainArena.fastbinsY.includes(freedAddr)) {
+                    /* freed bin is in fastbin */
+                  } else {
+                    /* freed bin is in regular bins */
+                  }
+                  redraw();
                   sk.emit('continue_execution');
                 });
               });
