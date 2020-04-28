@@ -35,7 +35,6 @@ response = gdbmi.write('-break-insert realloc')
 bp_num = response[0]['payload']['bkpt']['number']
 response = gdbmi.write('-break-commands {} "print/ud $rdi" "print/ud $rsi" "fin"'.format(bp_num))
 
-# TODO: Handle heap writes
 @sio.event
 def sizeof(data):
     print("sizeof: ", data["var"])
@@ -43,6 +42,17 @@ def sizeof(data):
 
     return {
         "result": result[0]['payload']['value']
+    }
+
+@sio.event
+def libc_version():
+    print("libc_version")
+    result = gdbmi.write('-data-evaluate-expression "(char*) &__libc_version"')
+
+    result = result[0]['payload']['value'].split(' ')[-1][1:-1]
+    print(result)
+    return {
+        "result": result
     }
 
 @sio.event
@@ -163,6 +173,7 @@ def continue_execution():
 
     # The only time the probram breaks is when the heap is modified
     update_heap_info(data)
+
 
 def update_heap_info(data):
     """
