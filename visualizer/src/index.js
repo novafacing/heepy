@@ -163,3 +163,7 @@ socket.on("disconnect-nodes", function(data) {
   disconnectNodes(data.from, data.to);
   updateNetwork();
 });
+
+socket.on("clear", function (data) {
+  initNetwork();
+});
