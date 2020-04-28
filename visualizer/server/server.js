@@ -540,7 +540,7 @@ function malloc (sk, st, data) {
   getAllocSize(sk, retAddr - ptrSize).then((allocSize) => {
     getContentsAt(sk, retAddr - (2 * ptrSize), allocSize).then((contents) => {
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
-      inUseGroup.chunks.push(condense(retAddr - (2 * ptrSize), contents, 'inuse_malloc_chunk', allocSize));
+      inUseGroup.chunks.push(condense(retAddr, contents, 'inuse_malloc_chunk', allocSize));
       console.log(inUseGroup.chunks[inUseGroup.chunks.length - 1].data);
       web.emit('clear');
       web.emit('add-node', {
@@ -557,6 +557,9 @@ function calloc (sk, st, data) {
 function realloc (sk, st, data) {
 }
 function free (sk, st, data) {
+  console.log('got free');
+  var freedAddr = data['rdi-before-call'];
+
 }
 
 
