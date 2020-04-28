@@ -148,28 +148,43 @@ function getVersionNumber (socket) {
       reject('No connection.');
     } else {
       socket.emit('libc_version', (data) => {
-        console.log('GOT DATA BACK ', data);
         resolve(data);
       });
     }
   });
 }
 
+const changeEndianness = (string) => {
+        console.log('reverse-ending ', string);
+        const result = [];
+        let len = string.length - 2;
+        while (len >= 0) {
+          result.push(string.substr(len, 2));
+          len -= 2;
+        }
+        console.log('end changed ', result.join(''));
+        return result.join('');
+}
+
+const roundAlloc = (req) => {
+}
+
 function getAllocSize (sk, retAddr) {
   /* Where retAddr is the addr returned from malloc */
   var ptrSize = 8;
   return new Promise(resolve => {
-    sk.emit('read_from_address', { size: ptrSize, address: retAddr - ptrSize }, (data) => {
+    sk.emit('read_from_address', { size: ptrSize, address: retAddr }, (data) => {
     /* Callback for addr read  */
-      resolve(data);
+      resolve(parseInt((changeEndianness(data.result) >> 1) << 1, 16));
     });
   });
 }
 
-function getContentsAt (addr, size) {
+function getContentsAt (sk, addr, size) {
+  console.log('getting read_from_address with addr ', addr, ' size ', size);
   return new Promise(resolve => {
-    gef.emit('read_from_address', { size: size, address: addr }, (data) => {
-      resolve(data.result);
+    sk.emit('read_from_address', { size: size, address: addr }, (data) => {
+      resolve(data);
     });
   });
 }
@@ -178,8 +193,9 @@ function malloc (sk, st, data) {
   console.log('Got malloc');
   var ptrSize = 8;
   var retAddr = data['rax-after-call'];
-  getAllocSize(sk).then((allocSize) => {
-    getContentsAt(retAddr - (2 * ptrSize), allocSize).then((contents) => console.log(contents));
+  console.log('got addr ', retAddr);
+  getAllocSize(sk, retAddr - ptrSize).then((allocSize) => {
+    getContentsAt(sk, retAddr - (2 * ptrSize), allocSize);
   });
 }
 
