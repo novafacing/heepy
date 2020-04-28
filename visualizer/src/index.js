@@ -15,8 +15,9 @@ const options = {
   layout: {
     hierarchical: {
       enabled: true,
-      levelSeparation: 100,
-      direction: "UD"
+      levelSeparation: 200,
+      nodeSpacing: 600,
+      direction: "LR"
     }
   },
   nodes: {
@@ -24,11 +25,74 @@ const options = {
     font: {
       face: "monospace",
       align: "left"
-    },
-    physics: false
+    }
   },
-  edges: {
-    physics: false
+  /*
+  physics: {
+    hierarchicalRepulsion: {
+      avoidOverlap: 1
+    }
+  },
+  */
+  /*
+  physics: {
+    enabled: true,
+    barnesHut: {
+      theta: 0.5,
+      gravitationalConstant: -2000,
+      centralGravity: 0.3,
+      springLength: 95,
+      springConstant: 0.04,
+      damping: 0.09,
+      avoidOverlap: 1
+    },
+    forceAtlas2Based: {
+      theta: 0.5,
+      gravitationalConstant: -50,
+      centralGravity: 0.01,
+      springConstant: 0.08,
+      springLength: 100,
+      damping: 0.4,
+      avoidOverlap: 1
+    },
+    repulsion: {
+      centralGravity: 0.2,
+      springLength: 400,
+      springConstant: 0.05,
+      nodeDistance: 420,
+      damping: 0.09
+    },
+    hierarchicalRepulsion: {
+      centralGravity: 0.0,
+      springLength: 400,
+      springConstant: 0.01,
+      nodeDistance: 420,
+      damping: 0.09,
+      avoidOverlap: 1
+    },
+    maxVelocity: 50,
+    minVelocity: 0.1,
+    solver: "barnesHut",
+    stabilization: {
+      enabled: true,
+      iterations: 1000,
+      updateInterval: 100,
+      onlyDynamicEdges: false,
+      fit: true
+    },
+    timestep: 0.5,
+    adaptiveTimestep: true,
+    wind: { x: 0, y: 0 }
+  },
+  */
+  physics: {
+    enabled: true,
+    barnesHut: {
+      gravitationalConstant: -8000,
+      springConstant: 0.001,
+      springLength: 200
+    },
+    wind: { x: 1, y: 0 }
   },
   groups: {
     free: {
@@ -108,7 +172,7 @@ function initNetwork() {
   // Create new network with container, data, and options
   network = new vis.Network(container, data, options);
 
-  addLegend();
+  //addLegend();
 }
 
 function addNode(newId, newGroup, newLabel) {
@@ -160,22 +224,26 @@ function updateNetwork() {
   network.stabilize();
 }
 
-function connectNodes(from, to, legend) {
-  if (legend === true) {
-    console.log("legend", from, to);
-    edges.add({
-      id: from + to,
-      from: from,
-      to: to,
-      color: { inherit: false, color: "#FFFFFF" }
-    });
-  } else {
-    edges.add({ id: from + to, from: from, to: to });
-  }
+function connectNodes(from, to) {
+  console.log("connecting from:", from, "to:", to);
+  edges.add({ id: from + to, from: from, to: to });
 }
 
 function disconnectNodes(from, to) {
   edges.remove({ id: from + to });
+}
+
+function intsToHex(data) {
+  return Object.keys(data).reduce(function(result, key) {
+    if (Number.isInteger(data[key])) {
+      result[key] = "0x" + data[key].toString(16);
+    } else if (typeof data[key] === "object" && data[key] !== null) {
+      result[key] = intsToHex(data[key]);
+    } else {
+      result[key] = data[key];
+    }
+    return result;
+  }, {});
 }
 
 socket.on("client-hello", function(data) {
@@ -206,4 +274,8 @@ socket.on("connect-nodes", function(data) {
 socket.on("disconnect-nodes", function(data) {
   disconnectNodes(data.from, data.to);
   updateNetwork();
+});
+
+socket.on("clear", function(data) {
+  initNetwork();
 });
