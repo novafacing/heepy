@@ -458,7 +458,9 @@ function getMainArenaSize (socket) {
       reject('No connection.');
     } else {
       socket.emit('sizeof', { var: 'main_arena' }, (data) => {
-        resolve(data.result);
+        //resolve(data.result);
+        // TODO: Make real
+        resolve(2200);
       });
     }
   });
@@ -542,7 +544,7 @@ function malloc (sk, st, data) {
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
       inUseGroup.chunks.push(condense(retAddr, contents, 'inuse_malloc_chunk', allocSize));
       console.log(inUseGroup.chunks[inUseGroup.chunks.length - 1].data);
-      web.emit('clear');
+      //web.emit('clear');
       /* redraw instead */
       web.emit('add-node', {
         id: inUseGroup.chunks[inUseGroup.chunks.length - 1].addr,
@@ -577,11 +579,11 @@ function free (sk, st, data) {
           getMainArenaContents(sk, main_arena, main_arena_size).then((main_arena_contents) => {
             gMainArena = condense(main_arena, main_arena_contents.slice(8), 'malloc_state');
             console.log(gMainArena);
+            sk.emit('continue_execution');
           });
         });
       });
     });
-    sk.emit('continue_execution');
   });
 
 }
