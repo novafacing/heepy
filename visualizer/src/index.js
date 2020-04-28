@@ -17,7 +17,7 @@ const options = {
     hierarchical: {
       enabled: true,
       levelSeparation: 100,
-      direction: "UD"
+      direction: "LR"
     }
   },
   nodes: {

@@ -7,6 +7,7 @@ var path = require('path');
 io.use(middleware);
 const web = io.of("/web");
 const gef = io.of("/gef");
+
 var state = {
   groups: [
     {
@@ -39,6 +40,41 @@ var state = {
     }
   ]
 };
+
+// Ordered state of client
+var clientState = {
+  groups: [
+    {
+      name: 'tcache',
+      chunks: []
+    },
+    {
+      name: 'fastbins',
+      chunks: []
+    },
+    {
+      name: 'unsorted',
+      chunks: []
+    },
+    {
+      name: 'small',
+      chunks: []
+    },
+    {
+      name: 'large',
+      chunks: []
+    },
+    {
+      name: 'free',
+      chunks: []
+    },
+    {
+      name: 'inUse',
+      chunks: []
+    }
+  ]
+};
+
 var initialized = false;
 /* Defaults, these are updated */
 var glibcVersion = 2.31;
@@ -56,8 +92,83 @@ function initClient(numGroups) {
 
 function addNodeToClient(node) {
   // Adds node to client and stores in order state on server.
-  web.emit('clear');
+  // node is an object in the form:
+  // {
+  //  id: "0x00",
+  //  group: "inUse",
+  //  label: "prev: 100\n..."
+  // }
+  // Check argument same as an assert
+  if(!node.hasOwnProperty('id') || node.hasOwnProperty('group') || node.hasOwnProperty('label')){
+    console.log('Invalid call to addNodeToClient, missing id, group, or label');
+    return;
+  }
+  // TODO remove after testing
+  console.log('id: ', typeof(node.id), node.id, ' group: ', typeof(node.group), node.group, ' label: ', typeof(node.label), node.label);
+
+
+  // Add to clientState
+  // 3 cases
+  // 1: no neighbors, can just add and be done
+  // 2: 1 neighbor, add node and connect the two
+  // 3: 2 neighbors, disconnect neighbors, add new node, connect left to new node, connect right to new node
+
+  // Find correct group
+  let groupIndex = 0;
+  for(; groupIndex < clientState.groups.length; groupIndex++){
+    if(clientState.groups[groupIndex].name === node.group) break;
+  }
+
+  // Empty group case
+  if(clientState.groups[groupIndex].chunks.length === 0) {
+    // Add node to client state
+    clientState.groups[groupIndex].chunks.push(node);
+    // Add node to client
+    web.emit('add-node', node);
+    return;
+  }
+
+  // Non empty group
+  // Loop through group and check addresses
+  // nodeIndex is the index that the node is being inserted to
+  let nodeIndex = 0;
+  for(; nodeIndex < clientState.groups[groupIndex].chunks.length; nodeIndex++) {
+    // Break if current address is larger than address to be inserted
+    if(parseInt(clientState.groups[groupIndex].chunks[nodeIndex], 16) > parseInt(node.address, 16)) break;
+  }
+
+  // Check case 2 if nodeIndex is first or last of list
+  console.log('Final nodeIndex: ', nodeIndex);
+  if(nodeIndex === 0) {
+    // Insert at head and add connection from node to old head
+    clientState.groups[groupIndex].chunks.splice(0, 0, node);
+    web.emit('add-node', node);
+    web.emit('connect-nodes', node.id, clientState.groups[groupIndex].chunks[1].id);
+    return;
+  } else if (nodeIndex === clientState.groups[groupIndex].chunks.length) {
+    // TODO: check if this is length or length - 1
+    // Insert at tail and add connection from old tail to node
+    clientState.groups[groupIndex].chunks.push(node);
+    web.emit('add-node', node);
+    web.emit('connect-nodes', clientState.groups[groupIndex].chunks[clientState.groups[groupIndex].chunks.length - 2].id, node.id);
+    return;
+  }
+
+  // Case 3 2 neighbors
+  // Disconnect groups[nodeIndex-1] groups[nodeIndex]
+  // Save ids for later
+  let prev = clientState.groups[groupIndex].chunks[nodeIndex-1];
+  let next = clientState.groups[groupIndex].chunks[nodeIndex];
+  web.emit('disconnect-nodes', prev.id, next.id);
+
+  // Add new node
+  clientState.groups[groupIndex].chunks.splice(nodeIndex, 0, node);
   web.emit('add-node', node);
+  web.emit('connect-nodes', prev.id, node.id);
+  web.emit('connect-nodes', node.id, next.id);
+
+
+  // web.emit('clear');
 }
 
 function jsonToClient(jsonObject) {
