@@ -68,6 +68,7 @@ function initNetwork() {
 }
 
 function addNode(newId, newGroup, newLabel) {
+  newLabel = JSON.stringify(intsToHex(JSON.parse(newLabel)), undefined, 2);
   nodes.add({
     id: newId,
     group: newGroup,
@@ -122,6 +123,19 @@ function connectNodes(from, to) {
 
 function disconnectNodes(from, to) {
   edges.remove({ id: from + to });
+}
+
+function intsToHex(data) {
+  return Object.keys(data).reduce(function(result, key) {
+    if(Number.isInteger(data[key])) {
+      result[key] = "0x" + data[key].toString(16)
+    } else if (typeof data[key] === 'object' && data[key] !== null) {
+      result[key] = intsToHex(data[key]);
+    } else {
+      result[key] = data[key];
+    }
+    return result
+  }, {})
 }
 
 socket.on("client-hello", function(data) {

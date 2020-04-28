@@ -534,7 +534,9 @@ function getMainArenaSize (socket) {
       reject('No connection.');
     } else {
       socket.emit('sizeof', { var: 'main_arena' }, (data) => {
-        resolve(data.result);
+        //resolve(data.result);
+        // TODO: Make real
+        resolve(2200);
       });
     }
   });
@@ -623,6 +625,8 @@ function malloc (sk, st, data) {
         group: 'inUse',
         label: JSON.stringify(inUseGroup.chunks[inUseGroup.chunks.length - 1], null, 2)
       });
+      sk.emit('continue_execution');
+    });
   });
 }
 
@@ -633,6 +637,28 @@ function realloc (sk, st, data) {
 function free (sk, st, data) {
   console.log('got free');
   var freedAddr = data['rdi-before-call'];
+  getAllocSize(sk, freedAddr - ptrSize).then((allocSize) => {
+    getContentsAt(sk, freedAddr - (2 * ptrSize), allocSize).then((contents) => {
+      var inUseGroup = state.groups.find(g => g.name == 'inUse')
+      if (inUseGroup.chunks.find(c => c.addr == freedAddr)) {
+        /* remove from inUse */
+        var freedChunkIdx = inUseGroup.chunks.findIndex(c => c.addr == freedAddr);
+        inUseGroup.chunks.splice(freedChunkIdx, 1);
+      } else {
+        /* Whoof, exploit! add to freelist */
+      }
+      /* which freelist? tcache, largebin, smallbin? */
+      getMainArenaAddr(sk).then((main_arena) => {
+        getMainArenaSize(sk, main_arena).then((main_arena_size) => {
+          getMainArenaContents(sk, main_arena, main_arena_size).then((main_arena_contents) => {
+            gMainArena = condense(main_arena, main_arena_contents.slice(8), 'malloc_state');
+            console.log(gMainArena);
+            sk.emit('continue_execution');
+          });
+        });
+      });
+    });
+  });
 
 }
 
