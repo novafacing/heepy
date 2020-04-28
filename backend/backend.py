@@ -91,7 +91,8 @@ def evaluate_expression(data):
 @sio.event(namespace="/gef")
 def read_from_address(data):
     print(
-        "ABOUT TO READ FROM {} BYTES FROM {}".format(data["size"], hex(data["address"]))
+        #"ABOUT TO READ FROM {} BYTES FROM {}".format(data["size"], hex(data["address"]))
+        data
     )
 
     result = gdbmi.write(

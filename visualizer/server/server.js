@@ -32,6 +32,10 @@ var state = {
     {
       name: 'free',
       chunks: []
+    },
+    {
+      name: 'inUse',
+      chunks: []
     }
   ]
 };
@@ -39,6 +43,7 @@ var initialized = false;
 /* Defaults, these are updated */
 var glibcVersion = 2.31;
 var ptrSize = 8;
+var gMainArena = {};
 
 server.listen(3000);
 
@@ -162,7 +167,9 @@ function fastbin_index(sz) {
 
 function getConstants () {
   var constants = getStaticConstants();
-  constants.nfastbins = fastbin_index(constants.max_fast_size);
+  // TODO: Make this the actual calculation 
+  // constants.nfastbins = fastbin_index(constants.max_fast_size);
+  constants.nfastbins = 10;
   return constants;
 }
 
@@ -227,6 +234,22 @@ function mallocChunk () {
   };
 }
 
+function inUseMallocChunk(totalSize) {
+  return {
+    mchunk_prev_size: {
+      size: ptrSize,
+      count: 1
+    },
+    mchunk_size: {
+      size: ptrSize,
+      count: 1
+    },
+    data: {
+      size: totalSize - (2 * ptrSize),
+      count: 1
+    }
+}
+
 function mallocState () {
   var constants = getConstants();
   return {
@@ -259,7 +282,7 @@ function mallocState () {
       count: constants.nbins * 2 - 2
     },
     binmap: {
-      size: ptrSize,
+      size: ptrSize / 2,
       count: constants.binmapsize
     },
     next: {
@@ -286,26 +309,70 @@ function mallocState () {
   };
 }
 
-function condense (raw, prototype) {
-  console.log('condensing ', raw, ' into ', prototype);
+function condense (addr, raw, prototype) {
+  var kwargs = Array.prototype.slice.call (arguments, condense.length);
   let condensed = {};
   let loc = 0;
   switch(prototype) {
     case 'malloc_chunk':
+      console.log('condensing ', raw, ' into ', mallocChunk());
       let chunk = mallocChunk();
       for (let member in chunk) {
-        condensed[member] = raw.slice(loc, loc + (chunk[member].size * chunk[member].count));
-        loc += chunk[member].size * chunk[member].count;
+        if (chunk[member].count > 1) {
+          condensed[member] = [];
+          for (var i = 0;  i < chunk[member].count; i++) {
+            condensed[member].push(parseInt(changeEndianness(raw.slice(loc, loc + (chunk[member].size * 2))), 16));
+            loc += chunk[member].size * 2;
+          }
+        } else {
+          condensed[member] = parseInt(changeEndianness(raw.slice(loc, loc + (chunk[member].size * 2))), 16);
+          loc += chunk[member].size * 2;
+        }
       }
-      return condensed;
+      return {
+        addr: addr,
+        data: condensed
+      };
+      break;
+    case 'inuse_malloc_chunk':
+      console.log('condensing ', raw, ' into ', inUseMallocChunk(kwargs[0]));
+      let chunk = inUseMallocChunk(kwargs[0]);
+      for (let member in chunk) {
+        if (chunk[member].count > 1) {
+          condensed[member] = [];
+          for (var i = 0;  i < chunk[member].count; i++) {
+            condensed[member].push(parseInt(changeEndianness(raw.slice(loc, loc + (chunk[member].size * 2))), 16));
+            loc += chunk[member].size * 2;
+          }
+        } else {
+          condensed[member] = parseInt(changeEndianness(raw.slice(loc, loc + (chunk[member].size * 2))), 16);
+          loc += chunk[member].size * 2;
+        }
+      }
+      return {
+        addr: addr,
+        data: condensed
+      };
       break;
     case 'malloc_state':
+      console.log('condensing ', raw, ' into ', mallocState());
       let state = mallocState()
       for (let member in state) {
-        condensed[member] = raw.slice(loc, loc + (state[member].size * state[member].count));
-        loc += state[member].size * state[member].count;
+        if (state[member].count > 1) {
+          condensed[member] = [];
+          for (var i = 0;  i < state[member].count; i++) {
+            condensed[member].push(parseInt(changeEndianness(raw.slice(loc, loc + (state[member].size * 2))), 16));
+            loc += state[member].size * 2;
+          }
+        } else {
+          condensed[member] = parseInt(changeEndianness(raw.slice(loc, loc + (state[member].size * 2))), 16);
+          loc += state[member].size * 2;
+        }
       }
-      return condensed;
+      return {
+        addr: addr,
+        data: condensed
+      };
       break;
   }
 }
@@ -341,8 +408,7 @@ gef.on("connect", function(socket) {
               getMainArenaContents(socket, main_arena, main_arena_size).then((main_arena_contents) => {
                 glibcVersion = vnum;
                 ptrSize = ptsize;
-                state = condense(changeEndianness(main_arena_contents), 'malloc_state');
-                console.log('Got state ', state);
+                gMainArena = condense(main_arena, main_arena_contents.slice(8), 'malloc_state');
                 initialized = true;
                 gefAction(socket, state, data);
               });
@@ -446,7 +512,7 @@ function getContentsAt (sk, addr, size) {
   console.log('getting read_from_address with addr ', addr, ' size ', size);
   return new Promise(resolve => {
     sk.emit('read_from_address', { size: size, address: addr }, (data) => {
-      resolve(data);
+      resolve(data.result);
     });
   });
 }
@@ -457,10 +523,15 @@ function malloc (sk, st, data) {
   console.log('got addr ', retAddr);
   getAllocSize(sk, retAddr - ptrSize).then((allocSize) => {
     getContentsAt(sk, retAddr - (2 * ptrSize), allocSize).then((contents) => {
-      return {
-        addr: retAddr - (2 * ptrSize),
-        contents: contents
-      };
+      var inUseGroup = state.groups.find(g => g.name == 'inUse')
+      inUseGroup.chunks.push(condense(retAddr - (2 * ptrSize), contents, 'inuse_malloc_chunk'));
+      console.log(inUseGroup.chunks[inUseGroup.chunks.length - 1].data);
+      web.emit('clear');
+      web.emit('add-node', {
+        id: inUseGroup.chunks[inUseGroup.chunks.length - 1].addr,
+        group: 'inUse',
+        label: JSON.stringify(inUseGroup.chunks[inUseGroup.chunks.length - 1], null, 2)
+      });
     });
   });
 }
