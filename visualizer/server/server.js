@@ -53,51 +53,17 @@ function initClient(numGroups) {
   // Initialize network
 }
 
-var jsonStub = {
-  version: "0.1",
-  groups: [
-    {
-      name: "tcache",
-      chunks: [
-        {
-          address: "0x00",
-          size: "0x20",
-          leftSize: "0x4",
-          prev: "0x00"
-        },
-        {
-          address: "0x100",
-          size: "0x20",
-          leftSize: "0x8",
-          prev: "0x00"
-        }
-      ]
-    },
-    {
-      name: "free",
-      chunks: [
-        {
-          address: "0x20",
-          size: "0x80",
-          leftSize: "0x00",
-          prev: "0x00"
-        },
-        {
-          address: "0x800",
-          size: "0x800",
-          leftSize: "0x80",
-          prev: "0x00"
-        }
-      ]
-    }
-  ]
-};
+
+function addNodeToClient(node) {
+  // Adds node to client and stores in order state on server.
+  web.emit('clear');
+  web.emit('add-node', node);
+}
 
 function jsonToClient(jsonObject) {
   // Loop through lists
   for (let i = 0; i < jsonObject.groups.length; i++) {
     let name = jsonObject.groups[i].name;
-    // TODO: add name and color to key? red (3): in use, green (4): free
 
     let prevAddress;
     // Loop through chunks
@@ -138,7 +104,6 @@ app.get("/index.js", function(req, res) {
 });
 
 // Calls to client
-// Calls json to client with 'initial' heap structure
 web.on("connection", function(socket) {
   console.log('Got connection from web');
   web.emit("client-hello", {
@@ -526,13 +491,11 @@ function malloc (sk, st, data) {
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
       inUseGroup.chunks.push(condense(retAddr - (2 * ptrSize), contents, 'inuse_malloc_chunk'));
       console.log(inUseGroup.chunks[inUseGroup.chunks.length - 1].data);
-      web.emit('clear');
-      web.emit('add-node', {
+      addNodeToClient({
         id: inUseGroup.chunks[inUseGroup.chunks.length - 1].addr,
         group: 'inUse',
         label: JSON.stringify(inUseGroup.chunks[inUseGroup.chunks.length - 1], null, 2)
       });
-    });
   });
 }
 
