@@ -7,13 +7,17 @@ var path = require("path");
 io.use(middleware);
 const web = io.of("/web");
 const gef = io.of("/gef");
-
+  
+/* Redraws the window by clearning and then re-adding the nodes we want to appear. 
+* Callbacks manage the state by adding or removing nodes from the state object
+*/
 function redraw () {
-  console.log('redrawing');
   web.emit('clear');
+  console.log('redrawing');
   for (var group in state.groups) {
     group = state.groups[group];
     console.log(group);
+    /* Currently only draws inuse and tcache */
     if (group.name === 'inUse') {
       for (var chunk in group.chunks) {
         addNodeToClient(group.chunks[chunk]);
@@ -28,40 +32,6 @@ function redraw () {
 }
 
 var state = {
-  groups: [
-    {
-      name: "tcache",
-      chunks: []
-    },
-    {
-      name: "fastbins",
-      chunks: []
-    },
-    {
-      name: "unsorted",
-      chunks: []
-    },
-    {
-      name: "small",
-      chunks: []
-    },
-    {
-      name: "large",
-      chunks: []
-    },
-    {
-      name: "free",
-      chunks: []
-    },
-    {
-      name: "inUse",
-      chunks: []
-    }
-  ]
-};
-
-// Ordered state of client
-var clientState = {
   groups: [
     {
       name: "tcache",
@@ -134,7 +104,7 @@ function addNodeToClient(node) {
     node.label
   );
 
-  // Add to clientState
+  // Add to state
   // 3 cases
   // 1: no neighbors, can just add and be done
   // 2: 1 neighbor, add node and connect the two
@@ -142,14 +112,14 @@ function addNodeToClient(node) {
 
   // Find correct group
   let groupIndex = 0;
-  for (; groupIndex < clientState.groups.length; groupIndex++) {
-    if (clientState.groups[groupIndex].name === node.group) break;
+  for (; groupIndex < state.groups.length; groupIndex++) {
+    if (state.groups[groupIndex].name === node.group) break;
   }
 
   // Empty group case
-  if (clientState.groups[groupIndex].chunks.length === 0) {
+  if (state.groups[groupIndex].chunks.length === 0) {
     // Add node to client state
-    clientState.groups[groupIndex].chunks.push(node);
+    state.groups[groupIndex].chunks.push(node);
     // Add node to client
     web.emit("add-node", node);
     return;
@@ -161,12 +131,12 @@ function addNodeToClient(node) {
   let nodeIndex = 0;
   for (
     ;
-    nodeIndex < clientState.groups[groupIndex].chunks.length;
+    nodeIndex < state.groups[groupIndex].chunks.length;
     nodeIndex++
   ) {
     // Break if current address is larger than address to be inserted
     if (
-      parseInt(clientState.groups[groupIndex].chunks[nodeIndex], 16) >
+      parseInt(state.groups[groupIndex].chunks[nodeIndex], 16) >
       parseInt(node.address, 16)
     )
       break;
@@ -176,23 +146,23 @@ function addNodeToClient(node) {
   console.log("Final nodeIndex: ", nodeIndex);
   if (nodeIndex === 0) {
     // Insert at head and add connection from node to old head
-    clientState.groups[groupIndex].chunks.splice(0, 0, node);
+    state.groups[groupIndex].chunks.splice(0, 0, node);
     web.emit("add-node", node);
     web.emit(
       "connect-nodes",
       node.id,
-      clientState.groups[groupIndex].chunks[1].id
+      state.groups[groupIndex].chunks[1].id
     );
     return;
-  } else if (nodeIndex === clientState.groups[groupIndex].chunks.length) {
+  } else if (nodeIndex === state.groups[groupIndex].chunks.length) {
     // TODO: check if this is length or length - 1
     // Insert at tail and add connection from old tail to node
-    clientState.groups[groupIndex].chunks.push(node);
+    state.groups[groupIndex].chunks.push(node);
     web.emit("add-node", node);
     web.emit(
       "connect-nodes",
-      clientState.groups[groupIndex].chunks[
-        clientState.groups[groupIndex].chunks.length - 2
+      state.groups[groupIndex].chunks[
+        state.groups[groupIndex].chunks.length - 2
       ].id,
       node.id
     );
@@ -202,12 +172,12 @@ function addNodeToClient(node) {
   // Case 3 2 neighbors
   // Disconnect groups[nodeIndex-1] groups[nodeIndex]
   // Save ids for later
-  let prev = clientState.groups[groupIndex].chunks[nodeIndex - 1];
-  let next = clientState.groups[groupIndex].chunks[nodeIndex];
+  let prev = state.groups[groupIndex].chunks[nodeIndex - 1];
+  let next = state.groups[groupIndex].chunks[nodeIndex];
   web.emit("disconnect-nodes", prev.id, next.id);
 
   // Add new node
-  clientState.groups[groupIndex].chunks.splice(nodeIndex, 0, node);
+  state.groups[groupIndex].chunks.splice(nodeIndex, 0, node);
   web.emit("add-node", node);
   web.emit("connect-nodes", prev.id, node.id);
   web.emit("connect-nodes", node.id, next.id);
@@ -266,10 +236,12 @@ web.on("connection", function(socket) {
   });
 });
 
+// TODO: Needs to come from C
 function minChunkSize() {
   return offsetOf(mallocChunk(), "fd_nextsize");
 }
 
+// TODO: Needs to come from C
 function minSize() {
   var constants = getStaticConstants();
   return (
@@ -278,19 +250,22 @@ function minSize() {
   );
 }
 
+// TODO: Needs to come from C
 function request2size(req) {
   var constants = getStaticConstants();
   return req + constants.size_sz + constants.malloc_align_mask < minSize()
     ? minSize()
     : (req + constants.size_sz + constants.malloc_align_mask) &
-        ~malloc_align_mask;
+    ~malloc_align_mask;
 }
 
+// TODO: Needs to come from C
 function fastbin_index(sz) {
   var constants = getStaticConstants();
   return (sz >> (constants.size_sz == 8 ? 4 : 3)) - 2;
 }
 
+// TODO: Needs to come from C
 function getConstants() {
   var constants = getStaticConstants();
   // TODO: Make this the actual calculation
@@ -300,6 +275,7 @@ function getConstants() {
   return constants;
 }
 
+// TODO: Needs to come from C
 function getStaticConstants() {
   var size_sz = ptrSize;
   var max_fast_size = (80 * size_sz) / 4;
@@ -321,6 +297,7 @@ function getStaticConstants() {
   };
 }
 
+// TODO: Needs to come from C
 function offsetOf(proto, field) {
   let offset = 0;
   for (let key in proto) {
@@ -332,6 +309,7 @@ function offsetOf(proto, field) {
   return offset;
 }
 
+// TODO: Needs to come from C
 function tcacheBins () {
   return {
     bins: {
@@ -341,6 +319,9 @@ function tcacheBins () {
   }
 }
 
+/* TODO: This will be replaced with a version that takes the glibc version
+ * and returns the correct chunk layout (in this format)
+ */ 
 function mallocChunk () {
   return {
     mchunk_prev_size: {
@@ -370,6 +351,9 @@ function mallocChunk () {
   };
 }
 
+/* TODO: This will be replaced with a version that takes the glibc version
+ * and returns the correct chunk layout (in this format)
+ */ 
 function inUseMallocChunk(totalSize) {
   console.log("inuse chunk with size ", totalSize);
   return {
@@ -388,6 +372,9 @@ function inUseMallocChunk(totalSize) {
   };
 }
 
+/* TODO: This will be replaced with a version that takes the glibc version
+ * and returns the correct chunk layout (in this format)
+ */ 
 function mallocState() {
   var constants = getConstants();
   return {
@@ -446,7 +433,12 @@ function mallocState() {
   };
 }
 
+
+/* Takes raw data and a JSON prototype (defined above)
+ * and puts the data into the prototype.
+ */
 function condense(addr, raw, prototype, ...kwargs) {
+  /* kwargs can be used for any condense operation that requires additional arguments */
   console.log("condense kw ", kwargs);
   let condensed = {};
   let loc = 0;
@@ -480,6 +472,7 @@ function condense(addr, raw, prototype, ...kwargs) {
       };
       break;
     case "inuse_malloc_chunk":
+      /* kwargs[0] is expected to contain the REQUEST size of the inuse malloc chunk */
       console.log("condensing ", raw, " into ", inUseMallocChunk(kwargs[0]));
       let inuseChunk = inUseMallocChunk(kwargs[0]);
       for (let member in inuseChunk) {
@@ -544,6 +537,7 @@ function condense(addr, raw, prototype, ...kwargs) {
       };
       break;
     case 'tcache_bins':
+      /* TODO: This might be broken */
       console.log('condensing ', raw, ' into ', tcacheBins());
       let cacheBins = tcacheBins();
       for (let member in cacheBins) {
@@ -567,6 +561,7 @@ function condense(addr, raw, prototype, ...kwargs) {
 }
 
 function split(st, num) {
+  /* split a string into a list of num length strings */
   if (!num || num < 1)
     throw Error("Segment length must be defined and greater than/equal to 1");
   const target = [];
@@ -579,6 +574,7 @@ function split(st, num) {
 }
 
 function gefAction(sk, st, data) {
+  /* Calls the correct gef action (raised from backend.py, not actually gef) */
   console.log("Got heap change event with data ", data);
   switch (data["called-function"]) {
     case "malloc":
@@ -602,6 +598,7 @@ gef.on("connect", function(socket) {
   });
   socket.on("heap_changed", data => {
     if (!initialized) {
+      /* Initialize the global data structures */
       glibcVersion = getVersionNumber(socket).then(vnum => {
         getPtrSize(socket).then(ptsize => {
           getMainArenaAddr(socket).then(main_arena => {
@@ -624,6 +621,7 @@ gef.on("connect", function(socket) {
         });
       });
     } else {
+      /* otherwise just do the action */
       gefAction(socket, state, data);
     }
   });
@@ -632,6 +630,7 @@ gef.on("connect", function(socket) {
 });
 
 function getPtrSize(socket) {
+  /* Finds the size of a pointer on the target system (expect 4 for 32 bit and 8 for 64 bit) */
   return new Promise((resolve, reject) => {
     if (!socket) {
       reject("No connection.");
@@ -645,9 +644,11 @@ function getPtrSize(socket) {
 
 function getMainArenaSize(socket) {
   return new Promise((resolve, reject) => {
+    /* Gets the sizeof(main_arena) value */
+    /* TODO: this should end up being calculated from C */
     resolve(2200);
     /*
-    // TODO: Make real
+      // TODO: Make real
     if (!socket) {
       reject("No connection.");
     } else {
@@ -658,21 +659,25 @@ function getMainArenaSize(socket) {
     */
   });
 }
-
 function getHeapBase (socket) {
+  /* Finds the base address of the heap from the malloc_par struct. */
   return new Promise((resolve, reject) => {
     if (!socket) {
       reject('No connection.');
     } else {
-      socket.emit('address_of_symbol', { symbol_name: 'mp_->sbrk_base' }, (data) => {
-        console.log('addr of heap base ', data.result.toString(16));
-        resolve(data.result);
+      // TODO: Make real
+      //socket.emit('address_of_symbol', { symbol_name: 'mp_->sbrk_base' }, (data) => {
+      /* TODO: Replace +72 with offsetOf(sbrk_whatever) */
+      socket.emit('evaluate_expression', { expression: '(unsigned long) (((void*)&mp_)+72)' }, (data) => {
+        console.log('addr of heap base ', parseInt(data.result, 10).toString(16));
+        resolve(parseInt(data.result, 10));
       });
     }
   });
 }
 
 function getTcacheBins (socket, addr) {
+  /* Returns the raw contents of the tcache bins */
   var tcache_addr = addr + (2 * ptrSize) + getConstants().tcache_max_bins;
   return new Promise((resolve, reject) => {
     if (!socket) {
@@ -686,6 +691,7 @@ function getTcacheBins (socket, addr) {
 }
 
 function getMainArenaContents(socket, addr, size) {
+  /* Gets the contents of the main arena */
   return new Promise((resolve, reject) => {
     if (!socket) {
       reject("No connection.");
@@ -736,6 +742,7 @@ function getVersionNumber (socket) {
 }
 
 const changeEndianness = string => {
+  /* Flip a bytestring order. Needed because gdb returns reversed (0x1337 -> 0x3713) */
   const result = [];
   let len = string.length - 2;
   while (len >= 0) {
@@ -744,8 +751,6 @@ const changeEndianness = string => {
   }
   return result.join("");
 };
-
-const roundAlloc = req => {};
 
 function getAllocSize(sk, retAddr) {
   /* Where retAddr is the addr returned from malloc */
@@ -760,6 +765,10 @@ function getAllocSize(sk, retAddr) {
 }
 
 function getContentsAt(sk, addr, size) {
+  /* Safety check, can probably be eliminated */
+  if (size < 16) {
+    size = 16;
+  }
   console.log("getting read_from_address with addr ", addr, " size ", size);
   return new Promise(resolve => {
     sk.emit("read_from_address", { size: size, address: addr }, data => {
@@ -769,11 +778,20 @@ function getContentsAt(sk, addr, size) {
 }
 
 function malloc (sk, st, data) {
+  /* handle malloc event on socket sk with state st and received data data */
   console.log('Got malloc');
   var retAddr = data['rax-after-call'];
   console.log('got addr ', retAddr);
   getAllocSize(sk, retAddr - ptrSize).then((allocSize) => {
     getContentsAt(sk, retAddr - (2 * ptrSize), allocSize).then((contents) => {
+      for (var group in state.groups) {
+        /* Remove node from a group if it's in one. TODO: this might be bugged */
+        if (state.groups[group].chunks.find(c => c.addr == retAddr)) {
+          var remidx = state.groups[group].chunks.findIndex(c => c.addr == retAddr);
+          state.groups[group].chunks.splice(remidx, 1);
+        }
+      }
+      /* Add chunk to inuse */
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
       var newChunk = condense(retAddr, contents, 'inuse_malloc_chunk', allocSize);
       inUseGroup.chunks.push({ id: newChunk.addr, group: 'inUse', label: JSON.stringify(newChunk, null, 2) });
@@ -784,11 +802,16 @@ function malloc (sk, st, data) {
   });
 }
 
+function scanTcacheBins(sk, addrs) {
+}
+
 function calloc (sk, st, data) {
 }
 function realloc (sk, st, data) {
 }
+
 function free (sk, st, data) {
+  /* Free is pretty wack */
   console.log('got free');
   var freedAddr = data['rdi-before-call'];
   console.log('freed ', freedAddr);
@@ -807,26 +830,45 @@ function free (sk, st, data) {
       getMainArenaAddr(sk).then((main_arena) => {
         getMainArenaSize(sk, main_arena).then((main_arena_size) => {
           getMainArenaContents(sk, main_arena, main_arena_size).then((main_arena_contents) => {
-            gMainArena = condense(main_arena, main_arena_contents.slice(8), 'malloc_state');
-            console.log(gMainArena);
             getHeapBase(sk).then((heap_base_addr) => {
+              /* We need to pull a bunch of info to do the calculation */
               derefAddr(sk, heap_base_addr).then((heap_base)  => {
                 getTcacheBins(sk, heap_base).then((tcache_bins) => {
-                  gTcache = condense(heap_base, tcache_bins, 'tcache_bins');
-                  console.log('got tcache bins: ', gTcache);
-                  if (gTcache.data.bins.includes(freedAddr)) {
-                    /* freed bin is in tcache */
-                    var tCacheGroup = state.groups.find(g => g.name === 'tcache');
-                    var newChunk = condense(freedAddr, contents, 'malloc_chunk');
-                    tCacheGroup.chunks.push({ id: newChunk.addr, group: 'tcache', label: JSON.stringify(newChunk, null, 2) });
-
-                  } else if (gMainArena.fastbinsY.includes(freedAddr)) {
-                    /* freed bin is in fastbin */
-                  } else {
-                    /* freed bin is in regular bins */
+                  /* clear */
+                  var tcache = state.groups.find(g => g.name === 'tcache');
+                  gMainArena = condense(main_arena, main_arena_contents.slice(8), 'malloc_state');
+                  var addrs = condense(heap_base, tcache_bins, 'tcache_bins').data.bins;
+                  console.log('tcache bins ', addrs);
+                  tcache.chunks.splice(0,tcache.chunks.length);
+                  var proms = [];
+                  var exAddr = {};
+                  for (var addr in addrs) {
+                    exAddr[addr] = addrs[addr];
+                    console.log(addrs);
+                    if (exAddr[addr] > 0) {
+                      var add = exAddr[addr].valueOf();
+                      console.log('examining tcache chunk at ', exAddr[addr]);
+                      proms.push(
+                        new Promise((resolve, reject) => {
+                          getAllocSize(sk, add - ptrSize).then((tcNodeSize) => {
+                            getContentsAt(sk, add - (2 * ptrSize), tcNodeSize).then((contents) => {
+                              console.log('got at ', add); 
+                              var tc_entry = condense(add, contents, 'malloc_chunk');
+                              console.log('pushing ', tc_entry);
+                              tcache.chunks.push({ id: tc_entry.addr, group: 'tcache', label: JSON.stringify(tc_entry, null, 2) });
+                              console.log('done, continuing');
+                              resolve();
+                            });
+                          })
+                        })
+                      );
+                    }
                   }
-                  redraw();
-                  sk.emit('continue_execution');
+                  /* TODO: This promise I think works now */
+                  Promise.all(proms).then(() => {
+                    redraw();
+                    sk.emit('continue_execution');
+                  });
                 });
               });
             });
