@@ -14,9 +14,9 @@ const gef = io.of("/gef");
 function redraw () {
   web.emit('clear');
   console.log('redrawing');
+  console.dir(state, { depth: 5});
   for (var group in state.groups) {
     group = state.groups[group];
-    console.log(group);
     /* Currently only draws inuse and tcache */
     if (group.name === 'inUse') {
       for (var chunk in group.chunks) {
@@ -29,8 +29,10 @@ function redraw () {
       }
     }
   }
+  console.dir(state, { depth: 5});
 }
 
+const inUseGroupIndex = 6;
 var state = {
   groups: [
     {
@@ -119,8 +121,12 @@ function addNodeToClient(node) {
   // Empty group case
   if (state.groups[groupIndex].chunks.length === 0) {
     // Add node to client state
-    state.groups[groupIndex].chunks.push(node);
+    // FIXME: WHY IS THIS CODE NEEDED
+    // ITS ALREADY IN TEH STATEATE IF REDRAW IS CALLED
+    //           state.groups[groupIndex].chunks.push(node);
     // Add node to client
+    //
+    console.log("NOOOOOO :(");
     web.emit("add-node", node);
     return;
   }
@@ -157,8 +163,11 @@ function addNodeToClient(node) {
   } else if (nodeIndex === state.groups[groupIndex].chunks.length) {
     // TODO: check if this is length or length - 1
     // Insert at tail and add connection from old tail to node
-    state.groups[groupIndex].chunks.push(node);
+    //         ITS ALREADY IN THE STATE WHEN REDRAW IS CALLED
+    //         state.groups[groupIndex].chunks.push(node);
     web.emit("add-node", node);
+    // FIXME: THIS IS A PROBLEM w/ 0 length lists, other sizes
+    /*
     web.emit(
       "connect-nodes",
       state.groups[groupIndex].chunks[
@@ -166,6 +175,7 @@ function addNodeToClient(node) {
       ].id,
       node.id
     );
+    */
     return;
   }
 
@@ -777,6 +787,10 @@ function getContentsAt(sk, addr, size) {
   });
 }
 
+function updateFreelists(sk) {
+  // TODO: UPDATE FREELISTS AFTER A MALLOC
+}
+
 function malloc (sk, st, data) {
   /* handle malloc event on socket sk with state st and received data data */
   console.log('Got malloc');
@@ -784,13 +798,14 @@ function malloc (sk, st, data) {
   console.log('got addr ', retAddr);
   getAllocSize(sk, retAddr - ptrSize).then((allocSize) => {
     getContentsAt(sk, retAddr - (2 * ptrSize), allocSize).then((contents) => {
-      for (var group in state.groups) {
-        /* Remove node from a group if it's in one. TODO: this might be bugged */
-        if (state.groups[group].chunks.find(c => c.addr == retAddr)) {
-          var remidx = state.groups[group].chunks.findIndex(c => c.addr == retAddr);
-          state.groups[group].chunks.splice(remidx, 1);
-        }
-      }
+      //for (var group in state.groups) {
+      //  /* Remove node from a group if it's in one. TODO: this might be bugged */
+      //  if (state.groups[group].chunks.find(c => c.addr == retAddr)) {
+      //    var remidx = state.groups[group].chunks.findIndex(c => c.addr == retAddr);
+      //    state.groups[group].chunks.splice(remidx, 1);
+      //  }
+      //}
+      updateFreelists(sk);
       /* Add chunk to inuse */
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
       var newChunk = condense(retAddr, contents, 'inuse_malloc_chunk', allocSize);
@@ -856,6 +871,14 @@ function free (sk, st, data) {
                               var tc_entry = condense(add, contents, 'malloc_chunk');
                               console.log('pushing ', tc_entry);
                               tcache.chunks.push({ id: tc_entry.addr, group: 'tcache', label: JSON.stringify(tc_entry, null, 2) });
+
+                              /* Remove node in use if it's in one.
+                               * TODO: Report wild free if not in one */
+                              if (state.groups[inUseGroupIndex].chunks.find(c => c.id == tc_entry.addr)) {
+                                var remidx = state.groups[inUseGroupIndex].chunks.findIndex(c => c.id == tc_entry.addr);
+                                state.groups[inUseGroupIndex].chunks.splice(remidx, 1);
+                              }
+
                               console.log('done, continuing');
                               resolve();
                             });
