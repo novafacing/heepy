@@ -7,6 +7,11 @@ var path = require("path");
 io.use(middleware);
 const web = io.of("/web");
 const gef = io.of("/gef");
+
+var nextChunkIdValue = 0;
+function nextChunkId() {
+  return nextChunkIdValue++;
+}
   
 /* Redraws the window by clearning and then re-adding the nodes we want to appear. 
 * Callbacks manage the state by adding or removing nodes from the state object
@@ -213,7 +218,8 @@ function jsonToClient(jsonObject) {
         return false;
       }
       web.emit("add-node", {
-        id: jsonObject.groups[i].chunks[j].address,
+        addr: jsonObject.groups[i].chunks[j].addr,
+        id: jsonObject.groups[i].chunks[j].id,
         group: name,
         label: label
       });
@@ -804,7 +810,7 @@ function malloc (sk, st, data) {
       /* Add chunk to inuse */
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
       var newChunk = condense(retAddr, contents, 'inuse_malloc_chunk', allocSize);
-      inUseGroup.chunks.push({ id: newChunk.addr, group: 'inUse', label: JSON.stringify(newChunk, null, 2) });
+      inUseGroup.chunks.push({ addr: newChunk.addr, id: nextChunkId(), group: 'inUse', label: JSON.stringify(newChunk, null, 2) });
       console.log(inUseGroup.chunks[inUseGroup.chunks.length - 1].data);
 
       updateFreelists(sk, () => {
@@ -852,7 +858,7 @@ function updateFreelists(sk, cb) {
                               console.log('got at ', add); 
                               var tc_entry = condense(add, contents, 'malloc_chunk');
                               console.log('pushing ', tc_entry);
-                              tcache.chunks.push({ id: tc_entry.addr, group: 'tcache', label: JSON.stringify(tc_entry, null, 2) });
+                              tcache.chunks.push({ addr: tc_entry.addr, id: nextChunkId(), group: 'tcache', label: JSON.stringify(tc_entry, null, 2) });
 
                               console.log('done, continuing');
                               resolve();
@@ -882,9 +888,9 @@ function free (sk, st, data) {
   getAllocSize(sk, freedAddr - ptrSize).then((allocSize) => {
     getContentsAt(sk, freedAddr - (2 * ptrSize), allocSize).then((contents) => {
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
-      if (inUseGroup.chunks.find(c => c.id == freedAddr)) {
+      if (inUseGroup.chunks.find(c => c.addr == freedAddr)) {
         /* remove from inUse */
-        var freedChunkIdx = inUseGroup.chunks.findIndex(c => c.id == freedAddr);
+        var freedChunkIdx = inUseGroup.chunks.findIndex(c => c.addr == freedAddr);
         console.log('freed chunk index ', freedChunkIdx);
         inUseGroup.chunks.splice(freedChunkIdx, 1);
       } else {
