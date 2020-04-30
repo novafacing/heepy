@@ -787,10 +787,6 @@ function getContentsAt(sk, addr, size) {
   });
 }
 
-function updateFreelists(sk) {
-  // TODO: UPDATE FREELISTS AFTER A MALLOC
-}
-
 function malloc (sk, st, data) {
   /* handle malloc event on socket sk with state st and received data data */
   console.log('Got malloc');
@@ -805,14 +801,16 @@ function malloc (sk, st, data) {
       //    state.groups[group].chunks.splice(remidx, 1);
       //  }
       //}
-      updateFreelists(sk);
       /* Add chunk to inuse */
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
       var newChunk = condense(retAddr, contents, 'inuse_malloc_chunk', allocSize);
       inUseGroup.chunks.push({ id: newChunk.addr, group: 'inUse', label: JSON.stringify(newChunk, null, 2) });
       console.log(inUseGroup.chunks[inUseGroup.chunks.length - 1].data);
-      redraw();
-      sk.emit('continue_execution');
+
+      updateFreelists(sk, () => {
+        redraw();
+        sk.emit('continue_execution');
+      });
     });
   });
 }
@@ -825,23 +823,7 @@ function calloc (sk, st, data) {
 function realloc (sk, st, data) {
 }
 
-function free (sk, st, data) {
-  /* Free is pretty wack */
-  console.log('got free');
-  var freedAddr = data['rdi-before-call'];
-  console.log('freed ', freedAddr);
-  getAllocSize(sk, freedAddr - ptrSize).then((allocSize) => {
-    getContentsAt(sk, freedAddr - (2 * ptrSize), allocSize).then((contents) => {
-      var inUseGroup = state.groups.find(g => g.name == 'inUse')
-      if (inUseGroup.chunks.find(c => c.id == freedAddr)) {
-        /* remove from inUse */
-        var freedChunkIdx = inUseGroup.chunks.findIndex(c => c.id == freedAddr);
-        console.log('freed chunk index ', freedChunkIdx);
-        inUseGroup.chunks.splice(freedChunkIdx, 1);
-      } else {
-        /* Whoof, exploit! add to freelist */
-      }
-      /* which freelist? tcache, largebin, smallbin? */
+function updateFreelists(sk, cb) {
       getMainArenaAddr(sk).then((main_arena) => {
         getMainArenaSize(sk, main_arena).then((main_arena_size) => {
           getMainArenaContents(sk, main_arena, main_arena_size).then((main_arena_contents) => {
@@ -872,13 +854,6 @@ function free (sk, st, data) {
                               console.log('pushing ', tc_entry);
                               tcache.chunks.push({ id: tc_entry.addr, group: 'tcache', label: JSON.stringify(tc_entry, null, 2) });
 
-                              /* Remove node in use if it's in one.
-                               * TODO: Report wild free if not in one */
-                              if (state.groups[inUseGroupIndex].chunks.find(c => c.id == tc_entry.addr)) {
-                                var remidx = state.groups[inUseGroupIndex].chunks.findIndex(c => c.id == tc_entry.addr);
-                                state.groups[inUseGroupIndex].chunks.splice(remidx, 1);
-                              }
-
                               console.log('done, continuing');
                               resolve();
                             });
@@ -889,14 +864,36 @@ function free (sk, st, data) {
                   }
                   /* TODO: This promise I think works now */
                   Promise.all(proms).then(() => {
-                    redraw();
-                    sk.emit('continue_execution');
+                    cb();
                   });
                 });
               });
             });
           });
         });
+      });
+}
+
+function free (sk, st, data) {
+  /* Free is pretty wack */
+  console.log('got free');
+  var freedAddr = data['rdi-before-call'];
+  console.log('freed ', freedAddr);
+  getAllocSize(sk, freedAddr - ptrSize).then((allocSize) => {
+    getContentsAt(sk, freedAddr - (2 * ptrSize), allocSize).then((contents) => {
+      var inUseGroup = state.groups.find(g => g.name == 'inUse')
+      if (inUseGroup.chunks.find(c => c.id == freedAddr)) {
+        /* remove from inUse */
+        var freedChunkIdx = inUseGroup.chunks.findIndex(c => c.id == freedAddr);
+        console.log('freed chunk index ', freedChunkIdx);
+        inUseGroup.chunks.splice(freedChunkIdx, 1);
+      } else {
+        /* Whoof, exploit! add to freelist */
+      }
+      /* which freelist? tcache, largebin, smallbin? */
+      updateFreelists(sk, () => {
+        redraw();
+        sk.emit('continue_execution');
       });
     });
   });
