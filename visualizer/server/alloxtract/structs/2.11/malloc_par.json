@@ -1,58 +1,72 @@
 {
   "trim_threshold": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 0
   },
   "top_pad": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 8
   },
   "mmap_threshold": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 16
   },
   "arena_test": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 24
   },
   "arena_max": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 32
   },
   "n_mmaps": {
     "size": 4,
-    "count": 1
+    "count": 1,
+    "offset": 40
   },
   "n_mmaps_max": {
     "size": 4,
-    "count": 1
+    "count": 1,
+    "offset": 44
   },
   "max_n_mmaps": {
     "size": 4,
-    "count": 1
+    "count": 1,
+    "offset": 48
   },
   "no_dyn_threshold": {
     "size": 4,
-    "count": 1
+    "count": 1,
+    "offset": 52
   },
   "pagesize": {
     "size": 4,
-    "count": 1
+    "count": 1,
+    "offset": 56
   },
   "mmapped_mem": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 60
   },
   "max_mmapped_mem": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 68
   },
   "max_total_mem": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 76
   },
   "sbrk_base": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 84
   }
 }

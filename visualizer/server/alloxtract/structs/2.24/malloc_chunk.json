@@ -1,26 +1,33 @@
 {
   "prev_size": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 0
   },
   "size": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 8
   },
   "fd": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "data": true,
+    "offset": 16
   },
   "bk": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 24
   },
   "fd_nextsize": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 32
   },
   "bk_nextsize": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 40
   }
 }

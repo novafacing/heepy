@@ -8015,7 +8015,7 @@ EOF: 1,
             return offset;
           }
 
-          offset += structure[prop].size;
+          offset += structure[prop].size * structure[prop].count;
         }
 
         return offset;

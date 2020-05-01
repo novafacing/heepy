@@ -1,0 +1,17 @@
+{
+  "prev_size": {
+    "size": 8,
+    "count": 1,
+    "offset": 0
+  },
+  "size": {
+    "size": 8,
+    "count": 1,
+    "offset": 8
+  },
+  "data": {
+    "size": 32,
+    "count": 1,
+    "offset": 16
+  }
+}

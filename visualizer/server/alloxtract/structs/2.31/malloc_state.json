@@ -1,54 +1,67 @@
 {
   "mutex": {
     "size": 4,
-    "count": 1
+    "count": 1,
+    "offset": 0
   },
   "flags": {
     "size": 4,
-    "count": 1
+    "count": 1,
+    "offset": 4
   },
   "have_fastchunks": {
     "size": 4,
-    "count": 1
+    "count": 1,
+    "offset": 8
   },
   "fastbinsY": {
     "size": 8,
-    "count": 10
+    "count": 10,
+    "offset": 12
   },
   "top": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 92
   },
   "last_remainder": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 100
   },
   "bins": {
     "size": 8,
-    "count": 254
+    "count": 254,
+    "offset": 108
   },
   "binmap": {
     "size": 4,
-    "count": 4
+    "count": 4,
+    "offset": 2140
   },
   "next": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 2156
   },
   "next_free": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 2164
   },
   "attached_threads": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 2172
   },
   "system_mem": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 2180
   },
   "max_system_mem": {
     "size": 8,
-    "count": 1
+    "count": 1,
+    "offset": 2188
   }
 }

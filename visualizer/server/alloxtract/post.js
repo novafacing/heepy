@@ -46,7 +46,8 @@ let getMallocChunkJson = (glibcVersion, versionsDir) => {
     sdrl = sdrl[0];
     if ('typedef_name' in sql) {
       /* userdefined_type x | userdefined_type * x | userdefined_type x[8 * y] */
-      output[sliceObject('identifier', sdrl)] = {
+      let name = sliceObject('identifier', sdrl);
+      output[name] = {
         size: ptrsize,
         count: 1
       }
@@ -55,9 +56,13 @@ let getMallocChunkJson = (glibcVersion, versionsDir) => {
       let indeclarator = sliceObject('declarator', sdrl)
       if ('pointer' in indeclarator) {
         /* Easy, we can use ptrsize */
-        output[sliceObject('identifier', indeclarator)] = {
+        let name = sliceObject('identifier', indeclarator);
+        output[name] = {
           size: ptrsize,
           count: 1
+        }
+        if (name === 'fd') {
+          output['fd'].data = true;
         }
       } else {
         /* MUCH harder, we have something like struct malloc_chunk x[y]. We need to know the size of malloc_chunk. */
@@ -238,7 +243,6 @@ let getTcachePerThreadJson = (glibcVersion, versionsDir) => {
   let stateRawJson = JSON.parse(fs.readFileSync(path.join(versionPath, 'tcache_perthread_struct.c.json'), { encoding: 'utf8' }));
 
   let sdl = sliceObject('struct_declaration_list', stateRawJson);
-  console.log(JSON.stringify(sdl, null, 2));
   sdl.forEach((decl) => {
     /* Check for the mutex */
     let sql = decl.specifier_qualifier_list;

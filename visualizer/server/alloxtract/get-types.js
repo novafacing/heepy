@@ -7,6 +7,8 @@ const shell = require('shelljs')
 const alloxtract = require('./alloxtract')
 const process = require('process')
 const post = require('./post.js')
+const arch = require('arch');
+var ptrsize = (arch() === 'x86') ? 4 : 8;
 
 const dir = path.join(__dirname, 'glibc')
 
@@ -108,6 +110,51 @@ function flattenMallocStruct(structure, defines) {
   }
 }
 
+var freeToInuseMalloc = (structure) => {
+  structure = JSON.parse(structure);
+  let freechunk = {};
+  let atdata = false;
+  let datasize = 0;
+  let lastoffset = 0;
+  for (prop in structure) {
+    if ('data' in structure[prop]) {
+      atdata = true;
+    }
+    if (atdata) {
+      datasize += structure[prop].size * structure[prop].count;
+    }
+    if (!atdata) {
+      freechunk[prop] = structure[prop];
+      lastoffset = freechunk[prop].offset;
+    }
+  }
+  freechunk.data = {
+    size: datasize,
+    count: 1,
+    offset: lastoffset + ptrsize
+  }
+  return JSON.stringify(freechunk, null, 2);
+}
+
+var addOffs = (structure) => {
+  structure = JSON.parse(structure);
+  for (prop in structure) {
+    structure[prop].offset = offsetOf(structure, prop);
+  }
+  return JSON.stringify(structure, null, 2);
+}
+
+var offsetOf = (structure, name) => {
+    var offset = 0;
+    for (prop in structure) {
+        if (prop === name) {
+            return offset;
+        }
+        offset += structure[prop].size * structure[prop].count;
+    }
+    return offset;
+}
+
 async function getVersionMallocSource (release) {
   /* Check out release branch */
   await git.checkout({
@@ -146,21 +193,29 @@ async function getVersionMallocSource (release) {
         fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.c.json'), jsonDef);
         fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.defines.json'), defines);
         //var hrStructure = flattenMallocStruct(jsonDef, defines);
+        let structure = undefined;
         switch(def) {
           case 'malloc_chunk':
-            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), post.getMallocChunkJson(extractVersionNumber(release), versionsDir));
+            structure = addOffs(post.getMallocChunkJson(extractVersionNumber(release), versionsDir));
+            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), structure);
+            structure = freeToInuseMalloc(structure);
+            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '_inuse' + '.json'), structure);
             break;
           case 'malloc_state':
-            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), post.getMallocStateJson(extractVersionNumber(release), path.join(versionsDir, extractVersionNumber(release))));
+            structure = addOffs(post.getMallocStateJson(extractVersionNumber(release), path.join(versionsDir, extractVersionNumber(release))));
+            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), structure);
             break;
           case 'malloc_par':
-            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), post.getMallocParJson(extractVersionNumber(release), path.join(versionsDir, extractVersionNumber(release))));
+            structure = addOffs(post.getMallocParJson(extractVersionNumber(release), path.join(versionsDir, extractVersionNumber(release))));
+            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), structure);
             break;
           case 'tcache_perthread_struct':
-            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), post.getTcachePerThreadJson(extractVersionNumber(release), path.join(versionsDir, extractVersionNumber(release))));
+            structure = addOffs(post.getTcachePerThreadJson(extractVersionNumber(release), path.join(versionsDir, extractVersionNumber(release))));
+            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), structure);
             break;
           case 'tcache_entry':
-            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), post.getTcacheEntryJson(extractVersionNumber(release), path.join(versionsDir, extractVersionNumber(release))));
+            structure = addOffs(post.getTcacheEntryJson(extractVersionNumber(release), path.join(versionsDir, extractVersionNumber(release))));
+            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), structure);
             break;
         }
       }
