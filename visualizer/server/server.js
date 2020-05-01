@@ -7,6 +7,10 @@ var path = require("path");
 io.use(middleware);
 const web = io.of("/web");
 const gef = io.of("/gef");
+var structsPath = path.join('./', 'alloxtract', 'structs');
+if (!fs.existsSync(structsPath)) {
+  throw 'You need to run alloxtract!'
+}
 
 var nextChunkIdValue = 0;
 function nextChunkId() {
@@ -349,32 +353,7 @@ function tcacheBins() {
  */
 
 function mallocChunk() {
-  return {
-    mchunk_prev_size: {
-      size: ptrSize,
-      count: 1
-    },
-    mchunk_size: {
-      size: ptrSize,
-      count: 1
-    },
-    fd: {
-      size: ptrSize,
-      count: 1
-    },
-    bk: {
-      size: ptrSize,
-      count: 1
-    },
-    fd_nextsize: {
-      size: ptrSize,
-      count: 1
-    },
-    bk_nextsize: {
-      size: ptrSize,
-      count: 1
-    }
-  };
+  return JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_chunk.json'), { encoding: 'utf8' }));
 }
 
 /* TODO: This will be replaced with a version that takes the glibc version
@@ -382,21 +361,7 @@ function mallocChunk() {
  */
 
 function inUseMallocChunk(totalSize) {
-  console.log("inuse chunk with size ", totalSize);
-  return {
-    mchunk_prev_size: {
-      size: ptrSize,
-      count: 1
-    },
-    mchunk_size: {
-      size: ptrSize,
-      count: 1
-    },
-    data: {
-      size: totalSize - 2 * ptrSize,
-      count: 1
-    }
-  };
+  return JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_chunk_inuse.json'), { encoding: 'utf8' }));
 }
 
 /* TODO: This will be replaced with a version that takes the glibc version
@@ -404,61 +369,7 @@ function inUseMallocChunk(totalSize) {
  */
 
 function mallocState() {
-  var constants = getConstants();
-  return {
-    mutex: {
-      size: ptrSize / 2,
-      count: 1
-    },
-    flags: {
-      size: ptrSize / 2,
-      count: 1
-    },
-    have_fastchunks: {
-      size: ptrSize / 2,
-      count: 1
-    },
-    fastbinsY: {
-      size: ptrSize,
-      count: constants.nfastbins
-    },
-    top: {
-      size: ptrSize,
-      count: 1
-    },
-    last_remainder: {
-      size: ptrSize,
-      count: 1
-    },
-    bins: {
-      size: ptrSize,
-      count: constants.nbins * 2 - 2
-    },
-    binmap: {
-      size: ptrSize / 2,
-      count: constants.binmapsize
-    },
-    next: {
-      size: ptrSize,
-      count: 1
-    },
-    next_free: {
-      size: ptrSize,
-      count: 1
-    },
-    attached_threads: {
-      size: ptrSize,
-      count: 1
-    },
-    system_mem: {
-      size: ptrSize,
-      count: 1
-    },
-    max_system_mem: {
-      size: ptrSize,
-      count: 1
-    }
-  };
+  return JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_state.json'), { encoding: 'utf8' }));
 }
 
 /* Takes raw data and a JSON prototype (defined above)
