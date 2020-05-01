@@ -6,6 +6,7 @@ const cliProgress = require('cli-progress')
 const shell = require('shelljs')
 const alloxtract = require('./alloxtract')
 const process = require('process')
+const post = require('./post.js')
 
 const dir = path.join(__dirname, 'glibc')
 
@@ -119,12 +120,19 @@ async function getVersionMallocSource (release) {
   }).then(() => {
     var versionDef = buildDef(path.join(dir, 'malloc'))
     var versionsDir = path.join(__dirname, 'defs')
+    var finalJsonsDir = path.join(__dirname, 'structs')
 
     if (!fs.existsSync(versionsDir)) {
       fs.mkdirSync(versionsDir)
     }
+    if (!fs.existsSync(finalJsonsDir)) {
+      fs.mkdirSync(finalJsonsDir);
+    }
     if (!fs.existsSync(path.join(versionsDir, extractVersionNumber(release)))) {
       fs.mkdirSync(path.join(versionsDir, extractVersionNumber(release)))
+    }
+    if (!fs.existsSync(path.join(finalJsonsDir, extractVersionNumber(release)))) {
+      fs.mkdirSync(path.join(finalJsonsDir, extractVersionNumber(release)))
     }
     console.log('Getting glibc definitions for ', release)
     fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), 'malloc' + '.c'), versionDef['malloc'])
@@ -132,13 +140,29 @@ async function getVersionMallocSource (release) {
       /*TODO:  Feed the parser our struct and output JSON from it */
       fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.c'), versionDef[def])
       if (def !== 'malloc') {
-        var structJson = alloxtract.generateJson(versionDef[def], versionDef['malloc']);
+        var structJson = alloxtract.generateJson(versionDef[def], versionDef['malloc'], extractVersionNumber(release));
         var jsonDef = JSON.stringify(structJson.struct, null, 2);
         var defines = JSON.stringify(structJson.defs, null, 2);
         fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.c.json'), jsonDef);
         fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.defines.json'), defines);
         //var hrStructure = flattenMallocStruct(jsonDef, defines);
-
+        switch(def) {
+          case 'malloc_chunk':
+            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), post.getMallocChunkJson(extractVersionNumber(release), versionsDir));
+            break;
+          case 'malloc_state':
+            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), post.getMallocStateJson(extractVersionNumber(release), path.join(versionsDir, extractVersionNumber(release))));
+            break;
+          case 'malloc_par':
+            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), post.getMallocParJson(extractVersionNumber(release), path.join(versionsDir, extractVersionNumber(release))));
+            break;
+          case 'tcache_perthread_struct':
+            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), post.getTcachePerThreadJson(extractVersionNumber(release), path.join(versionsDir, extractVersionNumber(release))));
+            break;
+          case 'tcache_entry':
+            fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), def + '.json'), post.getTcacheEntryJson(extractVersionNumber(release), path.join(versionsDir, extractVersionNumber(release))));
+            break;
+        }
       }
     }
   })

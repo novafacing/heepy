@@ -4,8 +4,16 @@ var typedefs = require('./parsers/typedefs').parser
 var defines = require('./parsers/defines').parser
 var fs = require('fs')
 var path = require('path')
+var arch = require('arch')
 
-function generateJson (struct, fullmalloc) {
+function generateJson (struct, fullmalloc, libc) {
+  if (arch() === 'x86') {
+    c11.yy.ptrsize = 0x4;
+  } else if (arch() === 'x64') {
+    c11.yy.ptrsize = 0x8;
+  }
+  c11.yy.libc = libc;
+  c11.yy.structpath = path.join(__dirname, 'structs');
   c11.yy.types = []
   c11.yy.enumConstants = []
   var fullmallocPreprocessed = defines.parse(fullmalloc);
@@ -20,6 +28,7 @@ function generateJson (struct, fullmalloc) {
     defs: c11.yy.defines
   };
 }
+
 function sliceObject(obj, key) {
 var value;
   Object.keys(object).some(function(k) {
@@ -40,13 +49,10 @@ function getMallocChunkMemberType(decl) {
   for (var struct_declaration in decl) {
     if (struct_declaration.type == 'struct_declaration') {
       /* We have a valid declaration we want to include in the proto */
-
     }
-  }
-}
 
-var szmap = {
-  
+    
+  }
 }
 
 function getMallocStateMemberType(decl) {
@@ -56,8 +62,6 @@ function getMallocStateMemberType(decl) {
       /* We have a valid declaration we want to include in the proto */
       var sql = struct_declaration.specifier_qualifier_list;
       var sdl = struct_declaration.struct_declarator_list;
-
-
 
     }
   }
@@ -77,14 +81,14 @@ function protoJsonMallocChunk(struct, defines, size) {
 
 
 exports.main = function (args) {
-  if (!args[1] || !args[2]) {
+  if (!args[1] || !args[2] || !args[3]) {
     console.log('Usage:', path.basename(args[0]) + ' FILE MALLOCFILE')
     process.exit(1)
   }
   var source = fs.readFileSync(path.normalize(args[1]), 'utf8')
   var mallocSource = fs.readFileSync(path.normalize(args[2]), 'utf8')
 
-  var dst = generateJson(source, mallocSource)
+  var dst = generateJson(source, mallocSource, args[3])
   console.log('parser output:\n\n', {
     type: typeof dst,
     value: dst

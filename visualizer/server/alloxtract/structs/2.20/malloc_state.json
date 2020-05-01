@@ -1,0 +1,46 @@
+{
+  "mutex": {
+    "size": 4,
+    "count": 1
+  },
+  "flags": {
+    "size": 4,
+    "count": 1
+  },
+  "fastbinsY": {
+    "size": 8,
+    "count": 10
+  },
+  "top": {
+    "size": 8,
+    "count": 1
+  },
+  "last_remainder": {
+    "size": 8,
+    "count": 1
+  },
+  "bins": {
+    "size": 8,
+    "count": 254
+  },
+  "binmap": {
+    "size": 4,
+    "count": 4
+  },
+  "next": {
+    "size": 8,
+    "count": 1
+  },
+  "next_free": {
+    "size": 8,
+    "count": 1
+  },
+  "system_mem": {
+    "size": 8,
+    "count": 1
+  },
+  "max_system_mem": {
+    "size": 8,
+    "count": 1
+  }
+}
