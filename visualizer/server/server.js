@@ -20,12 +20,12 @@ function redraw () {
     /* Currently only draws inuse and tcache */
     if (group.name === 'inUse') {
       for (var chunk in group.chunks) {
-        addNodeToClient(group.chunks[chunk]);
+        addNodeToClient(group.chunks[chunk], true);
       }
     }
     if (group.name === 'tcache') {
       for (var chunk in group.chunks) {
-        addNodeToClient(group.chunks[chunk]);
+        addNodeToClient(group.chunks[chunk], true);
       }
     }
   }
@@ -78,7 +78,11 @@ function initClient(numGroups) {
   // Initialize network
 }
 
-function addNodeToClient(node) {
+function addNodeToClient(node, redraw) {
+  if(typeof(redraw) == undefined){
+    redraw = false;
+  }
+
   // Adds node to client and stores in order state on server.
   // node is an object in the form:
   // {
@@ -118,8 +122,10 @@ function addNodeToClient(node) {
 
   // Empty group case
   if (state.groups[groupIndex].chunks.length === 0) {
-    // Add node to client state
-    state.groups[groupIndex].chunks.push(node);
+    if(!redraw) {
+      // Add node to client state
+      state.groups[groupIndex].chunks.push(node);
+    }
     // Add node to client
     web.emit("add-node", node);
     return;
@@ -145,8 +151,10 @@ function addNodeToClient(node) {
   // Check case 2 if nodeIndex is first or last of list
   console.log("Final nodeIndex: ", nodeIndex);
   if (nodeIndex === 0) {
-    // Insert at head and add connection from node to old head
-    state.groups[groupIndex].chunks.splice(0, 0, node);
+    if(!redraw) {
+      // Insert at head and add connection from node to old head
+      state.groups[groupIndex].chunks.splice(0, 0, node);
+    }
     web.emit("add-node", node);
     web.emit(
       "connect-nodes",
@@ -156,8 +164,10 @@ function addNodeToClient(node) {
     return;
   } else if (nodeIndex === state.groups[groupIndex].chunks.length) {
     // TODO: check if this is length or length - 1
-    // Insert at tail and add connection from old tail to node
-    state.groups[groupIndex].chunks.push(node);
+    if(!redraw) {
+      // Insert at tail and add connection from old tail to node
+      state.groups[groupIndex].chunks.push(node);
+    }
     web.emit("add-node", node);
     web.emit(
       "connect-nodes",
@@ -176,8 +186,10 @@ function addNodeToClient(node) {
   let next = state.groups[groupIndex].chunks[nodeIndex];
   web.emit("disconnect-nodes", prev.id, next.id);
 
-  // Add new node
-  state.groups[groupIndex].chunks.splice(nodeIndex, 0, node);
+  if(!redraw){
+    // Add new node
+    state.groups[groupIndex].chunks.splice(nodeIndex, 0, node);
+  }
   web.emit("add-node", node);
   web.emit("connect-nodes", prev.id, node.id);
   web.emit("connect-nodes", node.id, next.id);
