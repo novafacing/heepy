@@ -37,6 +37,9 @@ WS  [ \t\v\n\f]
 ";"                                     %{
                                             return ';';
                                         %}
+'*'                                     %{
+                                            return '*';
+                                        %}
 "typedef"                               %{
                                             return 'TYPEDEF';
                                         %}
@@ -56,7 +59,7 @@ WS  [ \t\v\n\f]
 goal
     : 
     | typedef_statements external_tokens { 
-        $$ = Array.from(new Set($1));
+        $$ = $1;
     }
     ;
 
@@ -64,6 +67,7 @@ external_token
     : '{'
     | '}'
     | ';'
+    | '*'
     | IDENTIFIER {
     }
     ;
@@ -80,37 +84,37 @@ typedef_statements
     }
     | typedef_statement {
         $$ = new Array();
-        $$.push(...$1);
+        $$.push($1);
     }
     | typedef_statements external_tokens typedef_statement {
         $$ = $1;
-        $$.push(...$3);
+        $$.push($3);
     }
         
     ;
 
 typedef_statement
     : TYPEDEF top_level_type_names IDENTIFIER ';' {
-        if ($2.length >= 1 && $2[0] === 'struct') {
-            $$ = new Array();
-        } else {
-            $$ = $2;
+        var ptr = $2.includes('*');
+
+        $$ = {
+            type: $2.filter((val, idx, arr) => val !== '*'),
+            pointer: ptr,
+            id: $3
         }
-        $$.push($3);
     }
     ;
 
 top_level_type_names
     : {
+    }
+    | top_level_type_name {
         $$ = new Array();
+        $$.push($1);
     }
     | top_level_type_names top_level_type_name {
         $$ = $1;
-        $$.push(...$2);
-    }
-    | top_level_type_names top_level_type_name {
-        $$ = $1;
-        $$.push(...$2);
+        $$.push($2);
     }
     ;
 
@@ -118,9 +122,11 @@ top_level_type_name
     : '{' nested_type_names '}' {
         $$ = $2;
     }
+    | '*' {
+        $$ = $1;
+    }
     | IDENTIFIER {
-        $$ = new Array();
-        $$.push($1);
+        $$ = $1;
     }
     ;
 
@@ -130,7 +136,7 @@ nested_type_names
     }
     | nested_type_names nested_type_name {
         $$ = $1;
-        $$.push(...$2);
+        $$.push($2);
 
     }
     ;
@@ -140,6 +146,10 @@ nested_type_name
         $$ = $2;
     }
     | IDENTIFIER {
+        $$ = new Array();
+        $$.push($1);
+    }
+    | '*' {
         $$ = new Array();
         $$.push($1);
     }

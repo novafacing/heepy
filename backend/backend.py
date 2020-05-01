@@ -95,9 +95,11 @@ def read_from_address(data):
         data
     )
 
+    # TODO: Is this try/catch fine? Should it be around all gdbmi.writes?
     result = gdbmi.write(
         "-data-read-memory-bytes " + str(hex(data["address"])) + " " + str(data["size"])
     )
+
     value = result[0]["payload"]["memory"][0]["contents"]
 
     print("Read {} from address".format(value))
@@ -120,6 +122,7 @@ def address_of_symbol(data):
 def continue_execution():
     print("Continuing execution")
     response = gdbmi.write("-exec-continue")
+
     if (
         response[-1]["message"] == "stopped"
         and response[-1]["payload"].get("reason", None) == "exited-normally"
@@ -154,7 +157,7 @@ def continue_execution():
 
     bp_at = None
     print_at = None
-    print(response)
+    #print(response)
 
     for i, line in enumerate(response):
         if line["message"] == "breakpoint-modified":

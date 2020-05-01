@@ -1,0 +1,66 @@
+{
+  "trim_threshold": {
+    "size": 8,
+    "count": 1
+  },
+  "top_pad": {
+    "size": 8,
+    "count": 1
+  },
+  "mmap_threshold": {
+    "size": 8,
+    "count": 1
+  },
+  "arena_test": {
+    "size": 8,
+    "count": 1
+  },
+  "arena_max": {
+    "size": 8,
+    "count": 1
+  },
+  "n_mmaps": {
+    "size": 4,
+    "count": 1
+  },
+  "n_mmaps_max": {
+    "size": 4,
+    "count": 1
+  },
+  "max_n_mmaps": {
+    "size": 4,
+    "count": 1
+  },
+  "no_dyn_threshold": {
+    "size": 4,
+    "count": 1
+  },
+  "mmapped_mem": {
+    "size": 8,
+    "count": 1
+  },
+  "max_mmapped_mem": {
+    "size": 8,
+    "count": 1
+  },
+  "sbrk_base": {
+    "size": 8,
+    "count": 1
+  },
+  "tcache_bins": {
+    "size": 8,
+    "count": 1
+  },
+  "tcache_max_bytes": {
+    "size": 8,
+    "count": 1
+  },
+  "tcache_count": {
+    "size": 8,
+    "count": 1
+  },
+  "tcache_unsorted_limit": {
+    "size": 8,
+    "count": 1
+  }
+}

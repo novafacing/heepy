@@ -3,10 +3,68 @@
 %options easy_keyword_rules
 
 %{
+    var fs = require('fs');
+    var path = require('path');
+
+    var mallocAlignment = () => {
+        return 2 * yy.ptrsize;
+    }
+
+    var mallocAlignMask = () => {
+        return mallocAlignment() - 1;
+    }
+
+    var offsetOf = (structure, name) => {
+        var offset = 0;
+        for (prop in structure) {
+            if (prop === name) {
+                return offset;
+            }
+            offset += structure[prop].size;
+        }
+        return offset;
+    }
+
+    var minChunkSize = () => {
+        var mallocChunk = JSON.parse(fs.readFileSync(path.join(yy.structpath, yy.libc, 'malloc_chunk.json'), { encoding: 'utf8' }));
+        return offsetOf(mallocChunk, 'fd_nextsize');
+    }
+
+    var minSize = () => {
+        return (((minChunkSize() + mallocAlignMask()) & ~mallocAlignMask()));
+    }
+
+    var sizeSz = () => {
+        return yy.ptrsize;
+    }
+
+    var maxFastSize = () => {
+        return (80 * sizeSz() / 4);
+    }
+
+    var request2size = (req) => {
+        return (((req) + sizeSz() + mallocAlignMask() < minSize()) ? minSize() : ((req) + sizeSz() + mallocAlignMask()) & ~mallocAlignMask())
+    }
+    
+    var bitsPerMap = () => {
+        return (1 << yy.defines.BINMAPSHIFT);
+    }
+    var fastbinIndex = (size) => {
+        return (((size) >> (yy.ptrsize == 8 ? 4 : 3)) - 2);
+    }
     yy.debug = (token) => {
         // console.log(token);
         return;
     };
+    yy.special = {
+        'NFASTBINS': () => {
+            return fastbinIndex(request2size(maxFastSize())) + 1;
+            
+        },
+        'BINMAPSIZE': () => {
+            return (yy.defines.NBINS / bitsPerMap());
+        }
+    }
 %}
 
 O   [0-7]
@@ -466,22 +524,19 @@ WS  [ \t\v\n\f]
 
 primary_expression
 	: IDENTIFIER {
-        $$ = {
-            type: 'primary_expression',
-            identifier: $1
-        };
+        if ($1 in yy.special) {
+            $$ =  yy.special[$1]();
+        } else if ($1 in yy.defines) {
+            $$ = yy.defines[$1];
+        } else {
+            $$ = $1;
+        }
     }
 	| constant {
-        $$ = {
-            type: 'primary_expression',
-            constant: $1
-        };
+        $$ = $1;
     }
 	| string {
-        $$ = {
-            type: 'primary_expression',
-            string: $1
-        };
+        $$ = $1;
     }
 	| '(' expression ')' {
         $$ = {
@@ -499,22 +554,13 @@ primary_expression
 
 constant
 	: I_CONSTANT {
-        $$ = {
-            type: 'constant',
-            'i_constant': $1
-        };
+        $$ = $1;
     }
 	| F_CONSTANT {
-        $$ = {
-            type: 'constant',
-            'f_constant': $1
-        };
+        $$ = $1;
     }
 	| ENUMERATION_CONSTANT {
-        $$ = {
-            type: 'constant',
-            'enumeration_constant': $1
-        };
+        $$ = $1;
     }
 	;
 
@@ -529,16 +575,10 @@ enumeration_constant		/* before it has been defined as such */
 
 string
 	: STRING_LITERAL {
-        $$ = {
-            type: 'string',
-            'string_literal': $1
-        };
+        $$ = $1;
     }
 	| FUNC_NAME {
-        $$ = {
-            type: 'string',
-            'func_name': $1
-        };
+        $$ = $1;
     }
 	;
 
@@ -586,10 +626,7 @@ generic_association
 
 postfix_expression
 	: primary_expression {
-        $$ = {
-            type: 'postfix_expression',
-            'primary_expression': $1
-        };
+        $$ = $1;
     }
 	| postfix_expression '[' expression ']' {
         $$ = {
@@ -765,36 +802,21 @@ cast_expression
     }
 	;
 
+/* We can't operate on values we don't know for this use case (alloxtract).
+ * replace with something else for any other use case though!
+ */
 multiplicative_expression /* TODO: Add * / % */
 	: cast_expression {
         $$ = $1;
     }
 	| multiplicative_expression '*' cast_expression {
-        $$ = {
-            type: 'multiplicative_expression',
-            'multiplicative_expression': $1,
-            multiply: true,
-            mod: false,
-            'cast_expression': $3
-        };
+        $$ = $1 * $3;
     }
 	| multiplicative_expression '/' cast_expression {
-        $$ = {
-            type: 'multiplicative_expression',
-            'multiplicative_expression': $1,
-            multiply: false,
-            mod: false,
-            'cast_expression': $3
-        };
+        $$ = $1 / $3;
     }
 	| multiplicative_expression '%' cast_expression {
-        $$ = {
-            type: 'multiplicative_expression',
-            'multiplicative_expression': $1,
-            multiply: false,
-            mod: true,
-            'cast_expression': $3
-        };
+        $$ = $1 % $3;
     }
 	;
 
@@ -803,20 +825,10 @@ additive_expression /* TODO: Add +- */
         $$ = $1;
     }
 	| additive_expression '+' multiplicative_expression {
-        $$ = {
-            type: 'additive_expression',
-            'additive_expression': $1,
-            add: true,
-            'multiplicative_expression': $3
-        };
+        $$ = $1 + $3;
     }
 	| additive_expression '-' multiplicative_expression {
-        $$ = {
-            type: 'additive_expression',
-            'additive_expression': $1,
-            add: false,
-            'multiplicative_expression': $3
-        };
+        $$ = $1 - $3;
     }
 	;
 
@@ -825,20 +837,10 @@ shift_expression /* TODO: Add << >> */
         $$ = $1;
     }
 	| shift_expression LEFT_OP additive_expression {
-        $$ = {
-            type: 'shift_expression',
-            'shift_expression': $1,
-            left: true,
-            'additive_expression': $3
-        };
+        $$ = $1 << $3;
     }
 	| shift_expression RIGHT_OP additive_expression {
-        $$ = {
-            type: 'shift_expression',
-            'shift_expression': $1,
-            left: false,
-            'additive_expression': $3
-        };
+        $$ = $1 >> $3;
     }
 	;
 
@@ -909,11 +911,7 @@ and_expression
         $$ = $1;
     }
 	| and_expression '&' equality_expression {
-        $$ = {
-            type: 'and_expression',
-            'and_expression': $1,
-            'equality_expression': $3
-        };
+        $$ = $1 & $3;
     }
 	;
 
@@ -922,11 +920,7 @@ exclusive_or_expression
         $$ = $1;
     }
 	| exclusive_or_expression '^' and_expression {
-        $$ = {
-            type: 'exclusive_or_expression',
-            'exclusive_or_expression': $1,
-            'and_expression': $3
-        };
+        $$ = $1 ^ $3;
     }
 	;
 
@@ -935,11 +929,7 @@ inclusive_or_expression
         $$ = $1;
     }
 	| inclusive_or_expression '|' exclusive_or_expression {
-        $$ = {
-            type: 'inclusive_or_expression',
-            'inclusive_or_expression': $1,
-            'exclusive_or_expression': $3
-        };
+        $$ = $1 | $3;
     }
 	;
 
@@ -1081,10 +1071,7 @@ expression
 
 constant_expression
 	: conditional_expression {
-        $$ = {
-            type: 'constant_expression',
-            'conditional_expression': $1
-        };
+        $$ = $1;
     }
 	;
 
@@ -1355,7 +1342,7 @@ struct_or_union_specifier
         $$ = {
             type: 'struct_or_union_specifier',
             'struct_or_union': $1,
-            'struct_declaration_list': $3
+            'struct_declaration_list': $3.reverse()
         };
     }
 	| struct_or_union IDENTIFIER '{' struct_declaration_list '}' {
@@ -1363,7 +1350,7 @@ struct_or_union_specifier
             type: 'struct_or_union_specifier',
             'struct_or_union': $1,
             identifier: $2,
-            'struct_declaration_list': $4
+            'struct_declaration_list': $4.reverse()
         };
     }
 	| struct_or_union TYPEDEF_NAME '{' struct_declaration_list '}' {
@@ -1371,7 +1358,7 @@ struct_or_union_specifier
             type: 'struct_or_union_specifier',
             'struct_or_union': $1,
             identifier: $2,
-            'struct_declaration_list': $4
+            'struct_declaration_list': $4.reverse()
         };
     }
 	| struct_or_union IDENTIFIER {
@@ -1446,30 +1433,20 @@ struct_declaration
 
 specifier_qualifier_list
 	: type_specifier specifier_qualifier_list {
-        $$ = {
-            type: 'specifier_qualifier_list',
-            'type_specifier': $1,
-            'specifier_qualifier_list': $2
-        };
+        $$ = $2;
+        $$.unshift($1);
     }
 	| type_specifier {
-        $$ = {
-            type: 'specifier_qualifier_list',
-            'type_specifier': $1
-        };
+        $$ = new Array();
+        $$.push($1);
     }
 	| type_qualifier specifier_qualifier_list {
-        $$ = {
-            type: 'specifier_qualifier_list',
-            type_qualifier: $1,
-            'specifier_qualifier_list': $2
-        };
+        $$ = $1;
+        $$.unshift($1);
     }
 	| type_qualifier {
-        $$ = {
-            type: 'specifier_qualifier_list',
-            'type_qualifier': $1
-        };
+        $$ = new Array();
+        $$.push($1);
     }
 	;
 
@@ -1775,10 +1752,15 @@ parameter_declaration
 
 identifier_list
 	: IDENTIFIER {
+        $$ = new Array();
+        $$.push($1);
     }
 	| identifier_list ',' IDENTIFIER {
+        $$ = $1;
+        $$.push($3);
     }
     | ',' identifier_list {
+        $$ = $2;
     }
 	;
 

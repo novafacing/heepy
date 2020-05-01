@@ -1,0 +1,26 @@
+{
+  "prev_size": {
+    "size": 8,
+    "count": 1
+  },
+  "size": {
+    "size": 8,
+    "count": 1
+  },
+  "fd": {
+    "size": 8,
+    "count": 1
+  },
+  "bk": {
+    "size": 8,
+    "count": 1
+  },
+  "fd_nextsize": {
+    "size": 8,
+    "count": 1
+  },
+  "bk_nextsize": {
+    "size": 8,
+    "count": 1
+  }
+}
