@@ -90,6 +90,7 @@ var glibcVersion = 2.31;
 var ptrSize = 8;
 var gMainArena = {};
 var gTcache = {};
+var structures = {};
 
 server.listen(3000);
 
@@ -360,12 +361,23 @@ function tcacheBins() {
   };
 }
 
+function getStructSize(structure) {
+  let size = 0;
+  for (prop in structure) {
+    size += structure[prop].size * structure[prop].count;
+  }
+  return size;
+}
+
 /* TODO: This will be replaced with a version that takes the glibc version
  * and returns the correct chunk layout (in this format)
  */
 
 function mallocChunk() {
-  return JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_chunk.json'), { encoding: 'utf8' }));
+  if (!('malloc_chunk' in structures)) {
+    structures['malloc_chunk'] = JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_chunk.json'), { encoding: 'utf8' }));
+  }
+  return structures['malloc_chunk'];
 }
 
 /* TODO: This will be replaced with a version that takes the glibc version
@@ -373,15 +385,28 @@ function mallocChunk() {
  */
 
 function inUseMallocChunk(totalSize) {
-  return JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_chunk_inuse.json'), { encoding: 'utf8' }));
+  if (!('malloc_chunk_inuse' in structures)) {
+    structures['malloc_chunk_inuse'] = JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_chunk_inuse.json'), { encoding: 'utf8' }));
+  }
+  return structures['malloc_chunk_inuse'];
 }
 
 /* TODO: This will be replaced with a version that takes the glibc version
  * and returns the correct chunk layout (in this format)
  */
 
+function mallocPar() {
+  if (!('malloc_par' in structures)) {
+    structures['malloc_par'] = JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_par.json'), { encoding: 'utf8' }));
+  }
+  return structures['malloc_par'];
+}
+
 function mallocState() {
-  return JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_state.json'), { encoding: 'utf8' }));
+  if (!('malloc_state' in structures)) {
+    structures['malloc_state'] = JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_state.json'), { encoding: 'utf8' }));
+  }
+  return structures['malloc_state'];
 }
 
 /* Takes raw data and a JSON prototype (defined above)
@@ -607,7 +632,8 @@ function getMainArenaSize(socket) {
   return new Promise((resolve, reject) => {
     /* Gets the sizeof(main_arena) value */
     /* TODO: this should end up being calculated from C */
-    resolve(2200);
+
+    resolve(getStructSize(mallocState()));
     /*
       // TODO: Make real
     if (!socket) {
@@ -629,9 +655,10 @@ function getHeapBase(socket) {
       // TODO: Make real
       //socket.emit('address_of_symbol', { symbol_name: 'mp_->sbrk_base' }, (data) => {
       /* TODO: Replace +72 with offsetOf(sbrk_whatever) */
+      let expr = '(unsigned long)(((void*)&mp_+' + mallocPar().sbrk_base.offset + ')';
       socket.emit(
         "evaluate_expression",
-        { expression: "(unsigned long) (((void*)&mp_)+72)" },
+        { expression: expr },
         data => {
           console.log(
             "addr of heap base ",
