@@ -374,8 +374,9 @@ function getStructSize(structure) {
  */
 
 function mallocChunk() {
+  let ver =  glibcVersion;
   if (!('malloc_chunk' in structures)) {
-    structures['malloc_chunk'] = JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_chunk.json'), { encoding: 'utf8' }));
+    structures['malloc_chunk'] = JSON.parse(fs.readFileSync(path.join(structsPath, ver, 'malloc_chunk.json'), { encoding: 'utf8' }));
   }
   return structures['malloc_chunk'];
 }
@@ -385,8 +386,9 @@ function mallocChunk() {
  */
 
 function inUseMallocChunk(totalSize) {
+  let ver =  glibcVersion;
   if (!('malloc_chunk_inuse' in structures)) {
-    structures['malloc_chunk_inuse'] = JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_chunk_inuse.json'), { encoding: 'utf8' }));
+    structures['malloc_chunk_inuse'] = JSON.parse(fs.readFileSync(path.join(structsPath, ver, 'malloc_chunk_inuse.json'), { encoding: 'utf8' }));
   }
   return structures['malloc_chunk_inuse'];
 }
@@ -396,15 +398,17 @@ function inUseMallocChunk(totalSize) {
  */
 
 function mallocPar() {
+  let ver =  glibcVersion;
   if (!('malloc_par' in structures)) {
-    structures['malloc_par'] = JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_par.json'), { encoding: 'utf8' }));
+    structures['malloc_par'] = JSON.parse(fs.readFileSync(path.join(structsPath, ver, 'malloc_par.json'), { encoding: 'utf8' }));
   }
   return structures['malloc_par'];
 }
 
 function mallocState() {
+  let ver =  glibcVersion;
   if (!('malloc_state' in structures)) {
-    structures['malloc_state'] = JSON.parse(fs.readFileSync(path.join(structsPath, glibcVersion, 'malloc_state.json'), { encoding: 'utf8' }));
+    structures['malloc_state'] = JSON.parse(fs.readFileSync(path.join(structsPath, ver, 'malloc_state.json'), { encoding: 'utf8' }));
   }
   return structures['malloc_state'];
 }
@@ -584,13 +588,18 @@ gef.on("connect", function(socket) {
   socket.on("heap_changed", data => {
     if (!initialized) {
       /* Initialize the global data structures */
-      glibcVersion = getVersionNumber(socket).then(vnum => {
+      getVersionNumber(socket).then(vnum => {
+        /* Try initializing */
+        glibcVersion = vnum;
+        mallocChunk();
+        inUseMallocChunk();
+        mallocState();
+        mallocPar();
         getPtrSize(socket).then(ptsize => {
           getMainArenaAddr(socket).then(main_arena => {
             getMainArenaSize(socket, main_arena).then(main_arena_size => {
               getMainArenaContents(socket, main_arena, main_arena_size).then(
                 main_arena_contents => {
-                  glibcVersion = vnum;
                   ptrSize = ptsize;
                   gMainArena = condense(
                     main_arena,
