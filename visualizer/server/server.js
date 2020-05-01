@@ -7,6 +7,11 @@ var path = require("path");
 io.use(middleware);
 const web = io.of("/web");
 const gef = io.of("/gef");
+
+var nextChunkIdValue = 0;
+function nextChunkId() {
+  return nextChunkIdValue++;
+}
   
 /* Redraws the window by clearning and then re-adding the nodes we want to appear. 
 * Callbacks manage the state by adding or removing nodes from the state object
@@ -14,9 +19,9 @@ const gef = io.of("/gef");
 function redraw () {
   web.emit('clear');
   console.log('redrawing');
+  console.dir(state, { depth: 6});
   for (var group in state.groups) {
     group = state.groups[group];
-    console.log(group);
     /* Currently only draws inuse and tcache */
     if (group.name === 'inUse') {
       for (var chunk in group.chunks) {
@@ -24,18 +29,22 @@ function redraw () {
       }
     }
     if (group.name === 'tcache') {
-      for (var chunk in group.chunks) {
-        addNodeToClient(group.chunks[chunk]);
+      for (var bin in group.bins) {
+        for (var chunk in group.bins[bin].chunks) {
+          addNodeToClient(group.bins[bin].chunks[chunk]);
+        }
       }
     }
   }
+  console.dir(state, { depth: 5});
 }
 
+const inUseGroupIndex = 6;
 var state = {
   groups: [
     {
       name: "tcache",
-      chunks: []
+      bins: []
     },
     {
       name: "fastbins",
@@ -116,11 +125,20 @@ function addNodeToClient(node) {
     if (state.groups[groupIndex].name === node.group) break;
   }
 
+  if (state.groups[groupIndex].name == 'tcache') {
+    web.emit("add-node", node);
+    return;
+  }
+
   // Empty group case
   if (state.groups[groupIndex].chunks.length === 0) {
     // Add node to client state
-    state.groups[groupIndex].chunks.push(node);
+    // FIXME: WHY IS THIS CODE NEEDED
+    // ITS ALREADY IN TEH STATEATE IF REDRAW IS CALLED
+    //           state.groups[groupIndex].chunks.push(node);
     // Add node to client
+    //
+    console.log("NOOOOOO :(");
     web.emit("add-node", node);
     return;
   }
@@ -157,8 +175,11 @@ function addNodeToClient(node) {
   } else if (nodeIndex === state.groups[groupIndex].chunks.length) {
     // TODO: check if this is length or length - 1
     // Insert at tail and add connection from old tail to node
-    state.groups[groupIndex].chunks.push(node);
+    //         ITS ALREADY IN THE STATE WHEN REDRAW IS CALLED
+    //         state.groups[groupIndex].chunks.push(node);
     web.emit("add-node", node);
+    // FIXME: THIS IS A PROBLEM w/ 0 length lists, other sizes
+    /*
     web.emit(
       "connect-nodes",
       state.groups[groupIndex].chunks[
@@ -166,6 +187,7 @@ function addNodeToClient(node) {
       ].id,
       node.id
     );
+    */
     return;
   }
 
@@ -203,7 +225,8 @@ function jsonToClient(jsonObject) {
         return false;
       }
       web.emit("add-node", {
-        id: jsonObject.groups[i].chunks[j].address,
+        addr: jsonObject.groups[i].chunks[j].addr,
+        id: jsonObject.groups[i].chunks[j].id,
         group: name,
         label: label
       });
@@ -626,6 +649,7 @@ gef.on("connect", function(socket) {
     }
   });
   console.log("Got connection from gef");
+  console.log("Continuing Execution ", new Error().lineNumber)
   socket.emit("continue_execution");
 });
 
@@ -784,20 +808,24 @@ function malloc (sk, st, data) {
   console.log('got addr ', retAddr);
   getAllocSize(sk, retAddr - ptrSize).then((allocSize) => {
     getContentsAt(sk, retAddr - (2 * ptrSize), allocSize).then((contents) => {
-      for (var group in state.groups) {
-        /* Remove node from a group if it's in one. TODO: this might be bugged */
-        if (state.groups[group].chunks.find(c => c.addr == retAddr)) {
-          var remidx = state.groups[group].chunks.findIndex(c => c.addr == retAddr);
-          state.groups[group].chunks.splice(remidx, 1);
-        }
-      }
+      //for (var group in state.groups) {
+      //  /* Remove node from a group if it's in one. TODO: this might be bugged */
+      //  if (state.groups[group].chunks.find(c => c.addr == retAddr)) {
+      //    var remidx = state.groups[group].chunks.findIndex(c => c.addr == retAddr);
+      //    state.groups[group].chunks.splice(remidx, 1);
+      //  }
+      //}
       /* Add chunk to inuse */
       var inUseGroup = state.groups.find(g => g.name == 'inUse')
       var newChunk = condense(retAddr, contents, 'inuse_malloc_chunk', allocSize);
-      inUseGroup.chunks.push({ id: newChunk.addr, group: 'inUse', label: JSON.stringify(newChunk, null, 2) });
+      inUseGroup.chunks.push({ addr: newChunk.addr, id: nextChunkId(), group: 'inUse', label: JSON.stringify(newChunk, null, 2) });
       console.log(inUseGroup.chunks[inUseGroup.chunks.length - 1].data);
-      redraw();
-      sk.emit('continue_execution');
+
+      updateFreelists(sk, () => {
+        redraw();
+        console.log("Continuing Execution from malloc")
+        sk.emit('continue_execution');
+      });
     });
   });
 }
@@ -810,70 +838,99 @@ function calloc (sk, st, data) {
 function realloc (sk, st, data) {
 }
 
-function free (sk, st, data) {
-  /* Free is pretty wack */
-  console.log('got free');
-  var freedAddr = data['rdi-before-call'];
-  console.log('freed ', freedAddr);
-  getAllocSize(sk, freedAddr - ptrSize).then((allocSize) => {
-    getContentsAt(sk, freedAddr - (2 * ptrSize), allocSize).then((contents) => {
-      var inUseGroup = state.groups.find(g => g.name == 'inUse')
-      if (inUseGroup.chunks.find(c => c.id == freedAddr)) {
-        /* remove from inUse */
-        var freedChunkIdx = inUseGroup.chunks.findIndex(c => c.id == freedAddr);
-        console.log('freed chunk index ', freedChunkIdx);
-        inUseGroup.chunks.splice(freedChunkIdx, 1);
-      } else {
-        /* Whoof, exploit! add to freelist */
-      }
-      /* which freelist? tcache, largebin, smallbin? */
+function getTcacheChunks(sk, chunk_addr, current_chunk_list) {
+  console.log('examining tcache chunk at ', chunk_addr);
+  if(chunk_addr == 0) {
+    return new Promise((resolve) => {
+      resolve();
+    });
+  }
+  return new Promise((resolve, reject) => {
+    getAllocSize(sk, chunk_addr - ptrSize).then((tcNodeSize) => {
+      getContentsAt(sk, chunk_addr - (2 * ptrSize), tcNodeSize).then((contents) => {
+        console.log('got tcache chunk at ', chunk_addr);
+        var tc_entry = condense(chunk_addr, contents, 'malloc_chunk');
+        console.log('pushing ', tc_entry);
+        current_chunk_list.push({ addr: tc_entry.addr, id: nextChunkId(), group: 'tcache', label: JSON.stringify(tc_entry, null, 2) });
+
+        if(tc_entry.data.fd == 0) {
+          resolve();
+        }
+
+        getTcacheChunks(sk, tc_entry.data.fd, current_chunk_list).then(() => {
+          console.log('done finding tcache chunks, continuing');
+          resolve();
+        });
+      });
+    })
+  })
+}
+
+function updateFreelists(sk, cb) {
       getMainArenaAddr(sk).then((main_arena) => {
         getMainArenaSize(sk, main_arena).then((main_arena_size) => {
           getMainArenaContents(sk, main_arena, main_arena_size).then((main_arena_contents) => {
             getHeapBase(sk).then((heap_base_addr) => {
               /* We need to pull a bunch of info to do the calculation */
               derefAddr(sk, heap_base_addr).then((heap_base)  => {
-                getTcacheBins(sk, heap_base).then((tcache_bins) => {
+                getTcacheBins(sk, heap_base).then(async function(tcache_bins) {
                   /* clear */
                   var tcache = state.groups.find(g => g.name === 'tcache');
                   gMainArena = condense(main_arena, main_arena_contents.slice(8), 'malloc_state');
                   var addrs = condense(heap_base, tcache_bins, 'tcache_bins').data.bins;
                   console.log('tcache bins ', addrs);
-                  tcache.chunks.splice(0,tcache.chunks.length);
+                  tcache.bins.splice(0,tcache.bins.length);
                   var proms = [];
                   var exAddr = {};
                   for (var addr in addrs) {
                     exAddr[addr] = addrs[addr];
-                    console.log(addrs);
-                    if (exAddr[addr] > 0) {
-                      var add = exAddr[addr].valueOf();
-                      console.log('examining tcache chunk at ', exAddr[addr]);
-                      proms.push(
-                        new Promise((resolve, reject) => {
-                          getAllocSize(sk, add - ptrSize).then((tcNodeSize) => {
-                            getContentsAt(sk, add - (2 * ptrSize), tcNodeSize).then((contents) => {
-                              console.log('got at ', add); 
-                              var tc_entry = condense(add, contents, 'malloc_chunk');
-                              console.log('pushing ', tc_entry);
-                              tcache.chunks.push({ id: tc_entry.addr, group: 'tcache', label: JSON.stringify(tc_entry, null, 2) });
-                              console.log('done, continuing');
-                              resolve();
-                            });
-                          })
-                        })
-                      );
+                    next_bin = {
+                      chunks: []
                     }
+                    tcache.bins.push(next_bin)
+                    if (exAddr[addr] > 0) {
+                      // There is a tcache list at this size
+                      var add = exAddr[addr].valueOf();
+                      await getTcacheChunks(sk, add, next_bin.chunks)                    }
                   }
-                  /* TODO: This promise I think works now */
-                  Promise.all(proms).then(() => {
-                    redraw();
-                    sk.emit('continue_execution');
-                  });
+
+                    console.log("DONE UPDATING FREELISTS");
+                    cb();
                 });
               });
             });
           });
         });
+      });
+}
+
+function free (sk, st, data) {
+  /* Free is pretty wack */
+  console.log('got free');
+  var freedAddr = data['rdi-before-call'];
+  console.log('freed ', freedAddr);
+  if(freedAddr == 0) {
+    console.log('skipping free - NULL freed');
+    console.log("Continuing Execution from free")
+    sk.emit('continue_execution');
+    return;
+  }
+  getAllocSize(sk, freedAddr - ptrSize).then((allocSize) => {
+    getContentsAt(sk, freedAddr - (2 * ptrSize), allocSize).then((contents) => {
+      var inUseGroup = state.groups.find(g => g.name == 'inUse')
+      if (inUseGroup.chunks.find(c => c.addr == freedAddr)) {
+        /* remove from inUse */
+        var freedChunkIdx = inUseGroup.chunks.findIndex(c => c.addr == freedAddr);
+        console.log('freed chunk index ', freedChunkIdx);
+        inUseGroup.chunks.splice(freedChunkIdx, 1);
+      } else {
+        /* Whoof, exploit! add to freelist */
+      }
+      /* which freelist? tcache, largebin, smallbin? */
+      updateFreelists(sk, () => {
+        redraw();
+        console.log("Continuing Execution from free")
+        sk.emit('continue_execution');
       });
     });
   });
