@@ -1,0 +1,191 @@
+{
+  "type": "translation_unit",
+  "external_declaration": {
+    "type": "external_declaration",
+    "declaration": {
+      "type": "declaration",
+      "declaration_specifiers": {
+        "type": "declaration_specifiers",
+        "type_specifier": {
+          "type": "type_specifier",
+          "struct_or_union_specifier": {
+            "type": "struct_or_union_specifier",
+            "struct_or_union": {
+              "type": "struct_or_union",
+              "struct_or_union": "struct"
+            },
+            "identifier": "malloc_chunk",
+            "struct_declaration_list": [
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "typedef_name": "INTERNAL_SIZE_T"
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "mchunk_prev_size"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "typedef_name": "INTERNAL_SIZE_T"
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "mchunk_size"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "struct_or_union_specifier": {
+                      "type": "struct_or_union_specifier",
+                      "struct_or_union": {
+                        "type": "struct_or_union",
+                        "struct_or_union": "struct"
+                      },
+                      "identifier": "malloc_chunk"
+                    }
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "pointer": {
+                        "type": "pointer"
+                      },
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "fd"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "struct_or_union_specifier": {
+                      "type": "struct_or_union_specifier",
+                      "struct_or_union": {
+                        "type": "struct_or_union",
+                        "struct_or_union": "struct"
+                      },
+                      "identifier": "malloc_chunk"
+                    }
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "pointer": {
+                        "type": "pointer"
+                      },
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "bk"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "struct_or_union_specifier": {
+                      "type": "struct_or_union_specifier",
+                      "struct_or_union": {
+                        "type": "struct_or_union",
+                        "struct_or_union": "struct"
+                      },
+                      "identifier": "malloc_chunk"
+                    }
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "pointer": {
+                        "type": "pointer"
+                      },
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "fd_nextsize"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "struct_or_union_specifier": {
+                      "type": "struct_or_union_specifier",
+                      "struct_or_union": {
+                        "type": "struct_or_union",
+                        "struct_or_union": "struct"
+                      },
+                      "identifier": "malloc_chunk"
+                    }
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "pointer": {
+                        "type": "pointer"
+                      },
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "bk_nextsize"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

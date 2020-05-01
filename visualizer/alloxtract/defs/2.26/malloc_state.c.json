@@ -1,0 +1,326 @@
+{
+  "type": "translation_unit",
+  "external_declaration": {
+    "type": "external_declaration",
+    "declaration": {
+      "type": "declaration",
+      "declaration_specifiers": {
+        "type": "declaration_specifiers",
+        "type_specifier": {
+          "type": "type_specifier",
+          "struct_or_union_specifier": {
+            "type": "struct_or_union_specifier",
+            "struct_or_union": {
+              "type": "struct_or_union",
+              "struct_or_union": "struct"
+            },
+            "identifier": "malloc_state",
+            "struct_declaration_list": [
+              {
+                "type": "direct_declarator",
+                "direct_declarator": {
+                  "type": "direct_declarator",
+                  "direct_declarator": {
+                    "type": "direct_declarator",
+                    "identifier": "__libc_lock_define"
+                  },
+                  "identifier_list": [
+                    "mutex"
+                  ]
+                }
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "type_specifier": "int"
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "flags"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "type_specifier": "int"
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "have_fastchunks"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "typedef_name": "mfastbinptr"
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "direct_declarator": {
+                          "type": "direct_declarator",
+                          "identifier": "fastbinsY"
+                        },
+                        "assignment_expression": 10
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "typedef_name": "mchunkptr"
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "top"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "typedef_name": "mchunkptr"
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "last_remainder"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "typedef_name": "mchunkptr"
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "direct_declarator": {
+                          "type": "direct_declarator",
+                          "identifier": "bins"
+                        },
+                        "assignment_expression": 254
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "type_specifier": "unsigned"
+                  },
+                  {
+                    "type": "type_specifier",
+                    "type_specifier": "int"
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "direct_declarator": {
+                          "type": "direct_declarator",
+                          "identifier": "binmap"
+                        },
+                        "assignment_expression": 4
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "struct_or_union_specifier": {
+                      "type": "struct_or_union_specifier",
+                      "struct_or_union": {
+                        "type": "struct_or_union",
+                        "struct_or_union": "struct"
+                      },
+                      "identifier": "malloc_state"
+                    }
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "pointer": {
+                        "type": "pointer"
+                      },
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "next"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "struct_or_union_specifier": {
+                      "type": "struct_or_union_specifier",
+                      "struct_or_union": {
+                        "type": "struct_or_union",
+                        "struct_or_union": "struct"
+                      },
+                      "identifier": "malloc_state"
+                    }
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "pointer": {
+                        "type": "pointer"
+                      },
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "next_free"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "typedef_name": "INTERNAL_SIZE_T"
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "attached_threads"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "typedef_name": "INTERNAL_SIZE_T"
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "system_mem"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "typedef_name": "INTERNAL_SIZE_T"
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "max_system_mem"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

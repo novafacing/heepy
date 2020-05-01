@@ -1,0 +1,56 @@
+{
+  "type": "translation_unit",
+  "external_declaration": {
+    "type": "external_declaration",
+    "declaration": {
+      "type": "declaration",
+      "declaration_specifiers": {
+        "type": "declaration_specifiers",
+        "type_specifier": {
+          "type": "type_specifier",
+          "struct_or_union_specifier": {
+            "type": "struct_or_union_specifier",
+            "struct_or_union": {
+              "type": "struct_or_union",
+              "struct_or_union": "struct"
+            },
+            "identifier": "tcache_entry",
+            "struct_declaration_list": [
+              {
+                "type": "struct_declaration",
+                "specifier_qualifier_list": [
+                  {
+                    "type": "type_specifier",
+                    "struct_or_union_specifier": {
+                      "type": "struct_or_union_specifier",
+                      "struct_or_union": {
+                        "type": "struct_or_union",
+                        "struct_or_union": "struct"
+                      },
+                      "identifier": "tcache_entry"
+                    }
+                  }
+                ],
+                "struct_declarator_list": [
+                  {
+                    "type": "struct_declarator",
+                    "declarator": {
+                      "type": "declarator",
+                      "pointer": {
+                        "type": "pointer"
+                      },
+                      "direct_declarator": {
+                        "type": "direct_declarator",
+                        "identifier": "next"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
