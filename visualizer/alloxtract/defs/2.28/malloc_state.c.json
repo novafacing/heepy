@@ -55,27 +55,6 @@
                 "specifier_qualifier_list": [
                   {
                     "type": "type_specifier",
-                    "type_specifier": "int"
-                  }
-                ],
-                "struct_declarator_list": [
-                  {
-                    "type": "struct_declarator",
-                    "declarator": {
-                      "type": "declarator",
-                      "direct_declarator": {
-                        "type": "direct_declarator",
-                        "identifier": "have_fastchunks"
-                      }
-                    }
-                  }
-                ]
-              },
-              {
-                "type": "struct_declaration",
-                "specifier_qualifier_list": [
-                  {
-                    "type": "type_specifier",
                     "typedef_name": "mfastbinptr"
                   }
                 ],

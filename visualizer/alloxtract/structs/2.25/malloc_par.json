@@ -58,25 +58,5 @@
     "size": 8,
     "count": 1,
     "offset": 72
-  },
-  "tcache_bins": {
-    "size": 8,
-    "count": 1,
-    "offset": 80
-  },
-  "tcache_max_bytes": {
-    "size": 8,
-    "count": 1,
-    "offset": 88
-  },
-  "tcache_count": {
-    "size": 8,
-    "count": 1,
-    "offset": 96
-  },
-  "tcache_unsorted_limit": {
-    "size": 8,
-    "count": 1,
-    "offset": 104
   }
 }

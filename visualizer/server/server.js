@@ -311,20 +311,24 @@ function fastbin_index(sz) {
 function getConstants() {
   var constants = getStaticConstants();
   // TODO: Make this the actual calculation
-  // constants.nfastbins = fastbin_index(constants.max_fast_size);
-  constants.nfastbins = 10;
-  constants.tcache_max_bins = 64;
+  var defines = structures['defines'];
+  constants.tcache_max_bins = ('TCACHE_MAX_BINS' in defines) ? Number(defines['TCACHE_MAX_BINS']) : 64;
   return constants;
 }
 
 // TODO: Needs to come from C
 function getStaticConstants() {
+  let ver =  glibcVersion;
+  if (!('defines' in structures)) {
+    structures['defines'] = JSON.parse(fs.readFileSync(path.join(structsPath, ver, 'defines.json'), { encoding: 'utf8' }));
+  }
+  var defines = structures['defines'];
   var size_sz = ptrSize;
   var max_fast_size = (80 * size_sz) / 4;
   var malloc_alignment = 2 * size_sz;
   var malloc_align_mask = malloc_alignment - 1;
-  var nbins = 128;
-  var binmapshift = 5;
+  var nbins = ('NBINS' in defines) ? Number(defines['NBINS']) : 128;
+  var binmapshift = ('BINMAPSHIFT' in defines) ? Number(defines['BINMAPSHIFT']) : 5;
   var bitspermap = 1 << binmapshift;
   var binmapsize = nbins / bitspermap;
   return {

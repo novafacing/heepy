@@ -192,6 +192,7 @@ async function getVersionMallocSource (release) {
         var defines = JSON.stringify(structJson.defs, null, 2);
         fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.c.json'), jsonDef);
         fs.writeFileSync(path.join(versionsDir, extractVersionNumber(release), def + '.defines.json'), defines);
+        fs.writeFileSync(path.join(finalJsonsDir, extractVersionNumber(release), 'defines.json'), defines);
         //var hrStructure = flattenMallocStruct(jsonDef, defines);
         let structure = undefined;
         switch(def) {

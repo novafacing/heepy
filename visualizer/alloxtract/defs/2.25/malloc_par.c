@@ -22,15 +22,4 @@ struct malloc_par
 
   /* First address handed out by MORECORE/sbrk.  */
   char *sbrk_base;
-
-#if USE_TCACHE
-  /* Maximum number of buckets to use.  */
-  size_t tcache_bins;
-  size_t tcache_max_bytes;
-  /* Maximum number of chunks in each bucket.  */
-  size_t tcache_count;
-  /* Maximum number of chunks to remove from the unsorted list, which
-     aren't used to prefill the cache.  */
-  size_t tcache_unsorted_limit;
-#endif
 };
