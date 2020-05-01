@@ -664,7 +664,7 @@ function getHeapBase(socket) {
       // TODO: Make real
       //socket.emit('address_of_symbol', { symbol_name: 'mp_->sbrk_base' }, (data) => {
       /* TODO: Replace +72 with offsetOf(sbrk_whatever) */
-      let expr = '(unsigned long)(((void*)&mp_+' + mallocPar().sbrk_base.offset + ')';
+      let expr = '(unsigned long)((void*)&mp_+' + mallocPar().sbrk_base.offset + ')';
       socket.emit(
         "evaluate_expression",
         { expression: expr },
