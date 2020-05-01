@@ -39,6 +39,13 @@ function redraw() {
         }
       }
     }
+    if (group.name === "fastbins") {
+      for (var bin in group.bins) {
+        for (var chunk in group.bins[bin].chunks) {
+          addNodeToClient(group.bins[bin].chunks[chunk]);
+        }
+      }
+    }
   }
   console.dir(state, { depth: 5 });
 }
@@ -52,7 +59,7 @@ var state = {
     },
     {
       name: "fastbins",
-      chunks: []
+      bins: []
     },
     {
       name: "unsorted",
@@ -138,6 +145,11 @@ function addNodeToClient(node, redraw) {
   }
 
   if (state.groups[groupIndex].name == "tcache") {
+    web.emit("add-node", node);
+    return;
+  }
+
+  if (state.groups[groupIndex].name == "fastbins") {
     web.emit("add-node", node);
     return;
   }
@@ -717,10 +729,11 @@ const changeEndianness = string => {
 function getAllocSize(sk, retAddr) {
   /* Where retAddr is the addr returned from malloc */
   return new Promise(resolve => {
-    sk.emit("read_from_address", { size: ptrSize, address: retAddr }, data => {
+    sk.emit("read_from_address", { size: ptrSize, address: Number(retAddr) }, data => {
       /* Callback for addr read  */
       var size_state = parseInt(changeEndianness(data.result), 16);
       size_state = (size_state >> 1) << 1;
+
       resolve(size_state);
     });
   });
@@ -733,7 +746,7 @@ function getContentsAt(sk, addr, size) {
   }
   console.log("getting read_from_address with addr ", addr, " size ", size);
   return new Promise(resolve => {
-    sk.emit("read_from_address", { size: size, address: addr }, data => {
+    sk.emit("read_from_address", { size: size, address: Number(addr) }, data => {
       resolve(data.result);
     });
   });
@@ -792,7 +805,7 @@ function getTcacheChunks(sk, chunk_addr, current_chunk_list) {
   }
   return new Promise((resolve, reject) => {
     getAllocSize(sk, chunk_addr - ptrSize).then(tcNodeSize => {
-      getContentsAt(sk, chunk_addr - 2 * ptrSize, tcNodeSize).then(contents => {
+      getContentsAt(sk, chunk_addr - 2 * ptrSize, tcNodeSize + 2 * ptrSize).then(contents => {
         console.log("got tcache chunk at ", chunk_addr);
         var tc_entry = condense(chunk_addr, contents, "malloc_chunk");
         console.log("pushing ", tc_entry);
@@ -809,6 +822,43 @@ function getTcacheChunks(sk, chunk_addr, current_chunk_list) {
 
         getTcacheChunks(sk, tc_entry.data.fd, current_chunk_list).then(() => {
           console.log("done finding tcache chunks, continuing");
+          resolve();
+        });
+      });
+    });
+  });
+}
+
+function getFastbinChunks(sk, chunk_addr, current_chunk_list) {
+  // TODO: Is the correct address displayed?
+  //chunk_addr = chunk_addr + 2 * ptrSize
+
+  console.log("examining fastbin chunk at ", chunk_addr);
+
+  if (chunk_addr == 0) {
+    return new Promise(resolve => {
+      resolve();
+    });
+  }
+  return new Promise((resolve, reject) => {
+    getAllocSize(sk, Number(chunk_addr) + Number(ptrSize)).then(fbNodeSize => {
+      getContentsAt(sk, chunk_addr, fbNodeSize).then(contents => {
+        console.log("got fastbin chunk at ", chunk_addr);
+        var fb_entry = condense(chunk_addr, contents, "malloc_chunk");
+        console.log("pushing ", fb_entry);
+        current_chunk_list.push({
+          addr: fb_entry.addr + 2 * ptrSize,
+          id: nextChunkId(),
+          group: "fastbins",
+          label: JSON.stringify(fb_entry, null, 2)
+        });
+
+        if (fb_entry.data.fd == 0) {
+          resolve();
+        }
+
+        getFastbinChunks(sk, fb_entry.data.fd, current_chunk_list).then(() => {
+          console.log("done finding fastbin chunks, continuing");
           resolve();
         });
       });
@@ -836,7 +886,6 @@ function updateFreelists(sk, cb) {
                   .bins;
                 console.log("tcache bins ", addrs);
                 tcache.bins.splice(0, tcache.bins.length);
-                var proms = [];
                 var exAddr = {};
                 for (var addr in addrs) {
                   exAddr[addr] = addrs[addr];
@@ -848,6 +897,20 @@ function updateFreelists(sk, cb) {
                     // There is a tcache list at this size
                     var add = exAddr[addr].valueOf();
                     await getTcacheChunks(sk, add, next_bin.chunks);
+                  }
+                }
+
+                console.log("Now updating fastbins");
+                var fastbins = state.groups.find(g => g.name === "fastbins");
+                fastbins.bins.splice(0, fastbins.bins.length);
+                addrs = gMainArena.data.fastbinsY;
+                for (var addr in addrs) {
+                  next_bin = {
+                    chunks: []
+                  };
+                  fastbins.bins.push(next_bin);
+                  if (addrs[addr] > 0) {
+                    await getFastbinChunks(sk, Number(addrs[addr]), next_bin.chunks);
                   }
                 }
 
