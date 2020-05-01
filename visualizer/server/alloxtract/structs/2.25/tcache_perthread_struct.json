@@ -1,0 +1,12 @@
+{
+  "counts": {
+    "size": 2,
+    "count": "64",
+    "offset": 0
+  },
+  "entries": {
+    "size": 8,
+    "count": "64",
+    "offset": 128
+  }
+}

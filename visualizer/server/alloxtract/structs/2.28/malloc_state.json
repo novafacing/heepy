@@ -9,54 +9,59 @@
     "count": 1,
     "offset": 4
   },
+  "have_fastchunks": {
+    "size": 4,
+    "count": 1,
+    "offset": 8
+  },
   "fastbinsY": {
     "size": 8,
     "count": 10,
-    "offset": 8
+    "offset": 12
   },
   "top": {
     "size": 8,
     "count": 1,
-    "offset": 88
+    "offset": 92
   },
   "last_remainder": {
     "size": 8,
     "count": 1,
-    "offset": 96
+    "offset": 100
   },
   "bins": {
     "size": 8,
     "count": 254,
-    "offset": 104
+    "offset": 108
   },
   "binmap": {
     "size": 4,
     "count": 4,
-    "offset": 2136
+    "offset": 2140
   },
   "next": {
     "size": 8,
     "count": 1,
-    "offset": 2152
+    "offset": 2156
   },
   "next_free": {
     "size": 8,
     "count": 1,
-    "offset": 2160
+    "offset": 2164
   },
   "attached_threads": {
     "size": 8,
     "count": 1,
-    "offset": 2168
+    "offset": 2172
   },
   "system_mem": {
     "size": 8,
     "count": 1,
-    "offset": 2176
+    "offset": 2180
   },
   "max_system_mem": {
     "size": 8,
     "count": 1,
-    "offset": 2184
+    "offset": 2188
   }
 }
