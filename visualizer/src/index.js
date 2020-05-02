@@ -15,11 +15,85 @@ const options = {
   layout: {
     hierarchical: {
       enabled: true,
-      levelSeparation: 0,
+      //levelSeparation: 0,
       //nodeSpacing: 600,
+      /*
+      levelSeparation: 300,
       direction: "LR"
+      */
+      //levelSeparation: 600,
+      direction: "UD"
     }
   },
+  physics: {
+    enabled: true,
+    barnesHut: {
+      theta: 0.5,
+      gravitationalConstant: -2000,
+      centralGravity: 0.3,
+      springLength: 95,
+      springConstant: 0.04,
+      damping: 0.09,
+      avoidOverlap: 1
+    },
+    forceAtlas2Based: {
+      theta: 0.5,
+      gravitationalConstant: -50,
+      centralGravity: 0.01,
+      springConstant: 0.08,
+      springLength: 100,
+      damping: 0.4,
+      avoidOverlap: 1
+    },
+    repulsion: {
+      centralGravity: 0.2,
+      springLength: 200,
+      springConstant: 0.05,
+      nodeDistance: 220,
+      damping: 0.09
+    },
+    hierarchicalRepulsion: {
+      centralGravity: 0.0,
+      springLength: 200,
+      springConstant: 0.01,
+      nodeDistance: 220,
+      damping: 0.09,
+      avoidOverlap: 1
+    },
+    maxVelocity: 50,
+    minVelocity: 0.1,
+    solver: "barnesHut",
+    stabilization: {
+      enabled: true,
+      iterations: 1000,
+      updateInterval: 100,
+      onlyDynamicEdges: false,
+      fit: true
+    },
+    timestep: 0.5,
+    adaptiveTimestep: true,
+    wind: { x: 0, y: 0 }
+  },
+  /*
+  physics: {
+    enabled: true,
+    barnesHut: {
+      gravitationalConstant: -2000,
+      centralGravity: 0.3,
+      springLength: 410,
+      springConstant: 0.04,
+      damping: 0.09,
+      avoidOverlap: 1
+    },
+    hierarchicalRepulsion: {
+      centralGravity: 0.0,
+      springLength: 410,
+      springConstant: 0.01,
+      nodeDistance: 400,
+      damping: 0.09,
+    },
+  },
+  */
   nodes: {
     shape: "box",
     font: {
@@ -124,6 +198,7 @@ function connectNodes(from, to) {
 function disconnectNodes(from, to) {
   console.log("disconnecting from:", from, "to:", to);
   edges.remove({ id: from + to });
+  edges.remove({ id: to + from});
 }
 
 function clear() {
