@@ -6,34 +6,56 @@ import time
 import sys
 import random
 import subprocess
+import os
 
 sio = socketio.Client()
 
+debug = False  # CHANGE THIS TO PAUSE ON PROGRAM EXIT
 
 # recieves 'read-from-address' (address, n_bytes)
 # recieves 'address-of-symbol' (symbol_name)
 # recieves 'continue-execution'
 # emits 'heap-changed'
+
+if os.environ.get("TMUX") is None:
+    print("Must be in a tmux session. Please run ./main.sh")
+    sys.exit()
+
 if len(sys.argv) < 2:
     print(
-        "Usage: {} ./binary\nAlso make sure the server is running.".format(sys.argv[0])
+        "Usage: {} ./binary ./libc\nAlso make sure the server is running.".format(
+            sys.argv[0]
+        )
     )
     sys.exit()
 
 gdbmi = GdbController()
 
+if len(sys.argv) >= 3:
+    print("Setting libc to {}".format(sys.argv[2]))
+    response = gdbmi.write("set environment LD_PRELOAD " + sys.argv[2])
+
 # TODO: Come up with a better way to determine a TTY. Currently just sleeping in a new window lol
 # Open a terminal. Run `tty`, then change the tty below V
 # Then run `sleep 100000` in that terminal.
 num = str(random.randint(100000, 1000000))
-p = subprocess.Popen(["xterm", "-e", "sleep {}".format(num)])
+p = subprocess.Popen(["tmux", "new-window", "sleep {}".format(num)])
+
 time.sleep(1)
 tty = "/dev/" + str(
     subprocess.check_output(
-        "ps ax | grep 'sleep {}' | grep -v xterm | grep -v grep".format(num), shell=True
+        "ps ax | grep 'sleep {}' | grep -v tmux | grep -v grep".format(num), shell=True
     ).split()[1],
     "utf8",
 )
+
+
+def kill_process():
+    if debug:
+        print("Program exited. Waiting for input.")
+        input()
+    os.system("kill $(pgrep --full -x 'sleep {}')".format(num))
+
 
 response = gdbmi.write("tty {}".format(tty))
 
@@ -64,7 +86,7 @@ response = gdbmi.write(
 
 @sio.event(namespace="/gef")
 def sizeof(data):
-    print("sizeof: ", data["var"])
+    print("sizeof: {}".format(data))
     result = gdbmi.write('-data-evaluate-expression "sizeof(' + data["var"] + ')"')
 
     return {"result": result[0]["payload"]["value"]}
@@ -76,13 +98,12 @@ def libc_version():
     result = gdbmi.write('-data-evaluate-expression "(char*) &__libc_version"')
 
     result = result[0]["payload"]["value"].split(" ")[-1][1:-1]
-    print(result)
     return {"result": result}
 
 
 @sio.event(namespace="/gef")
 def evaluate_expression(data):
-    print("evaluating: ", data["expression"])
+    print("evaluate_expression: {}".format(data))
     result = gdbmi.write('-data-evaluate-expression "' + data["expression"] + '"')
 
     return {"result": result[0]["payload"]["value"]}
@@ -90,27 +111,21 @@ def evaluate_expression(data):
 
 @sio.event(namespace="/gef")
 def read_from_address(data):
-    print(
-        #"ABOUT TO READ FROM {} BYTES FROM {}".format(data["size"], hex(data["address"]))
-        data
-    )
+    print("read_from_address: {}".format(data))
 
-    # TODO: Is this try/catch fine? Should it be around all gdbmi.writes?
     result = gdbmi.write(
         "-data-read-memory-bytes " + str(hex(data["address"])) + " " + str(data["size"])
     )
 
     value = result[0]["payload"]["memory"][0]["contents"]
-
-    print("Read {} from address".format(value))
-
     return {"address": data["address"], "result": value}
 
 
 @sio.event(namespace="/gef")
 def address_of_symbol(data):
     # main_arena
-    print("address_of_symbol: ", data["symbol_name"])
+    print("address_of_symbol: {}".format(data))
+
     result = gdbmi.write("-data-evaluate-expression &" + data["symbol_name"])
     # This is hex b/c it's a symbol. weird...
     value = int(result[0]["payload"]["value"].split(" ")[0][2:], 16)
@@ -120,25 +135,23 @@ def address_of_symbol(data):
 
 @sio.event(namespace="/gef")
 def continue_execution():
-    print("Continuing execution")
+    print("continue_execution")
     response = gdbmi.write("-exec-continue")
 
     if (
         response[-1]["message"] == "stopped"
         and response[-1]["payload"].get("reason", None) == "exited-normally"
     ):
-        print("Program exited normally; waiting for input")
-        input()
-        p.kill()
+        print("Program exited normally")
+        kill_process()
         sio.disconnect()
         sys.exit()
     if (
         response[-1]["message"] == "error"
         and response[-1]["payload"].get("msg", None) == "The program is not being run."
     ):
-        print("Program exited; waiting for input")
-        input()
-        p.kill()
+        print("Program exited")
+        kill_process()
         sio.disconnect()
         sys.exit()
 
@@ -147,6 +160,21 @@ def continue_execution():
             response = gdbmi.write("", timeout_sec=1)
         except pygdbmi.gdbcontroller.GdbTimeoutError:
             pass
+
+    for line in response:
+        if (
+            line["message"] == "stopped"
+            and line["payload"].get("reason", None) == "exited-normally"
+        ) or (
+            line["message"] == "error"
+            and line["payload"].get("msg", None) == "The program is not being run."
+        ):
+            print("Program exited")
+            kill_process()
+            sio.disconnect()
+            sys.exit()
+
+    print(response)
 
     data = {
         "called-function": None,
@@ -157,7 +185,6 @@ def continue_execution():
 
     bp_at = None
     print_at = None
-    #print(response)
 
     for i, line in enumerate(response):
         if line["message"] == "breakpoint-modified":
@@ -183,13 +210,8 @@ def continue_execution():
                 data["called-function"] = "malloc"
                 data["rax-after-call"] = rax
 
-                # TODO: NATHAN NEEDS TO LOOK AT THIS
                 rdi = int(response[print_at]["payload"].split(" ")[-1][:-2])
-                # rdi = int(response[bp_at
                 data["rdi-before-call"] = rdi
-
-                print(hex(rdi))
-                print(hex(rax))
             if response[bp_at]["payload"]["at"] == "<free>":
                 print("We're at the end of a free!")
                 result = gdbmi.write("-data-evaluate-expression $rax")
@@ -200,9 +222,6 @@ def continue_execution():
 
                 rdi = int(response[print_at]["payload"].split(" ")[-1][:-2])
                 data["rdi-before-call"] = rdi
-
-                print(hex(rdi))
-                print(hex(rax))
             if response[bp_at]["payload"]["at"] == "<realloc>":
                 print("We're at the end of a realloc!")
                 result = gdbmi.write("-data-evaluate-expression $rax")
@@ -215,10 +234,6 @@ def continue_execution():
                 data["rdi-before-call"] = rdi
                 rsi = int(response[print_at + 1]["payload"].split(" ")[-1][:-2])
                 data["rsi-before-call"] = rsi
-
-                print(hex(rdi))
-                print(hex(rsi))
-                print(hex(rax))
             if response[bp_at]["payload"]["at"] == "<calloc>":
                 print("We're at the end of a calloc!")
                 result = gdbmi.write("-data-evaluate-expression $rax")
@@ -226,18 +241,21 @@ def continue_execution():
 
                 data["called-function"] = "calloc"
                 data["rax-after-call"] = rax
-                # print(response)
 
                 rdi = int(response[print_at]["payload"].split(" ")[-1][:-2])
                 data["rdi-before-call"] = rdi
                 rsi = int(response[print_at + 1]["payload"].split(" ")[-1][:-2])
                 data["rsi-before-call"] = rsi
-
-                print(hex(rdi))
-                print(hex(rsi))
-                print(hex(rax))
         except IndexError:
             pass
+
+    if data["called-function"] == None:
+        # TODO: Better detect when exiting actually happens.
+        # This is an emergency fallback.
+        print("Program exited")
+        kill_process()
+        sio.disconnect()
+        sys.exit()
 
     # The only time the probram breaks is when the heap is modified
     update_heap_info(data)
@@ -247,7 +265,7 @@ def update_heap_info(data):
     """
     Update info when breakpoint reached
     """
-    print("Updating heap info")
+    print("emitting heap_changed: {}".format(data))
     sio.emit("heap_changed", data, namespace="/gef")
 
 

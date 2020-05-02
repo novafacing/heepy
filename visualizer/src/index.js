@@ -13,9 +13,10 @@ const options = {
   manipulation: false,
   height: "100%",
   layout: {
+    improvedLayout: true,
     hierarchical: {
-      enabled: true,
-      //levelSeparation: 0,
+      enabled: false,
+      levelSeparation: 0,
       //nodeSpacing: 600,
       /*
       levelSeparation: 300,
@@ -26,9 +27,9 @@ const options = {
     }
   },
   physics: {
-    enabled: true,
+    enabled: false,
     barnesHut: {
-      theta: 0.5,
+      //theta: 0.5,
       gravitationalConstant: -2000,
       centralGravity: 0.3,
       springLength: 95,
@@ -37,32 +38,33 @@ const options = {
       avoidOverlap: 1
     },
     forceAtlas2Based: {
-      theta: 0.5,
+      //theta: 0.5,
       gravitationalConstant: -50,
       centralGravity: 0.01,
       springConstant: 0.08,
-      springLength: 100,
-      damping: 0.4,
-      avoidOverlap: 1
+      springLength: 300,
+      damping: 0.4
+      //avoidOverlap: 1
     },
     repulsion: {
       centralGravity: 0.2,
-      springLength: 200,
+      springLength: 300,
       springConstant: 0.05,
-      nodeDistance: 220,
+      nodeDistance: 320,
       damping: 0.09
     },
     hierarchicalRepulsion: {
       centralGravity: 0.0,
-      springLength: 200,
+      springLength: 300,
       springConstant: 0.01,
-      nodeDistance: 220,
-      damping: 0.09,
-      avoidOverlap: 1
+      nodeDistance: 320,
+      damping: 0.09
+      //avoidOverlap: 1
     },
     maxVelocity: 50,
     minVelocity: 0.1,
     solver: "barnesHut",
+    /*
     stabilization: {
       enabled: true,
       iterations: 1000,
@@ -70,9 +72,12 @@ const options = {
       onlyDynamicEdges: false,
       fit: true
     },
+    */
+    /*
     timestep: 0.5,
     adaptiveTimestep: true,
-    wind: { x: 0, y: 0 }
+    */
+    //wind: { x: 0, y: 0 }
   },
   /*
   physics: {
@@ -119,10 +124,9 @@ const options = {
     },
     inUse: {
       color: "#C5000B" // red
-    },
+    }
   }
 };
-
 
 function initNetwork() {
   // Init network to net_container_0
@@ -187,7 +191,7 @@ function updateNetwork() {
     nodes: nodes,
     edges: edges
   });
-  network.stabilize();
+  network.stabilize(1000);
 }
 
 function connectNodes(from, to) {
@@ -198,13 +202,13 @@ function connectNodes(from, to) {
 function disconnectNodes(from, to) {
   console.log("disconnecting from:", from, "to:", to);
   edges.remove({ id: from + to });
-  edges.remove({ id: to + from});
+  edges.remove({ id: to + from });
 }
 
 function clear() {
-  console.log('clearing')
-  nodes.clear()
-  edges.clear()
+  console.log("clearing");
+  nodes.clear();
+  edges.clear();
   updateNetwork();
 }
 

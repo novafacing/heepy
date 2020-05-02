@@ -159,7 +159,7 @@ function addNodeToClient(node) {
   }
 }
 
-function addBinNodeToClient(node, bin) {
+function addBinNodeToClient(node, group) {
   /*
   if (group.name == "tcache") {
     web.emit("add-node", node);
@@ -176,25 +176,27 @@ function addBinNodeToClient(node, bin) {
     return;
   }
   */
-  // Find chunk in bin, then call addChunkNodeToClient(node, group);
+  /*
   web.emit("add-node", node);
   return;
+  */
 
+  // Find chunk in bin, then call addChunkNodeToClient(node, group);
   // Find which chunks list node is in
   // Loop through bin
-  for (let i = 0; i < bin.length; i++) {
+  for (let i = 0; i < group.bins.length; i++) {
     // Loop through chunks in bin
-    for (let j = 0; j < bin[i].chunks.length; j++) {
+    for (let j = 0; j < group.bins[i].chunks.length; j++) {
       // If id matches, call addChunkNodeToClient
-      if (bin[i].chunks[j].id === node.id)
-        addChunkNodeToClient(node, bin[i].chunks);
+      if (group.bins[i].chunks[j].id === node.id)
+        addChunkNodeToClient(node, group.bins[i]);
     }
   }
 }
 
 function addChunkNodeToClient(node, group) {
-  // Empty chunk case
-  if (group.chunks.length === 0) {
+  // 1 chunk case
+  if (group.chunks.length === 1) {
     // Add node to client
     web.emit("add-node", node);
     return;
@@ -219,7 +221,11 @@ function addChunkNodeToClient(node, group) {
   );
   if (nodeIndex === 0) {
     web.emit("add-node", node);
-    console.log("calling connect-nodes");
+    console.log(
+      "calling connect-nodes for case2, head",
+      node.id,
+      group.chunks[1].id
+    );
     web.emit("connect-nodes", {
       from: node.id,
       to: group.chunks[1].id
@@ -228,10 +234,17 @@ function addChunkNodeToClient(node, group) {
   } else if (nodeIndex === group.chunks.length) {
     // Insert at tail and add connection from old tail to node
     web.emit("add-node", node);
-    web.emit("connect-nodes", {
-      from: group.chunks[group.chunks.length - 1].id,
-      to: node.id
-    });
+    console.log(
+      "calling connect-nodes for case2, tail",
+      group.chunks[group.chunks.length - 1].id,
+      node.id
+    );
+    if (group.chunks[group.chunks.length - 1].id !== node.id) {
+      web.emit("connect-nodes", {
+        from: group.chunks[group.chunks.length - 1].id,
+        to: node.id
+      });
+    }
     return;
   }
 
@@ -240,11 +253,16 @@ function addChunkNodeToClient(node, group) {
   // Save ids for later
   let prev = group.chunks[nodeIndex - 1];
   let next = group.chunks[nodeIndex];
+  console.log("calling disconnect-nodes for case3");
   web.emit("disconnect-nodes", { from: prev.id, to: next.id });
 
   web.emit("add-node", node);
-  web.emit("connect-nodes", { from: prev.id, to: node.id });
-  web.emit("connect-nodes", { from: node.id, to: next.id });
+  console.log("calling connect-nodes for case3", prev.id, node.id, next.id);
+  // Prevent self loops, should still work to show double free since the id is iterative
+  if (prev.id !== node.id)
+    web.emit("connect-nodes", { from: prev.id, to: node.id });
+  if (node.id !== next.id)
+    web.emit("connect-nodes", { from: node.id, to: next.id });
 }
 
 app.get("/", function(req, res) {
@@ -261,6 +279,7 @@ web.on("connection", function(socket) {
     connection: "success"
   });
 });
+
 
 // TODO: Needs to come from C
 function minChunkSize() {
@@ -636,10 +655,17 @@ gef.on("connect", function(socket) {
       gefAction(socket, state, data);
     }
   });
+
+  socket.on("disconnect", function(socket) {
+    console.log("Got disconnect from client");
+    process.exit();
+  });
+
   console.log("Got connection from gef");
   console.log("Continuing Execution ", new Error().lineNumber);
   socket.emit("continue_execution");
 });
+
 
 function getPtrSize(socket) {
   /* Finds the size of a pointer on the target system (expect 4 for 32 bit and 8 for 64 bit) */
