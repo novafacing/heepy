@@ -7,9 +7,9 @@ var path = require("path");
 io.use(middleware);
 const web = io.of("/web");
 const gef = io.of("/gef");
-var structsPath = path.join('./', 'alloxtract', 'structs');
+var structsPath = path.join("./", "alloxtract", "structs");
 if (!fs.existsSync(structsPath)) {
-  throw 'You need to run alloxtract!'
+  throw "You need to run alloxtract!";
 }
 
 var nextChunkIdValue = 0;
@@ -22,13 +22,13 @@ function nextChunkId() {
  */
 function redraw() {
   web.emit("clear");
-  console.dir(state, { depth: 6 });
+  //console.dir(state, { depth: 7 });
   for (var group in state.groups) {
     group = state.groups[group];
     /* Currently only draws inuse and tcache */
     if (group.name === "inUse") {
       for (var chunk in group.chunks) {
-        addNodeToClient(group.chunks[chunk], true);
+        addNodeToClient(group.chunks[chunk]);
       }
     }
     if (group.name === "tcache") {
@@ -45,7 +45,11 @@ function redraw() {
         }
       }
     }
-    if (group.name === 'small' || group.name === 'large' || group.name === 'unsorted') {
+    if (
+      group.name === "small" ||
+      group.name === "large" ||
+      group.name === "unsorted"
+    ) {
       for (var bin in group.bins) {
         for (var chunk in group.bins[bin].chunks) {
           addNodeToClient(group.bins[bin].chunks[chunk]);
@@ -53,7 +57,7 @@ function redraw() {
       }
     }
   }
-  console.dir(state, { depth: 5 });
+  console.dir(state, { depth: 7 });
 }
 
 const inUseGroupIndex = 6;
@@ -101,11 +105,7 @@ function initClient(numGroups) {
   // Initialize network
 }
 
-function addNodeToClient(node, redraw) {
-  if (typeof redraw == undefined) {
-    redraw = false;
-  }
-
+function addNodeToClient(node) {
   // Adds node to client and stores in order state on server.
   // node is an object in the form:
   // {
@@ -122,8 +122,8 @@ function addNodeToClient(node, redraw) {
     console.log("Invalid call to addNodeToClient, missing id, group, or label");
     return;
   }
-  // TODO remove after testing
-  /*
+
+  // Debugging
   console.log(
     "addNodeToClient() id:",
     typeof node.id,
@@ -135,141 +135,116 @@ function addNodeToClient(node, redraw) {
     typeof node.label,
     node.label
   );
-  */
 
-  // Add to state
+  // Add to client
   // 3 cases
   // 1: no neighbors, can just add and be done
   // 2: 1 neighbor, add node and connect the two
   // 3: 2 neighbors, disconnect neighbors, add new node, connect left to new node, connect right to new node
 
-  // Find correct group
-  let groupIndex = 0;
-  for (; groupIndex < state.groups.length; groupIndex++) {
-    if (state.groups[groupIndex].name === node.group) break;
+  // Find correct group and set it to group
+  let group;
+  for (let groupIndex = 0; groupIndex < state.groups.length; groupIndex++) {
+    if (state.groups[groupIndex].name === node.group) {
+      group = state.groups[groupIndex];
+      break;
+    }
   }
 
-  if (state.groups[groupIndex].name == "tcache") {
+  // Check if group has bins or chunks
+  if (group.chunks == undefined) {
+    addBinNodeToClient(node, group);
+  } else {
+    addChunkNodeToClient(node, group);
+  }
+}
+
+function addBinNodeToClient(node, bin) {
+  /*
+  if (group.name == "tcache") {
     web.emit("add-node", node);
     return;
   }
 
-  if (state.groups[groupIndex].name == "fastbins") {
+  if (group.name == "fastbins") {
     web.emit("add-node", node);
     return;
   }
 
-  if (['unsorted', 'small', 'large'].includes(state.groups[groupIndex].name)) {
+  if (['unsorted', 'small', 'large'].includes(group.name)) {
     web.emit('add-node', node);
     return;
   }
+  */
+  // Find chunk in bin, then call addChunkNodeToClient(node, group);
+  web.emit("add-node", node);
+  return;
 
-  // Empty group case
-  if ('chunks' in state.groups[groupIndex] && state.groups[groupIndex].chunks.length === 0) {
-    // Add node to client state
-    // FIXME: WHY IS THIS CODE NEEDED
-    // ITS ALREADY IN TEH STATEATE IF REDRAW IS CALLED
-    //           state.groups[groupIndex].chunks.push(node);
+  // Find which chunks list node is in
+  // Loop through bin
+  for (let i = 0; i < bin.length; i++) {
+    // Loop through chunks in bin
+    for (let j = 0; j < bin[i].chunks.length; j++) {
+      // If id matches, call addChunkNodeToClient
+      if (bin[i].chunks[j].id === node.id)
+        addChunkNodeToClient(node, bin[i].chunks);
+    }
+  }
+}
+
+function addChunkNodeToClient(node, group) {
+  // Empty chunk case
+  if (group.chunks.length === 0) {
     // Add node to client
-    //
-    console.log("NOOOOOO :(");
     web.emit("add-node", node);
     return;
   }
 
   // Non empty group
-  // Loop through group and check addresses
+  // Loop through group and check ids
   // nodeIndex is the index that the node is being inserted to
   let nodeIndex = 0;
-  for (; nodeIndex < state.groups[groupIndex].chunks.length; nodeIndex++) {
-    // Break if current address is larger than address to be inserted
-    if (
-      parseInt(state.groups[groupIndex].chunks[nodeIndex], 16) >
-      parseInt(node.address, 16)
-    )
-      break;
+  for (; nodeIndex < group.chunks.length; nodeIndex++) {
+    // Break if current id is larger than id to be inserted
+    //if (parseInt(group.chunks[nodeIndex], 16) > parseInt(node.address, 16))
+    if (group.chunks[nodeIndex].id > node.id) break;
   }
 
   // Check case 2 if nodeIndex is first or last of list
-  /* console.log("Final nodeIndex: ", nodeIndex); */
+  console.log(
+    "Final nodeIndex: ",
+    nodeIndex,
+    "Chunk length: ",
+    group.chunks.length
+  );
   if (nodeIndex === 0) {
-    if (!redraw) {
-      // Insert at head and add connection from node to old head
-      state.groups[groupIndex].chunks.splice(0, 0, node);
-    }
     web.emit("add-node", node);
     console.log("calling connect-nodes");
     web.emit("connect-nodes", {
       from: node.id,
-      to: state.groups[groupIndex].chunks[1].id
+      to: group.chunks[1].id
     });
     return;
-  } else if (nodeIndex === state.groups[groupIndex].chunks.length) {
-    // TODO: check if this is length or length - 1
+  } else if (nodeIndex === group.chunks.length) {
     // Insert at tail and add connection from old tail to node
     web.emit("add-node", node);
     web.emit("connect-nodes", {
-      from:
-        state.groups[groupIndex].chunks[
-          state.groups[groupIndex].chunks.length - 1].id,
+      from: group.chunks[group.chunks.length - 1].id,
       to: node.id
     });
     return;
   }
 
   // Case 3 2 neighbors
-  // Disconnect groups[nodeIndex-1] groups[nodeIndex]
+  // Disconnect prev next
   // Save ids for later
-  let prev = state.groups[groupIndex].chunks[nodeIndex - 1];
-  let next = state.groups[groupIndex].chunks[nodeIndex];
+  let prev = group.chunks[nodeIndex - 1];
+  let next = group.chunks[nodeIndex];
   web.emit("disconnect-nodes", { from: prev.id, to: next.id });
 
-  if (!redraw) {
-    // Add new node
-    state.groups[groupIndex].chunks.splice(nodeIndex, 0, node);
-  }
   web.emit("add-node", node);
   web.emit("connect-nodes", { from: prev.id, to: node.id });
   web.emit("connect-nodes", { from: node.id, to: next.id });
-
-  // web.emit('clear');
-}
-
-function jsonToClient(jsonObject) {
-  // Loop through lists
-  for (let i = 0; i < jsonObject.groups.length; i++) {
-    let name = jsonObject.groups[i].name;
-
-    let prevAddress;
-    // Loop through chunks
-    for (let j = 0; j < jsonObject.groups[i].chunks.length; j++) {
-      let label = "Address: " + jsonObject.groups[i].chunks[j].address + "\n";
-      label += "Size: " + jsonObject.groups[i].chunks[j].size + "\n";
-      label += "Left Size: " + jsonObject.groups[i].chunks[j].leftSize + "\n";
-      label += "Previous: " + jsonObject.groups[i].chunks[j].prev + "\n";
-      console.log(label);
-      if (initialized === false) {
-        console.log("Not initialized yet");
-        return false;
-      }
-      web.emit("add-node", {
-        addr: jsonObject.groups[i].chunks[j].addr,
-        id: jsonObject.groups[i].chunks[j].id,
-        group: name,
-        label: label
-      });
-
-      // Connect edges if not first chunk
-      if (j !== 0) {
-        web.emit("connect-nodes", {
-          from: prev_address,
-          to: jsonObject.groups[i].chunks[j].address
-        });
-      }
-
-      prev_address = jsonObject.groups[i].chunks[j].address;
-    }
-  }
 }
 
 app.get("/", function(req, res) {
@@ -320,27 +295,37 @@ function fastbin_index(sz) {
 function getConstants() {
   var constants = getStaticConstants();
   // TODO: Make this the actual calculation
-  var defines = structures['defines'];
-  constants.tcache_max_bins = ('TCACHE_MAX_BINS' in defines) ? Number(defines['TCACHE_MAX_BINS']) : 64;
-  constants.smallbin_correction = Number(constants.malloc_alignment > 2 * constants.size_sz);
+  var defines = structures["defines"];
+  constants.tcache_max_bins =
+    "TCACHE_MAX_BINS" in defines ? Number(defines["TCACHE_MAX_BINS"]) : 64;
+  constants.smallbin_correction = Number(
+    constants.malloc_alignment > 2 * constants.size_sz
+  );
   constants.smallbin_width = constants.malloc_alignment;
-  constants.min_large_size = ((defines['NSMALLBINS'] - constants.smallbin_correction) * constants.smallbin_width);
+  constants.min_large_size =
+    (defines["NSMALLBINS"] - constants.smallbin_correction) *
+    constants.smallbin_width;
   return constants;
 }
 
 // TODO: Needs to come from C
 function getStaticConstants() {
-  let ver =  glibcVersion;
-  if (!('defines' in structures)) {
-    structures['defines'] = JSON.parse(fs.readFileSync(path.join(structsPath, ver, 'defines.json'), { encoding: 'utf8' }));
+  let ver = glibcVersion;
+  if (!("defines" in structures)) {
+    structures["defines"] = JSON.parse(
+      fs.readFileSync(path.join(structsPath, ver, "defines.json"), {
+        encoding: "utf8"
+      })
+    );
   }
-  var defines = structures['defines'];
+  var defines = structures["defines"];
   var size_sz = ptrSize;
   var max_fast_size = (80 * size_sz) / 4;
   var malloc_alignment = 2 * size_sz;
   var malloc_align_mask = malloc_alignment - 1;
-  var nbins = ('NBINS' in defines) ? Number(defines['NBINS']) : 128;
-  var binmapshift = ('BINMAPSHIFT' in defines) ? Number(defines['BINMAPSHIFT']) : 5;
+  var nbins = "NBINS" in defines ? Number(defines["NBINS"]) : 128;
+  var binmapshift =
+    "BINMAPSHIFT" in defines ? Number(defines["BINMAPSHIFT"]) : 5;
   var bitspermap = 1 << binmapshift;
   var binmapsize = nbins / bitspermap;
   return {
@@ -390,11 +375,15 @@ function getStructSize(structure) {
  */
 
 function mallocChunk() {
-  let ver =  glibcVersion;
-  if (!('malloc_chunk' in structures)) {
-    structures['malloc_chunk'] = JSON.parse(fs.readFileSync(path.join(structsPath, ver, 'malloc_chunk.json'), { encoding: 'utf8' }));
+  let ver = glibcVersion;
+  if (!("malloc_chunk" in structures)) {
+    structures["malloc_chunk"] = JSON.parse(
+      fs.readFileSync(path.join(structsPath, ver, "malloc_chunk.json"), {
+        encoding: "utf8"
+      })
+    );
   }
-  return structures['malloc_chunk'];
+  return structures["malloc_chunk"];
 }
 
 /* TODO: This will be replaced with a version that takes the glibc version
@@ -402,11 +391,15 @@ function mallocChunk() {
  */
 
 function inUseMallocChunk(totalSize) {
-  let ver =  glibcVersion;
-  if (!('malloc_chunk_inuse' in structures)) {
-    structures['malloc_chunk_inuse'] = JSON.parse(fs.readFileSync(path.join(structsPath, ver, 'malloc_chunk_inuse.json'), { encoding: 'utf8' }));
+  let ver = glibcVersion;
+  if (!("malloc_chunk_inuse" in structures)) {
+    structures["malloc_chunk_inuse"] = JSON.parse(
+      fs.readFileSync(path.join(structsPath, ver, "malloc_chunk_inuse.json"), {
+        encoding: "utf8"
+      })
+    );
   }
-  return structures['malloc_chunk_inuse'];
+  return structures["malloc_chunk_inuse"];
 }
 
 /* TODO: This will be replaced with a version that takes the glibc version
@@ -414,19 +407,27 @@ function inUseMallocChunk(totalSize) {
  */
 
 function mallocPar() {
-  let ver =  glibcVersion;
-  if (!('malloc_par' in structures)) {
-    structures['malloc_par'] = JSON.parse(fs.readFileSync(path.join(structsPath, ver, 'malloc_par.json'), { encoding: 'utf8' }));
+  let ver = glibcVersion;
+  if (!("malloc_par" in structures)) {
+    structures["malloc_par"] = JSON.parse(
+      fs.readFileSync(path.join(structsPath, ver, "malloc_par.json"), {
+        encoding: "utf8"
+      })
+    );
   }
-  return structures['malloc_par'];
+  return structures["malloc_par"];
 }
 
 function mallocState() {
-  let ver =  glibcVersion;
-  if (!('malloc_state' in structures)) {
-    structures['malloc_state'] = JSON.parse(fs.readFileSync(path.join(structsPath, ver, 'malloc_state.json'), { encoding: 'utf8' }));
+  let ver = glibcVersion;
+  if (!("malloc_state" in structures)) {
+    structures["malloc_state"] = JSON.parse(
+      fs.readFileSync(path.join(structsPath, ver, "malloc_state.json"), {
+        encoding: "utf8"
+      })
+    );
   }
-  return structures['malloc_state'];
+  return structures["malloc_state"];
 }
 
 /* Takes raw data and a JSON prototype (defined above)
@@ -680,18 +681,15 @@ function getHeapBase(socket) {
       // TODO: Make real
       //socket.emit('address_of_symbol', { symbol_name: 'mp_->sbrk_base' }, (data) => {
       /* TODO: Replace +72 with offsetOf(sbrk_whatever) */
-      let expr = '(unsigned long)((void*)&mp_+' + mallocPar().sbrk_base.offset + ')';
-      socket.emit(
-        "evaluate_expression",
-        { expression: expr },
-        data => {
-          console.log(
-            "addr of heap base ",
-            parseInt(data.result, 10).toString(16)
-          );
-          resolve(parseInt(data.result, 10));
-        }
-      );
+      let expr =
+        "(unsigned long)((void*)&mp_+" + mallocPar().sbrk_base.offset + ")";
+      socket.emit("evaluate_expression", { expression: expr }, data => {
+        console.log(
+          "addr of heap base ",
+          parseInt(data.result, 10).toString(16)
+        );
+        resolve(parseInt(data.result, 10));
+      });
     }
   });
 }
@@ -781,13 +779,17 @@ const changeEndianness = string => {
 function getAllocSize(sk, retAddr) {
   /* Where retAddr is the addr returned from malloc */
   return new Promise(resolve => {
-    sk.emit("read_from_address", { size: ptrSize, address: Number(retAddr) }, data => {
-      /* Callback for addr read  */
-      var size_state = parseInt(changeEndianness(data.result), 16);
-      size_state = (size_state >> 1) << 1;
+    sk.emit(
+      "read_from_address",
+      { size: ptrSize, address: Number(retAddr) },
+      data => {
+        /* Callback for addr read  */
+        var size_state = parseInt(changeEndianness(data.result), 16);
+        size_state = (size_state >> 1) << 1;
 
-      resolve(size_state);
-    });
+        resolve(size_state);
+      }
+    );
   });
 }
 
@@ -798,9 +800,13 @@ function getContentsAt(sk, addr, size) {
   }
   //console.log("getting read_from_address with addr ", addr, " size ", size);
   return new Promise(resolve => {
-    sk.emit("read_from_address", { size: size, address: Number(addr) }, data => {
-      resolve(data.result);
-    });
+    sk.emit(
+      "read_from_address",
+      { size: size, address: Number(addr) },
+      data => {
+        resolve(data.result);
+      }
+    );
   });
 }
 
@@ -857,7 +863,11 @@ function getTcacheChunks(sk, chunk_addr, current_chunk_list) {
   }
   return new Promise((resolve, reject) => {
     getAllocSize(sk, chunk_addr - ptrSize).then(tcNodeSize => {
-      getContentsAt(sk, chunk_addr - 2 * ptrSize, tcNodeSize + 2 * ptrSize).then(contents => {
+      getContentsAt(
+        sk,
+        chunk_addr - 2 * ptrSize,
+        tcNodeSize + 2 * ptrSize
+      ).then(contents => {
         console.log("got tcache chunk at ", chunk_addr);
         var tc_entry = condense(chunk_addr, contents, "malloc_chunk");
         //console.log("pushing ", tc_entry);
@@ -920,7 +930,7 @@ function getFastbinChunks(sk, chunk_addr, current_chunk_list) {
 
 function getDataFieldOffset(mallocChunk) {
   for (prop in mallocChunk) {
-    if ('data' in mallocChunk[prop]) {
+    if ("data" in mallocChunk[prop]) {
       return mallocChunk[prop].offset;
     }
   }
@@ -928,18 +938,20 @@ function getDataFieldOffset(mallocChunk) {
 }
 
 function mChunkSizeToSize(sz) {
-  return ((sz >> 1) << 1);
+  return (sz >> 1) << 1;
 }
 
 function getBinType(binID, chunk) {
   //console.log('error in getbintype ', chunk);
   if (binID == 1) {
-    return 'unsorted';
+    return "unsorted";
   }
-  if (mChunkSizeToSize(chunk.data.mchunk_size) >= getConstants().min_large_size) {
-    return 'large';
+  if (
+    mChunkSizeToSize(chunk.data.mchunk_size) >= getConstants().min_large_size
+  ) {
+    return "large";
   }
-  return 'small';
+  return "small";
 }
 
 function getNormalBinChunks(sk, idx, fdPtr, bkPtr, stPtr, current_chunk_list) {
@@ -952,29 +964,38 @@ function getNormalBinChunks(sk, idx, fdPtr, bkPtr, stPtr, current_chunk_list) {
     });
   }
   return new Promise((resolve, reject) => {
-    getAllocSize(sk, fdPtr + mallocChunk().mchunk_size.offset).then((currChunkSize) => {
-      getContentsAt(sk, fdPtr, currChunkSize).then((contents) => {
-        //console.log('got normal bin chunk at ', fdPtr);
-        var nb_entry = condense(fdPtr, contents, 'malloc_chunk');
-        var group = getBinType(binID, nb_entry);
-        current_chunk_list.push({
-          addr: nb_entry.addr + getDataFieldOffset(mallocChunk()),
-          id: nextChunkId(),
-          group: getBinType(binID, nb_entry),
-          label: JSON.stringify(nb_entry, null, 2)
+    getAllocSize(sk, fdPtr + mallocChunk().mchunk_size.offset).then(
+      currChunkSize => {
+        getContentsAt(sk, fdPtr, currChunkSize).then(contents => {
+          //console.log('got normal bin chunk at ', fdPtr);
+          var nb_entry = condense(fdPtr, contents, "malloc_chunk");
+          var group = getBinType(binID, nb_entry);
+          current_chunk_list.push({
+            addr: nb_entry.addr + getDataFieldOffset(mallocChunk()),
+            id: nextChunkId(),
+            group: getBinType(binID, nb_entry),
+            label: JSON.stringify(nb_entry, null, 2)
+          });
+          fdPtr = nb_entry.data.fd;
+          bkPtr = nb_entry.data.bk;
+          //console.log('fd/bk ptr for normal bin ', fdPtr, bkPtr);
+          if (fdPtr == stPtr) {
+            resolve();
+          }
+          getFastbinChunks(
+            sk,
+            idx,
+            fdPtr,
+            bkPtr,
+            stPtr,
+            current_chunk_list
+          ).then(() => {
+            //console.log('finished finding normal bin chunks for idx ', idx);
+            resolve();
+          });
         });
-        fdPtr = nb_entry.data.fd;
-        bkPtr = nb_entry.data.bk;
-        //console.log('fd/bk ptr for normal bin ', fdPtr, bkPtr);
-        if (fdPtr == stPtr) {
-          resolve();
-        }
-        getFastbinChunks(sk, idx, fdPtr, bkPtr, stPtr, current_chunk_list).then(() => {
-          //console.log('finished finding normal bin chunks for idx ', idx);
-          resolve();
-        });
-      });
-    });
+      }
+    );
   });
 }
 
@@ -994,7 +1015,8 @@ function updateFreelists(sk, cb) {
                   main_arena_contents.slice(8),
                   "malloc_state"
                 );
-                var addrs = condense(heap_base, tcache_bins, "tcache_bins").data.bins;
+                var addrs = condense(heap_base, tcache_bins, "tcache_bins").data
+                  .bins;
                 console.log("tcache bins ", addrs);
                 tcache.bins.splice(0, tcache.bins.length);
                 var exAddr = {};
@@ -1004,7 +1026,7 @@ function updateFreelists(sk, cb) {
                     chunks: []
                   };
                   tcache.bins.push(next_bin);
-                  /* FIXME: This is a real weird thing where a bit gets written when 
+                  /* FIXME: This is a real weird thing where a bit gets written when
                    * a chunk over 1k size is freed.... */
                   if (exAddr[addr] > 0 && exAddr[addr] != 281474976710656) {
                     // There is a tcache list at this size
@@ -1023,12 +1045,17 @@ function updateFreelists(sk, cb) {
                   };
                   fastbins.bins.push(next_bin);
                   if (addrs[addr] > 0) {
-                    await getFastbinChunks(sk, Number(addrs[addr]), next_bin.chunks);
+                    await getFastbinChunks(
+                      sk,
+                      Number(addrs[addr]),
+                      next_bin.chunks
+                    );
                   }
                 }
 
-                console.log('Now updating normal bins');
-                var unsortedbins = state.groups.find(g => g.name === "unsorted").bins;
+                console.log("Now updating normal bins");
+                var unsortedbins = state.groups.find(g => g.name === "unsorted")
+                  .bins;
                 var largebins = state.groups.find(g => g.name === "large").bins;
                 var smallbins = state.groups.find(g => g.name === "small").bins;
                 var bins = gMainArena.data.bins;
@@ -1039,31 +1066,51 @@ function updateFreelists(sk, cb) {
                   /* idx is idx of fd ptr */
                   next_bin = {
                     chunks: []
-                  }
-                  await getNormalBinChunks(sk, idx, Number(bins[idx]), Number(bins[idx + 1]), Number(bins[idx]), next_bin.chunks);
-                  console.log('NORMAL BIN CHUNKS GOT ', next_bin.chunks);
+                  };
+                  await getNormalBinChunks(
+                    sk,
+                    idx,
+                    Number(bins[idx]),
+                    Number(bins[idx + 1]),
+                    Number(bins[idx]),
+                    next_bin.chunks
+                  );
+                  console.log("NORMAL BIN CHUNKS GOT ", next_bin.chunks);
                   if (next_bin.chunks.length > 0) {
-                    var ccl_new_size = new Set(next_bin.chunks.map(c => c.group)).size;
+                    var ccl_new_size = new Set(
+                      next_bin.chunks.map(c => c.group)
+                    ).size;
                     if (ccl_new_size > 1) {
-                      console.log(next_bin.chunks.map(c => c.group))
+                      console.log(next_bin.chunks.map(c => c.group));
                       console.log(ccl_new_size);
 
-                      throw 'Not all chunks in bin were the same group!';
-                    } 
+                      throw "Not all chunks in bin were the same group!";
+                    }
                     var ccl_group = next_bin.chunks[0].group;
-                    console.log('**********************************************ccl group is ', ccl_group, ' with chunks ', next_bin.chunks);
-                    if (ccl_group === 'small') {
-                      console.log('adding chunk to small ');
-                      state.groups.find(g => g.name === 'small').bins.push(next_bin);
-                    } else if (ccl_group === 'large') {
-                      console.log('adding chunk to large ');
-                      state.groups.find(g => g.name === 'large').bins.push(next_bin);
-                    } else if (ccl_group === 'unsorted') {
-                      console.log('adding chunk to unsorted');
-                      state.groups.find(g => g.name === 'unsorted').bins.push(next_bin);
+                    console.log(
+                      "**********************************************ccl group is ",
+                      ccl_group,
+                      " with chunks ",
+                      next_bin.chunks
+                    );
+                    if (ccl_group === "small") {
+                      console.log("adding chunk to small ");
+                      state.groups
+                        .find(g => g.name === "small")
+                        .bins.push(next_bin);
+                    } else if (ccl_group === "large") {
+                      console.log("adding chunk to large ");
+                      state.groups
+                        .find(g => g.name === "large")
+                        .bins.push(next_bin);
+                    } else if (ccl_group === "unsorted") {
+                      console.log("adding chunk to unsorted");
+                      state.groups
+                        .find(g => g.name === "unsorted")
+                        .bins.push(next_bin);
                     }
                   } else {
-                    console.log('No chunks in normal bin ', idx);
+                    console.log("No chunks in normal bin ", idx);
                   }
                 }
                 console.log("DONE UPDATING FREELISTS");

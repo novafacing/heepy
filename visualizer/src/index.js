@@ -15,7 +15,8 @@ const options = {
   layout: {
     hierarchical: {
       enabled: true,
-      levelSeparation: 300,
+      levelSeparation: 0,
+      //nodeSpacing: 600,
       direction: "LR"
     }
   },
@@ -121,6 +122,7 @@ function connectNodes(from, to) {
 }
 
 function disconnectNodes(from, to) {
+  console.log("disconnecting from:", from, "to:", to);
   edges.remove({ id: from + to });
 }
 
