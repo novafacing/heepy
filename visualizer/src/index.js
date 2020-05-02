@@ -112,6 +112,22 @@ function initNetwork() {
 function addNode(newId, newGroup, newLabel) {
   let hexlabel = JSON.parse(newLabel);
   hexlabel.addr = "0x".concat(hexlabel.addr.toString(16))
+  if('data' in hexlabel){
+    if ('bk' in hexlabel.data) {
+      hexlabel.data.bk = "0x".concat(hexlabel.data.bk.toString(16))
+    }
+    if ('bk_nextsize' in hexlabel.data) {
+      hexlabel.data.bk_nextsize = "0x".concat(hexlabel.data.bk_nextsize.toString(16))
+    }
+    if ('mchunk_size' in hexlabel.data) {
+      hexlabel.data.mchunk_size = "0x".concat(hexlabel.data.mchunk_size.toString(16))
+    }
+    if ('mchunk_prev_size' in hexlabel.data) {
+      hexlabel.data.mchunk_prev_size = "0x".concat(hexlabel.data.mchunk_prev_size.toString(16))
+    }
+  }
+
+
   newLabel = JSON.stringify(hexlabel, null, 2);
   nodes.add({
     id: newId,
