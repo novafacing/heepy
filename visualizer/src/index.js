@@ -17,19 +17,20 @@ const options = {
     hierarchical: {
       enabled: false,
       levelSeparation: 0,
-      //nodeSpacing: 600,
-      /*
-      levelSeparation: 300,
-      direction: "LR"
-      */
-      //levelSeparation: 600,
       direction: "UD"
+    }
+  },
+  edges: {
+    arrows: {
+      to: {
+        enabled: true,
+        type: "arrow"
+      }
     }
   },
   physics: {
     enabled: false,
     barnesHut: {
-      //theta: 0.5,
       gravitationalConstant: -2000,
       centralGravity: 0.3,
       springLength: 95,
@@ -38,13 +39,11 @@ const options = {
       avoidOverlap: 1
     },
     forceAtlas2Based: {
-      //theta: 0.5,
       gravitationalConstant: -50,
       centralGravity: 0.01,
       springConstant: 0.08,
       springLength: 300,
       damping: 0.4
-      //avoidOverlap: 1
     },
     repulsion: {
       centralGravity: 0.2,
@@ -59,46 +58,11 @@ const options = {
       springConstant: 0.01,
       nodeDistance: 320,
       damping: 0.09
-      //avoidOverlap: 1
     },
     maxVelocity: 50,
     minVelocity: 0.1,
     solver: "barnesHut",
-    /*
-    stabilization: {
-      enabled: true,
-      iterations: 1000,
-      updateInterval: 100,
-      onlyDynamicEdges: false,
-      fit: true
-    },
-    */
-    /*
-    timestep: 0.5,
-    adaptiveTimestep: true,
-    */
-    //wind: { x: 0, y: 0 }
   },
-  /*
-  physics: {
-    enabled: true,
-    barnesHut: {
-      gravitationalConstant: -2000,
-      centralGravity: 0.3,
-      springLength: 410,
-      springConstant: 0.04,
-      damping: 0.09,
-      avoidOverlap: 1
-    },
-    hierarchicalRepulsion: {
-      centralGravity: 0.0,
-      springLength: 410,
-      springConstant: 0.01,
-      nodeDistance: 400,
-      damping: 0.09,
-    },
-  },
-  */
   nodes: {
     shape: "box",
     font: {
@@ -150,7 +114,6 @@ function addNode(newId, newGroup, newLabel) {
     id: newId,
     group: newGroup,
     label: newLabel
-    /*color: "#FFCFCF"*/
   });
   nodeIds.push(newId);
 }
