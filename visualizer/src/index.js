@@ -110,6 +110,9 @@ function initNetwork() {
 }
 
 function addNode(newId, newGroup, newLabel) {
+  let hexlabel = JSON.parse(newLabel);
+  hexlabel.addr = "0x".concat(hexlabel.addr.toString(16))
+  newLabel = JSON.stringify(hexlabel, null, 2);
   nodes.add({
     id: newId,
     group: newGroup,
