@@ -1,5 +1,5 @@
 # heepy
-TODO: PICTURE
+![Heepy Display](./heepy_final.png)
 
 A heap visualizer for normal folks.
 
