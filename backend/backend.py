@@ -12,11 +12,6 @@ sio = socketio.Client()
 
 debug = False  # CHANGE THIS TO PAUSE ON PROGRAM EXIT
 
-# recieves 'read-from-address' (address, n_bytes)
-# recieves 'address-of-symbol' (symbol_name)
-# recieves 'continue-execution'
-# emits 'heap-changed'
-
 if os.environ.get("TMUX") is None:
     print("Must be in a tmux session. Please run ./main.sh")
     sys.exit()
@@ -35,9 +30,7 @@ if len(sys.argv) >= 3:
     print("Setting libc to {}".format(sys.argv[2]))
     response = gdbmi.write("set environment LD_PRELOAD " + sys.argv[2])
 
-# TODO: Come up with a better way to determine a TTY. Currently just sleeping in a new window lol
-# Open a terminal. Run `tty`, then change the tty below V
-# Then run `sleep 100000` in that terminal.
+# Hacky way to determine which tty is being used
 num = str(random.randint(100000, 1000000))
 p = subprocess.Popen(["tmux", "new-window", "sleep {}".format(num)])
 
@@ -123,7 +116,6 @@ def read_from_address(data):
 
 @sio.event(namespace="/gef")
 def address_of_symbol(data):
-    # main_arena
     print("address_of_symbol: {}".format(data))
 
     result = gdbmi.write("-data-evaluate-expression &" + data["symbol_name"])
@@ -250,8 +242,7 @@ def continue_execution():
             pass
 
     if data["called-function"] == None:
-        # TODO: Better detect when exiting actually happens.
-        # This is an emergency fallback.
+        # This is an emergency fallback that is still sometimes needed.
         print("Program exited")
         kill_process()
         sio.disconnect()
