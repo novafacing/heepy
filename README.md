@@ -6,7 +6,7 @@ A heap visualizer for normal folks.
 
 ## Dependencies
 
-This depends on pip and npm (a relatively recent version, developed on v14.0.0
+This depends on pip and npm (a relatively recent version; developed on v14.0.0)
 
 # Installation
 
