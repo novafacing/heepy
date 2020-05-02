@@ -195,8 +195,8 @@ function addBinNodeToClient(node, group) {
 }
 
 function addChunkNodeToClient(node, group) {
-  // Empty chunk case
-  if (group.chunks.length === 0) {
+  // 1 chunk case
+  if (group.chunks.length === 1) {
     // Add node to client
     web.emit("add-node", node);
     return;
@@ -221,7 +221,11 @@ function addChunkNodeToClient(node, group) {
   );
   if (nodeIndex === 0) {
     web.emit("add-node", node);
-    console.log("calling connect-nodes");
+    console.log(
+      "calling connect-nodes for case2, head",
+      node.id,
+      group.chunks[1].id
+    );
     web.emit("connect-nodes", {
       from: node.id,
       to: group.chunks[1].id
@@ -230,10 +234,17 @@ function addChunkNodeToClient(node, group) {
   } else if (nodeIndex === group.chunks.length) {
     // Insert at tail and add connection from old tail to node
     web.emit("add-node", node);
-    web.emit("connect-nodes", {
-      from: group.chunks[group.chunks.length - 1].id,
-      to: node.id
-    });
+    console.log(
+      "calling connect-nodes for case2, tail",
+      group.chunks[group.chunks.length - 1].id,
+      node.id
+    );
+    if (group.chunks[group.chunks.length - 1].id !== node.id) {
+      web.emit("connect-nodes", {
+        from: group.chunks[group.chunks.length - 1].id,
+        to: node.id
+      });
+    }
     return;
   }
 
@@ -242,11 +253,16 @@ function addChunkNodeToClient(node, group) {
   // Save ids for later
   let prev = group.chunks[nodeIndex - 1];
   let next = group.chunks[nodeIndex];
+  console.log("calling disconnect-nodes for case3");
   web.emit("disconnect-nodes", { from: prev.id, to: next.id });
 
   web.emit("add-node", node);
-  web.emit("connect-nodes", { from: prev.id, to: node.id });
-  web.emit("connect-nodes", { from: node.id, to: next.id });
+  console.log("calling connect-nodes for case3", prev.id, node.id, next.id);
+  // Prevent self loops, should still work to show double free since the id is iterative
+  if (prev.id !== node.id)
+    web.emit("connect-nodes", { from: prev.id, to: node.id });
+  if (node.id !== next.id)
+    web.emit("connect-nodes", { from: node.id, to: next.id });
 }
 
 app.get("/", function(req, res) {
