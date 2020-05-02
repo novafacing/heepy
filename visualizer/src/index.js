@@ -15,8 +15,7 @@ const options = {
   layout: {
     hierarchical: {
       enabled: true,
-      levelSeparation: 200,
-      nodeSpacing: 600,
+      levelSeparation: 300,
       direction: "LR"
     }
   },
@@ -27,134 +26,28 @@ const options = {
       align: "left"
     }
   },
-  /*
-  physics: {
-    hierarchicalRepulsion: {
-      avoidOverlap: 1
-    }
-  },
-  */
-  /*
-  physics: {
-    enabled: true,
-    barnesHut: {
-      theta: 0.5,
-      gravitationalConstant: -2000,
-      centralGravity: 0.3,
-      springLength: 95,
-      springConstant: 0.04,
-      damping: 0.09,
-      avoidOverlap: 1
-    },
-    forceAtlas2Based: {
-      theta: 0.5,
-      gravitationalConstant: -50,
-      centralGravity: 0.01,
-      springConstant: 0.08,
-      springLength: 100,
-      damping: 0.4,
-      avoidOverlap: 1
-    },
-    repulsion: {
-      centralGravity: 0.2,
-      springLength: 400,
-      springConstant: 0.05,
-      nodeDistance: 420,
-      damping: 0.09
-    },
-    hierarchicalRepulsion: {
-      centralGravity: 0.0,
-      springLength: 400,
-      springConstant: 0.01,
-      nodeDistance: 420,
-      damping: 0.09,
-      avoidOverlap: 1
-    },
-    maxVelocity: 50,
-    minVelocity: 0.1,
-    solver: "barnesHut",
-    stabilization: {
-      enabled: true,
-      iterations: 1000,
-      updateInterval: 100,
-      onlyDynamicEdges: false,
-      fit: true
-    },
-    timestep: 0.5,
-    adaptiveTimestep: true,
-    wind: { x: 0, y: 0 }
-  },
-  */
-  physics: {
-    enabled: true,
-    barnesHut: {
-      gravitationalConstant: -8000,
-      springConstant: 0.001,
-      springLength: 200
-    },
-    wind: { x: 1, y: 0 }
-  },
   groups: {
-    free: {
+    tcache: {
+      color: "#2B7CE9" // blue
+    },
+    fastbins: {
+      color: "#FF9900" // orange
+    },
+    unsorted: {
       color: "#109618" // green
+    },
+    small: {
+      color: "#FF66CC" // pink
+    },
+    large: {
+      color: "#FFFF00" // yellow
     },
     inUse: {
       color: "#C5000B" // red
     },
-    largeBins: {
-      color: "#FFFF00" // yellow
-    },
-    tcache: {
-      color: "#2B7CE9" // blue
-    },
-    fastBins: {
-      color: "#FF9900" // orange
-    }
   }
 };
 
-var legend = [
-  {
-    id: "legend0",
-    label: "Free",
-    group: "free",
-    fixed: true,
-  },
-  {
-    id: "legend1",
-    label: "In Use",
-    group: "inUse",
-    fixed: true,
-  },
-  {
-    id: "legend2",
-    label: "Large Bins",
-    group: "largeBins",
-    fixed: true,
-  },
-  {
-    id: "legend3",
-    label: "TCache",
-    group: "tcache",
-    fixed: true,
-  },
-  {
-    id: "legend4",
-    label: "Fast Bins",
-    group: "fastBins",
-    fixed: true,
-  }
-];
-
-function addLegend() {
-  var lastId;
-
-  for (let i = 0; i < legend.length; i++) {
-    nodes.add(legend[i]);
-    if (i !== 0) connectNodes(lastId, legend[i].id, true);
-    lastId = legend[i].id;
-  }
-}
 
 function initNetwork() {
   // Init network to net_container_0
@@ -171,8 +64,6 @@ function initNetwork() {
 
   // Create new network with container, data, and options
   network = new vis.Network(container, data, options);
-
-  //addLegend();
 }
 
 function addNode(newId, newGroup, newLabel) {
@@ -233,6 +124,13 @@ function disconnectNodes(from, to) {
   edges.remove({ id: from + to });
 }
 
+function clear() {
+  console.log('clearing')
+  nodes.clear()
+  edges.clear()
+  updateNetwork();
+}
+
 function intsToHex(data) {
   return Object.keys(data).reduce(function(result, key) {
     if (Number.isInteger(data[key])) {
@@ -277,5 +175,5 @@ socket.on("disconnect-nodes", function(data) {
 });
 
 socket.on("clear", function(data) {
-  initNetwork();
+  clear();
 });

@@ -18,20 +18,23 @@
       display: inline-block;
       padding: 1vw;
     }
-    #free {
-      background-color: #109618;
-    }
-    #inUse {
-      background-color: #C5000B;
-    }
-    #largeBins {
-      background-color: #FFFF00;
-    }
     #tcache {
       background-color: #2B7CE9;
     }
-    #fastBins {
+    #fastbins {
       background-color: #FF9900;
+    }
+    #unsorted {
+      background-color: #109618;
+    }
+    #small {
+      background-color: #FF66CC;
+    }
+    #large {
+      background-color: #FFFF00;
+    }
+    #inUse {
+      background-color: #C5000B;
     }
   </style>
   </head>
@@ -39,11 +42,12 @@
     <div>
       <h1>Heepy</h1>
       <div id="legend">
-        <div class="legend-element" id="free">Free</div>
-        <div class="legend-element" id="inUse">In Use</div>
-        <div class="legend-element" id="largeBins">Large Bins</div>
         <div class="legend-element" id="tcache">TCache</div>
-        <div class="legend-element" id="fastBins">Fast Bins</div>
+        <div class="legend-element" id="fastbins">Fast Bins</div>
+        <div class="legend-element" id="unsorted">Unsorted</div>
+        <div class="legend-element" id="small">Small Bins</div>
+        <div class="legend-element" id="large">Large Bins</div>
+        <div class="legend-element" id="inUse">In Use</div>
       </div>
       <div id="networkContainer"></div>
     </div>
