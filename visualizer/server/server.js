@@ -280,6 +280,7 @@ web.on("connection", function(socket) {
   });
 });
 
+
 // TODO: Needs to come from C
 function minChunkSize() {
   return offsetOf(mallocChunk(), "fd_nextsize");
@@ -654,10 +655,17 @@ gef.on("connect", function(socket) {
       gefAction(socket, state, data);
     }
   });
+
+  socket.on("disconnect", function(socket) {
+    console.log("Got disconnect from client");
+    process.exit();
+  });
+
   console.log("Got connection from gef");
   console.log("Continuing Execution ", new Error().lineNumber);
   socket.emit("continue_execution");
 });
+
 
 function getPtrSize(socket) {
   /* Finds the size of a pointer on the target system (expect 4 for 32 bit and 8 for 64 bit) */

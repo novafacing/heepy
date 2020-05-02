@@ -6,17 +6,26 @@ import time
 import sys
 import random
 import subprocess
+import os
 
 sio = socketio.Client()
 
+debug = False  # CHANGE THIS TO PAUSE ON PROGRAM EXIT
 
 # recieves 'read-from-address' (address, n_bytes)
 # recieves 'address-of-symbol' (symbol_name)
 # recieves 'continue-execution'
 # emits 'heap-changed'
+
+if os.environ.get("TMUX") is None:
+    print("Must be in a tmux session. Please run ./main.sh")
+    sys.exit()
+
 if len(sys.argv) < 2:
     print(
-        "Usage: {} ./binary ./libc\nAlso make sure the server is running.".format(sys.argv[0])
+        "Usage: {} ./binary ./libc\nAlso make sure the server is running.".format(
+            sys.argv[0]
+        )
     )
     sys.exit()
 
@@ -30,14 +39,23 @@ if len(sys.argv) >= 3:
 # Open a terminal. Run `tty`, then change the tty below V
 # Then run `sleep 100000` in that terminal.
 num = str(random.randint(100000, 1000000))
-p = subprocess.Popen(["xterm", "-e", "sleep {}".format(num)])
+p = subprocess.Popen(["tmux", "new-window", "sleep {}".format(num)])
+
 time.sleep(1)
 tty = "/dev/" + str(
     subprocess.check_output(
-        "ps ax | grep 'sleep {}' | grep -v xterm | grep -v grep".format(num), shell=True
+        "ps ax | grep 'sleep {}' | grep -v tmux | grep -v grep".format(num), shell=True
     ).split()[1],
     "utf8",
 )
+
+
+def kill_process():
+    if debug:
+        print("Program exited. Waiting for input.")
+        input()
+    os.system("kill $(pgrep --full -x 'sleep {}')".format(num))
+
 
 response = gdbmi.write("tty {}".format(tty))
 
@@ -124,18 +142,16 @@ def continue_execution():
         response[-1]["message"] == "stopped"
         and response[-1]["payload"].get("reason", None) == "exited-normally"
     ):
-        print("Program exited normally; waiting for input")
-        input()
-        p.kill()
+        print("Program exited normally")
+        kill_process()
         sio.disconnect()
         sys.exit()
     if (
         response[-1]["message"] == "error"
         and response[-1]["payload"].get("msg", None) == "The program is not being run."
     ):
-        print("Program exited; waiting for input")
-        input()
-        p.kill()
+        print("Program exited")
+        kill_process()
         sio.disconnect()
         sys.exit()
 
@@ -144,6 +160,21 @@ def continue_execution():
             response = gdbmi.write("", timeout_sec=1)
         except pygdbmi.gdbcontroller.GdbTimeoutError:
             pass
+
+    for line in response:
+        if (
+            line["message"] == "stopped"
+            and line["payload"].get("reason", None) == "exited-normally"
+        ) or (
+            line["message"] == "error"
+            and line["payload"].get("msg", None) == "The program is not being run."
+        ):
+            print("Program exited")
+            kill_process()
+            sio.disconnect()
+            sys.exit()
+
+    print(response)
 
     data = {
         "called-function": None,
@@ -179,9 +210,7 @@ def continue_execution():
                 data["called-function"] = "malloc"
                 data["rax-after-call"] = rax
 
-                # TODO: NATHAN NEEDS TO LOOK AT THIS
                 rdi = int(response[print_at]["payload"].split(" ")[-1][:-2])
-                # rdi = int(response[bp_at
                 data["rdi-before-call"] = rdi
             if response[bp_at]["payload"]["at"] == "<free>":
                 print("We're at the end of a free!")
@@ -219,6 +248,14 @@ def continue_execution():
                 data["rsi-before-call"] = rsi
         except IndexError:
             pass
+
+    if data["called-function"] == None:
+        # TODO: Better detect when exiting actually happens.
+        # This is an emergency fallback.
+        print("Program exited")
+        kill_process()
+        sio.disconnect()
+        sys.exit()
 
     # The only time the probram breaks is when the heap is modified
     update_heap_info(data)
