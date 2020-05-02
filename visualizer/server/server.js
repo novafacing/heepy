@@ -159,7 +159,7 @@ function addNodeToClient(node) {
   }
 }
 
-function addBinNodeToClient(node, bin) {
+function addBinNodeToClient(node, group) {
   /*
   if (group.name == "tcache") {
     web.emit("add-node", node);
@@ -176,18 +176,20 @@ function addBinNodeToClient(node, bin) {
     return;
   }
   */
-  // Find chunk in bin, then call addChunkNodeToClient(node, group);
+  /*
   web.emit("add-node", node);
   return;
+  */
 
+  // Find chunk in bin, then call addChunkNodeToClient(node, group);
   // Find which chunks list node is in
   // Loop through bin
-  for (let i = 0; i < bin.length; i++) {
+  for (let i = 0; i < group.bins.length; i++) {
     // Loop through chunks in bin
-    for (let j = 0; j < bin[i].chunks.length; j++) {
+    for (let j = 0; j < group.bins[i].chunks.length; j++) {
       // If id matches, call addChunkNodeToClient
-      if (bin[i].chunks[j].id === node.id)
-        addChunkNodeToClient(node, bin[i].chunks);
+      if (group.bins[i].chunks[j].id === node.id)
+        addChunkNodeToClient(node, group.bins[i]);
     }
   }
 }

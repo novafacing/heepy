@@ -41,22 +41,22 @@ const options = {
       gravitationalConstant: -50,
       centralGravity: 0.01,
       springConstant: 0.08,
-      springLength: 100,
+      springLength: 300,
       damping: 0.4,
       avoidOverlap: 1
     },
     repulsion: {
       centralGravity: 0.2,
-      springLength: 200,
+      springLength: 300,
       springConstant: 0.05,
-      nodeDistance: 220,
+      nodeDistance: 320,
       damping: 0.09
     },
     hierarchicalRepulsion: {
       centralGravity: 0.0,
-      springLength: 200,
+      springLength: 300,
       springConstant: 0.01,
-      nodeDistance: 220,
+      nodeDistance: 320,
       damping: 0.09,
       avoidOverlap: 1
     },
