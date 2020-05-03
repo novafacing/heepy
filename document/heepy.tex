@@ -1,7 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage[T1]{fontenc}
 \usepackage{geometry}
-\geometry{margin=1.25in}
+\geometry{margin=1.0in}
 \usepackage{mathptmx}
 \usepackage{setspace}
 \usepackage{enumitem}
@@ -34,6 +34,8 @@ This project is aimed at making reverse engineering heap exploits easier. The co
 
 This project has been inspired by shellphish’s malloc playground in how2heap, the heapinspect tool, and GEF’s heap tools. Malloc playground is a nice place to experiment width heap exploits in a controlled environment, but it is unable to visualize a real program. The heapinspect tool is able to show the chunk attributes, but only on glibc versions: 2.19, 2.23-2.27. These are great command line tools that help visualize the heap. The main issue with these tools is that they are difficult or impossible to visualize all of the chunk attributes or unable to visualize some versions of glibc. Heepy is aimed to fill the gap that some of the other tools have yet to fix.  \\
 
+The tool villoc does visualize heap activity in a graphical format, but it does not do so in a live manner and is essentially an ltrace parser that operates on the text information ltrace outputs. Heepy provides more comprehensive visualization with an interactive display. \\
+
 \section{Heepy Implementation}
 
 Heepy is able to visualize all aspects of a chunk on EVERY libc version. This is accomplished by parsing through each glibc version’s malloc.c (currently only mainline glibc releases from 2.10 through 2.31 are automatically obtained, but the system theoretically supports additional versions). This process uses multiple parser passes to pick up defines as well as types, then obtains the members of malloc structs and deduces each size, including arrays. After the layout of the struct is parsed, it is passed to a json file that is used as a template. This template comes into play when the program is run with heepy. Heepy hooks the program’s malloc calls with gdb and sends the information before and after the call to the backend heepy NodeJS server through a websocket. Once the information has been sent to the backend server, Heepy sorts the current state of the heap by address and forwards that information to the Heepy frontend server. The Heepy frontend server displays the heap chunks and all of its attributes. The frontend cleanly displays the organized groups based on what list the chunk is in using VisJS, a graph browser based visualization library. As an additional feature, users can rearrange the graph in any way they feel best displays the heap information for them. The web implementation allows for an easy to read and visually pleasing display. \\
@@ -64,6 +66,5 @@ Our visualizer has several potential use cases. First, exploits involving the he
 \section{Source Code}
 
 Source code for the project can be found at https://github.com/novafacing/heepy.
-
 
 \end{document}
