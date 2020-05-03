@@ -1,7 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage[T1]{fontenc}
 \usepackage{geometry}
-\geometry{margin=1in}
+\geometry{margin=1.25in}
 \usepackage{mathptmx}
 \usepackage{setspace}
 \usepackage{enumitem}
@@ -43,18 +43,18 @@ Heepy is able to visualize all aspects of a chunk on EVERY libc version. This is
 Our tool features include: \\
 
 \begin{enumerate}
-    \item glibc cersion independence. \\
-    \item Hooking for malloc and free events. \\
-    \item Live heap visualization while interacting with a program normally. \\
-    \item Web interface for heap visualization. \\
+    \item glibc cersion independence.
+    \item Hooking for malloc and free events.
+    \item Live heap visualization while interacting with a program normally.
+    \item Web interface for heap visualization.
 \end{enumerate}
 
 Our tool does have a few limitations: \\
 
 \begin{enumerate}
-    \item No windows support. \\
-    \item Theoretical support for additional allocators but they must follow a similar data structure paradigm as glibc. \\
-    \item Lingering bugs with some heap events. These can be fixed but the initial version occasionaly misses heap objects for various reasons. \\
+    \item No windows support.
+    \item Theoretical support for additional allocators but they must follow a similar data structure paradigm as glibc.
+    \item Lingering bugs with some heap events. These can be fixed but the initial version occasionaly misses heap objects for various reasons.
 \end{enumerate}
 
 \section{Use Case Examples}
