@@ -100,11 +100,6 @@ var structures = {};
 
 server.listen(3000);
 
-function initClient(numGroups) {
-  // libcVersion / something else to help me init the number of groups with names of each for the network
-  // Initialize network
-}
-
 function addNodeToClient(node) {
   // Adds node to client and stores in order state on server.
   // node is an object in the form:
@@ -160,27 +155,6 @@ function addNodeToClient(node) {
 }
 
 function addBinNodeToClient(node, group) {
-  /*
-  if (group.name == "tcache") {
-    web.emit("add-node", node);
-    return;
-  }
-
-  if (group.name == "fastbins") {
-    web.emit("add-node", node);
-    return;
-  }
-
-  if (['unsorted', 'small', 'large'].includes(group.name)) {
-    web.emit('add-node', node);
-    return;
-  }
-  */
-  /*
-  web.emit("add-node", node);
-  return;
-  */
-
   // Find chunk in bin, then call addChunkNodeToClient(node, group);
   // Find which chunks list node is in
   // Loop through bin
@@ -281,12 +255,10 @@ web.on("connection", function(socket) {
 });
 
 
-// TODO: Needs to come from C
 function minChunkSize() {
   return offsetOf(mallocChunk(), "fd_nextsize");
 }
 
-// TODO: Needs to come from C
 function minSize() {
   var constants = getStaticConstants();
   return (
@@ -295,7 +267,6 @@ function minSize() {
   );
 }
 
-// TODO: Needs to come from C
 function request2size(req) {
   var constants = getStaticConstants();
   return req + constants.size_sz + constants.malloc_align_mask < minSize()
@@ -304,16 +275,13 @@ function request2size(req) {
         ~malloc_align_mask;
 }
 
-// TODO: Needs to come from C
 function fastbin_index(sz) {
   var constants = getStaticConstants();
   return (sz >> (constants.size_sz == 8 ? 4 : 3)) - 2;
 }
 
-// TODO: Needs to come from C
 function getConstants() {
   var constants = getStaticConstants();
-  // TODO: Make this the actual calculation
   var defines = structures["defines"];
   constants.tcache_max_bins =
     "TCACHE_MAX_BINS" in defines ? Number(defines["TCACHE_MAX_BINS"]) : 64;
@@ -327,7 +295,6 @@ function getConstants() {
   return constants;
 }
 
-// TODO: Needs to come from C
 function getStaticConstants() {
   let ver = glibcVersion;
   if (!("defines" in structures)) {
@@ -359,7 +326,6 @@ function getStaticConstants() {
   };
 }
 
-// TODO: Needs to come from C
 function offsetOf(proto, field) {
   let offset = 0;
   for (let key in proto) {
@@ -371,7 +337,6 @@ function offsetOf(proto, field) {
   return offset;
 }
 
-// TODO: Needs to come from C
 function tcacheBins() {
   return {
     bins: {
@@ -389,10 +354,6 @@ function getStructSize(structure) {
   return size;
 }
 
-/* TODO: This will be replaced with a version that takes the glibc version
- * and returns the correct chunk layout (in this format)
- */
-
 function mallocChunk() {
   let ver = glibcVersion;
   if (!("malloc_chunk" in structures)) {
@@ -405,10 +366,6 @@ function mallocChunk() {
   return structures["malloc_chunk"];
 }
 
-/* TODO: This will be replaced with a version that takes the glibc version
- * and returns the correct chunk layout (in this format)
- */
-
 function inUseMallocChunk(totalSize) {
   let ver = glibcVersion;
   if (!("malloc_chunk_inuse" in structures)) {
@@ -420,10 +377,6 @@ function inUseMallocChunk(totalSize) {
   }
   return structures["malloc_chunk_inuse"];
 }
-
-/* TODO: This will be replaced with a version that takes the glibc version
- * and returns the correct chunk layout (in this format)
- */
 
 function mallocPar() {
   let ver = glibcVersion;
@@ -682,31 +635,16 @@ function getPtrSize(socket) {
 
 function getMainArenaSize(socket) {
   return new Promise((resolve, reject) => {
-    /* Gets the sizeof(main_arena) value */
-    /* TODO: this should end up being calculated from C */
-
     resolve(getStructSize(mallocState()));
-    /*
-      // TODO: Make real
-    if (!socket) {
-      reject("No connection.");
-    } else {
-      socket.emit('sizeof', { var: 'main_arena' }, (data) => {
-        resolve(data.result);
-      });
-    }
-    */
   });
 }
+
 function getHeapBase(socket) {
   /* Finds the base address of the heap from the malloc_par struct. */
   return new Promise((resolve, reject) => {
     if (!socket) {
       reject("No connection.");
     } else {
-      // TODO: Make real
-      //socket.emit('address_of_symbol', { symbol_name: 'mp_->sbrk_base' }, (data) => {
-      /* TODO: Replace +72 with offsetOf(sbrk_whatever) */
       let expr =
         "(unsigned long)((void*)&mp_+" + mallocPar().sbrk_base.offset + ")";
       socket.emit("evaluate_expression", { expression: expr }, data => {
@@ -824,7 +762,6 @@ function getContentsAt(sk, addr, size) {
   if (size < 16) {
     size = 16;
   }
-  //console.log("getting read_from_address with addr ", addr, " size ", size);
   return new Promise(resolve => {
     sk.emit(
       "read_from_address",
@@ -840,16 +777,8 @@ function malloc(sk, st, data) {
   /* handle malloc event on socket sk with state st and received data data */
   console.log("Got malloc");
   var retAddr = data["rax-after-call"];
-  //console.log("got addr ", retAddr);
   getAllocSize(sk, retAddr - ptrSize).then(allocSize => {
     getContentsAt(sk, retAddr - 2 * ptrSize, allocSize).then(contents => {
-      //for (var group in state.groups) {
-      //  /* Remove node from a group if it's in one. TODO: this might be bugged */
-      //  if (state.groups[group].chunks.find(c => c.addr == retAddr)) {
-      //    var remidx = state.groups[group].chunks.findIndex(c => c.addr == retAddr);
-      //    state.groups[group].chunks.splice(remidx, 1);
-      //  }
-      //}
       /* Add chunk to inuse */
       var inUseGroup = state.groups.find(g => g.name == "inUse");
       var newChunk = condense(
@@ -864,7 +793,6 @@ function malloc(sk, st, data) {
         group: "inUse",
         label: JSON.stringify(newChunk, null, 2)
       });
-      //console.log(inUseGroup.chunks[inUseGroup.chunks.length - 1].data);
 
       updateFreelists(sk, () => {
         redraw();
@@ -896,7 +824,6 @@ function getTcacheChunks(sk, chunk_addr, current_chunk_list) {
       ).then(contents => {
         console.log("got tcache chunk at ", chunk_addr);
         var tc_entry = condense(chunk_addr, contents, "malloc_chunk");
-        //console.log("pushing ", tc_entry);
         current_chunk_list.push({
           addr: tc_entry.addr,
           id: nextChunkId(),
@@ -909,7 +836,6 @@ function getTcacheChunks(sk, chunk_addr, current_chunk_list) {
         }
 
         getTcacheChunks(sk, tc_entry.data.fd, current_chunk_list).then(() => {
-          //console.log("done finding tcache chunks, continuing");
           resolve();
         });
       });
@@ -918,9 +844,6 @@ function getTcacheChunks(sk, chunk_addr, current_chunk_list) {
 }
 
 function getFastbinChunks(sk, chunk_addr, current_chunk_list) {
-  // TODO: Is the correct address displayed?
-  //chunk_addr = chunk_addr + 2 * ptrSize
-
   console.log("examining fastbin chunk at ", chunk_addr);
 
   if (chunk_addr == 0) {
@@ -933,7 +856,6 @@ function getFastbinChunks(sk, chunk_addr, current_chunk_list) {
       getContentsAt(sk, chunk_addr, fbNodeSize).then(contents => {
         console.log("got fastbin chunk at ", chunk_addr);
         var fb_entry = condense(chunk_addr, contents, "malloc_chunk");
-        //console.log("pushing ", fb_entry);
         current_chunk_list.push({
           addr: fb_entry.addr + 2 * ptrSize,
           id: nextChunkId(),
@@ -968,7 +890,6 @@ function mChunkSizeToSize(sz) {
 }
 
 function getBinType(binID, chunk) {
-  //console.log('error in getbintype ', chunk);
   if (binID == 1) {
     return "unsorted";
   }
@@ -981,7 +902,6 @@ function getBinType(binID, chunk) {
 }
 
 function getNormalBinChunks(sk, idx, fdPtr, bkPtr, stPtr, current_chunk_list) {
-  //console.log('getting normal bin chunks ', idx, fdPtr, bkPtr, stPtr, current_chunk_list);
   var binID = idx + 1;
   /* sanity check */
   if (fdPtr == bkPtr || fdPtr == 0) {
@@ -1183,5 +1103,3 @@ function free(sk, st, data) {
     });
   });
 }
-
-/* gef-side events */

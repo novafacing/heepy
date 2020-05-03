@@ -6,7 +6,7 @@ A heap visualizer for normal folks.
 
 ## Dependencies
 
-This depends on pip and npm (a relatively recent version, developed on v14.0.0
+This depends on python3, pip and npm (a relatively recent version; developed on v14.0.0) as well as git and tmux.
 
 # Installation
 
@@ -22,6 +22,9 @@ cd ../..
 ```
 ./heepy.sh ./binary [ ./libc.so.6 ]
 ```
+
+Test heap programs are provided in test-bins (notably playground and crud).
+
 
 # How it works
 
