@@ -19,6 +19,6 @@
     "jison-gho": "^0.6.1-216"
   },
   "dependencies": {
-    "shelljs": "^0.8.3"
+    "shelljs": "^0.8.5"
   }
 }
